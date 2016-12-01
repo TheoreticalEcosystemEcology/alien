@@ -6,6 +6,6 @@
 
 ## Getting started
 
-```
+```r
 devtools::install_github('TheoreticalEcosystemEcology/alienR')
 ```
