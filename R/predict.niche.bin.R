@@ -19,21 +19,21 @@
 #' @rdname predict.niche.bin
 #' @export
 predict.niche.bin = function(models, newdata) {
-  # Check if the newdata has the right format
-
-  with(newdata, {
-    npairs = length(Ti)
-
-    # Lower boundary
-    lo = models$model_lo[1] + models$model_lo[2]*Ti
-
-    # Upper boundary
-    up = models$model_up[1] + models$model_up[2]*Ti
-
-    # Compute interactions among pairs of species
-    L = numeric(npairs)
-    L[Tj > lo & Tj < up] = 1
-
-  })
-  return(list(L = L))
+    # Check if the newdata has the right format
+    
+    with(newdata, {
+        npairs = length(Ti)
+        
+        # Lower boundary
+        lo = models$model_lo[1] + models$model_lo[2] * Ti
+        
+        # Upper boundary
+        up = models$model_up[1] + models$model_up[2] * Ti
+        
+        # Compute interactions among pairs of species
+        L = numeric(npairs)
+        L[Tj > lo & Tj < up] = 1
+        
+    })
+    return(list(L = L))
 }

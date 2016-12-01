@@ -16,12 +16,12 @@
 #' @rdname predict.direct.centrality
 #' @export
 predict.direct.centrality = function(newdata, model, replicates) {
-
-  p = predict(model, newdata, type = "response")
-
-  I = list()
-  for(n in 1:replicates) I[[n]] = rbinom(nrow(newdata), size = 1, prob = p)
-
-  return(list(p = p, I = I))
-
+    
+    p = predict(model, newdata, type = "response")
+    
+    I = list()
+    for (n in 1:replicates) I[[n]] = rbinom(nrow(newdata), size = 1, prob = p)
+    
+    return(list(p = p, I = I))
+    
 }

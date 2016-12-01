@@ -4,3 +4,10 @@ notifications:
   email:
     recipients:
       - s.vissault@yahoo.fr
+      - kevin.cazelles@gmail.com
+      
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'

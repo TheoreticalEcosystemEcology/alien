@@ -20,20 +20,20 @@
 #'
 #'
 #' @export
-predict.niche.prob <- function(pars,Tlevel1, Tlevel2, replicates = 100){
-  out <-  list()
-  # Optimum and range
-  o = pars[1] + pars[2]*Tlevel2
-  r = pars[3] + pars[4]*Tlevel2
-
-  # Compute the conditional
-  pLM = exp(-(o-Tlevel1)^2/2/r^2)
-
-  # save outout
-  out[[1]] <- pLM
-  #out[[2]] <- data.frame(Tlevel1, Tlevel2, pLM)
-  for(i in 1:replicates+1){
-    out[[i]] = rbinom(length(Tlevel1), size = 1, prob = pLM)
-  }
-  out
+predict.niche.prob <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
+    out <- list()
+    # Optimum and range
+    o = pars[1] + pars[2] * Tlevel2
+    r = pars[3] + pars[4] * Tlevel2
+    
+    # Compute the conditional
+    pLM = exp(-(o - Tlevel1)^2/2/r^2)
+    
+    # save outout
+    out[[1]] <- pLM
+    # out[[2]] <- data.frame(Tlevel1, Tlevel2, pLM)
+    for (i in 1:replicates + 1) {
+        out[[i]] = rbinom(length(Tlevel1), size = 1, prob = pLM)
+    }
+    out
 }

@@ -28,21 +28,17 @@
 #' Dominique Gravel and Ignasi Bartomeus
 #'
 #' @export
-fit_it <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1,
-                   pars = c(a0 = 0, a1 = 0, b0 = 0, b1 = 0),
-                   par_lo = c(a0 = -5000, a1 = -5000, b0 = -5000, b1 = -5000),
-                   par_hi = c(a0 = 5000, a1 = 5000, b0 = 5000, b1 = 5000),
-                   max.time = 1800){
-  # Initial values
-  #pars = c(a0 = 0, a1 = 0, b0 = 0, b1 = 0) #default
-  #lm_M = lm(Tlevel1 ~ Tlevel2)
-  #pars = c(a0 = lm_M$coefficients[1],a1 = lm_M$coefficients[2],b0 = sd(lm_M$residuals),b1 = 0) #another option
-  # Maximum likelihood estimation
-  estim.pars = GenSA::GenSA(par = pars, fn = model, lower = par_lo, upper= par_hi,
-                     control = list(verbose =TRUE, max.time = max.time, smooth=FALSE),
-                     Tlevel1 = Tlevel1, Tlevel2 = Tlevel2,
-                     mean_Tlevel1 = mean_Tlevel1, sd_Tlevel1 = sd_Tlevel1)
-  estim.pars$par
+fit_it <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1, pars = c(a0 = 0, 
+    a1 = 0, b0 = 0, b1 = 0), par_lo = c(a0 = -5000, a1 = -5000, b0 = -5000, b1 = -5000), 
+    par_hi = c(a0 = 5000, a1 = 5000, b0 = 5000, b1 = 5000), max.time = 1800) {
+    # Initial values pars = c(a0 = 0, a1 = 0, b0 = 0, b1 = 0) #default lm_M =
+    # lm(Tlevel1 ~ Tlevel2) pars = c(a0 = lm_M$coefficients[1],a1 =
+    # lm_M$coefficients[2],b0 = sd(lm_M$residuals),b1 = 0) #another option Maximum
+    # likelihood estimation
+    estim.pars = GenSA::GenSA(par = pars, fn = model, lower = par_lo, upper = par_hi, 
+        control = list(verbose = TRUE, max.time = max.time, smooth = FALSE), Tlevel1 = Tlevel1, 
+        Tlevel2 = Tlevel2, mean_Tlevel1 = mean_Tlevel1, sd_Tlevel1 = sd_Tlevel1)
+    estim.pars$par
 }
 
 

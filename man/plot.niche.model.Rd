@@ -21,7 +21,7 @@ plot_pred(pars, Tlevel1, Tlevel2, xlab = "Trait level 2",
 
 \item{legend}{Logical value indicating if the legend should be plotted. Default = TRUE}
 
-\item{pch}{Default = 19. Use "." when lots of data available.}
+\item{pch}{Default = 19. Use '.' when lots of data available.}
 
 \item{...}{other parameters to be passed to plot.}
 }

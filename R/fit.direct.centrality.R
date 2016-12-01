@@ -16,17 +16,15 @@
 #' @rdname fit.direct.centrality
 #' @export
 fit.direct.centrality = function(data, algorithm, ...) {
-
-	if(algorithm == "logistic") model = glm(I ~ .*., data, family = "binomial")
-
-	else if(algorithm == "poisson") model = glm(I ~ .*., data, family = "poisson")
-
-	else if(algorithm == "RF") {
-		library(randomForest)
-		model = randomForest(I ~ .*., data, ...)
-	}
-
-	return(model)
+    
+    if (algorithm == "logistic") 
+        model = glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 
+        model = glm(I ~ . * ., data, family = "poisson") else if (algorithm == "RF") {
+        library(randomForest)
+        model = randomForest(I ~ . * ., data, ...)
+    }
+    
+    return(model)
 }
 
 

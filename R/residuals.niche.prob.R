@@ -15,8 +15,8 @@
 #' Ignasi Bartomeus and Dominique Gravel
 #'
 #' @export
-residuals.niche.prob <- function(pars,Tlevel1, Tlevel2){
-  pred <- predict.niche.prob(pars, Tlevel1, Tlevel2, replicates = 1)[[1]]
-  1-pred
+residuals.niche.prob <- function(pars, Tlevel1, Tlevel2) {
+    pred <- predict.niche.prob(pars, Tlevel1, Tlevel2, replicates = 1)[[1]]
+    1 - pred
 }
 

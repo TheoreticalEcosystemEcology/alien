@@ -17,4 +17,5 @@
 #' @name Bartomeus
 #' @usage data(Bartomeus)
 #' @format A data frame with X variables
-"Bartomeus"
+#' @export
+# 'Bartomeus'
