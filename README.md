@@ -1,4 +1,4 @@
-# alien: Inferring network interaction
+# alien: Inferring network interactions
 
 [![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alienR.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alienR)
 

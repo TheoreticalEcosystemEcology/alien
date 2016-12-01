@@ -1,1 +1,6 @@
 language: r
+cache: packages
+notifications:
+  email:
+    recipients:
+      - s.vissault@yahoo.fr
