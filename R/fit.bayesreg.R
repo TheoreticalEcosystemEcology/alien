@@ -1,20 +1,40 @@
 #' Title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
 #'
-#' @param dat A dataframe with rows, columns
-#' @param algorithm
+#' @param dat A data frame with columns named "I","J","Interactions","TraitI","TraitJ".
+#' I: The identity of the species on the upper level (eg. pollinators)
+#' J: The identity of the species on the lower level (eg. plants)
+#' Interactions: 1 (Observed) or 0 (non-detected)
 #'
+#' @param algorithm A string argument, either "Intercept" or "Poisson", see details
+#' @details
+#' Intercept Model
+#' For each pair of species i interaction with species j
+#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
+#' $$ logit(\rho_{i,j}) = \alpha_{i,j} $$
+#'
+#' With a hierarchical relationship among species i (eg. pollinators)
+#' \alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)
+#'#' Intercept Model
+#' For each pair of species i interaction with species j
+#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
+#' $$ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}$$
+#'
+#' With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
+#' \alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma
+#' \beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma
+#'
+#' Must have JAGS v 4.0 > to run. Install jags here.
 #' @return
 #' @export
 #'
 #' @examples
-fit.bayesreg<-function(dat,algorithm="Intercept"){
+fit.bayesreg<-function(dat,algorithm="Binomial"){
 
   #format traitmatch as matrix
   dat$Traitmatch<-abs(dat$TraitI-dat$TraitJ)
   Traitmatch<-acast(data=dat,I~J,value.var="Traitmatch")
 
   if(algorithm == "Intercept"){
-
 
     runs<-10000
 
@@ -66,7 +86,7 @@ fit.bayesreg<-function(dat,algorithm="Intercept"){
       Nobs<-length(Yobs)
 
       #Parameters to track
-      ParsStage <- c("alpha","beta","alpha_mu","beta_mu","ynew","fit","fitnew")
+      ParsStage <- c("alpha","beta","alpha_mu","alpha_sigma","beta_sigma","beta_mu","ynew","fit","fitnew")
 
       #MCMC options
       ni <- runs  # number of draws from the posterior
