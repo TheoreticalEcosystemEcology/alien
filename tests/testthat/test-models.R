@@ -9,6 +9,7 @@ test_that("integrated model works", {
   expect_equal(TRUE, is.numeric(out))
 })
 
+
 ## 2B done
 # test_that("niche model works", {
 #   out <- niche_model(pars = c(1,1,1,1),
