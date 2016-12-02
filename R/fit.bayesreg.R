@@ -8,6 +8,22 @@
 #' Interactions: 1 (Observed) or 0 (non-detected)
 #' @param algorithm A string argument, either "Intercept" or "Poisson", see details
 #' Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)
+#' #' @details
+#' Intercept Model
+#' For each pair of species i interaction with species j
+#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
+#' $$ logit(\rho_{i,j}) = \alpha_{i,j} $$
+#'
+#' With a hierarchical relationship among species i (eg. pollinators)
+#' $$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)$$
+#'#' Intercept Model
+#' For each pair of species i interaction with species j
+#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
+#' $$ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}$$
+#'
+#' With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
+#' $$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma$$
+#' $$\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma$$
 #' @return A jags model obect (see package R2Jags)
 #' @rdname fit.bayesreg
 #' @export
