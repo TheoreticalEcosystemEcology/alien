@@ -22,7 +22,6 @@
 #' @author
 #' Dominique Gravel and Ignasi Bartomeus
 #'
-#'
 #' @export
 plot_pred <- function(pars, Tlevel1, Tlevel2, xlab = "Trait level 2", ylab = "Trait level 1", 
     legend = TRUE, pch = 19, ...) {
@@ -44,16 +43,10 @@ plot_pred <- function(pars, Tlevel1, Tlevel2, xlab = "Trait level 2", ylab = "Tr
     
     graphics::par(mar = c(5.5, 4.1, 4.1, 5.5))  #tune up
     graphics::par(xpd = TRUE)
-    graphics::image(seqX, seqY, Z, xlab = xlab, ylab = ylab, col = heat.colors(100), 
+    graphics::image(seqX, seqY, Z, xlab = xlab, ylab = ylab, col = grDevices::heat.colors(100), 
         cex.axis = 1.25, cex.lab = 1.5, las = 1)
     graphics::points(Tlevel2, Tlevel1, pch = pch, cex = 0.5)
-    if (legend) {
-        SDMTools::legend.gradient(pnts = cbind(x = c(max(seqX) + (incrementX * 2), 
-            max(seqX) + (incrementX * 10), max(seqX) + (incrementX * 10), max(seqX) + 
-                (incrementX * 2)), y = c(max(seqY), max(seqY), min(seqY), min(seqY))), 
-            cols = grDevices::heat.colors(100), limits = c(0, 1), title = "Probability", 
-            cex = 0.8)
-    }
+    ## 2B DONE a legend
     graphics::par(mar = c(5, 1.1, 4.1, 2.1))
     graphics::par(xpd = FALSE)
 }
