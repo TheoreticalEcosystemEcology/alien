@@ -1,10 +1,11 @@
-#' Title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
 #' @name fit.bayesreg
+#' @aliases bayesian regression
+#' @author Ben Weinstein
 #' @param dat A data frame with columns named "I","J","Interactions","TraitI","TraitJ".
 #' I: The identity of the species on the upper level (eg. pollinators)
 #' J: The identity of the species on the lower level (eg. plants)
 #' Interactions: 1 (Observed) or 0 (non-detected)
-#'
+#' @title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
 #' @param algorithm A string argument, either "Intercept" or "Poisson", see details
 #' @details
 #' Intercept Model
@@ -23,9 +24,11 @@
 #' \alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma
 #' \beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma
 #'
-#' Must have JAGS v 4.0 > to run. Install jags here.
+#' Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)
 #' @return
+#' @rdname fit.bayesreg
 #' @export
+ 
 fit.bayesreg<-function(dat,algorithm="Binomial"){
 
   #format traitmatch as matrix
