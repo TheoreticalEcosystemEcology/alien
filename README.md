@@ -10,3 +10,33 @@ status](https://ci.appveyor.com/api/projects/status/sk3sbvusvcyy0at0?svg=true)](
 
 ALIEN: The aim of the package is to predict All Links In Ecological Networks
 ----------------------------------------------------------------------------
+
+Tasks
+-----
+# Methods:
+    - Direct matching centrality (DG)
+        - binomial
+        - poisson
+        - RF
+    - Indirect matching centrality (latent ~ traits) (DG)
+    - Niche binary (DG)
+    - Niche probabilistic (DG)
+    - iEat recommend (DB)
+    - iEat gap-filling   (DB)  
+    - JSDM (GB)
+    - Harris (KC)
+    - Markov logic (A.T.?)
+    - 4th corner (GB)
+    - Ben's magic (BW)
+    - Ives' phylo (GB)
+
+# Paper&Package:
+    - Outline
+    - Package (By Christmas) (SV)
+    - Script paper (February)
+        - Real data (Nacho^2)
+        - Simulations (KC)
+    - Figures
+    - Tables (MB)
+    - Writing
+    - 2nd meeting (ESA?)
