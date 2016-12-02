@@ -1,7 +1,7 @@
 Package: alienR
 Type: Package
 Title: Comparative analysis of interaction inference methods
-Version: 0.1.0
+Version: 0.0.1
 Author: person("Steve", "Vissault", role = c("aut"))
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
@@ -10,7 +10,8 @@ Suggests:
     testthat (>= 0.8.0)
 Imports:
     GenSA,
-    quantreg
+    quantreg,
+    randomForest
 License: AGPLv3
 Encoding: UTF-8
 LazyData: true
