@@ -31,3 +31,4 @@ vignettes/*.pdf
 
 ## for the makefiles
 record_updates.txt
+.Rproj.user
