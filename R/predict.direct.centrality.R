@@ -15,7 +15,7 @@
 #'
 #' @rdname predict.direct.centrality
 #' @export
-predict.direct.centrality = function(newdata, model, replicates) {
+predict.direct.centrality <- function(newdata, model, replicates) {
     
     p = predict(model, newdata, type = "response")
     

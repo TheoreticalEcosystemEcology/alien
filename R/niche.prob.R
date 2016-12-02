@@ -28,10 +28,10 @@
 #' @rdname niche.prob
 #' @export
 integrated.model = function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
-    a0 = pars[1]
-    a1 = pars[2]
-    b0 = pars[3]
-    b1 = pars[4]
+    a0 = pars[1L]
+    a1 = pars[2L]
+    b0 = pars[3L]
+    b1 = pars[4L]
     # Optimum and range
     o = a0 + a1 * Tlevel2
     r = b0 + b1 * Tlevel2
@@ -63,10 +63,10 @@ neutral.model = function(pars = NULL, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1
 }
 #' @export
 niche.model = function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
-    a0 = pars[1]
-    a1 = pars[2]
-    b0 = pars[3]
-    b1 = pars[4]
+    a0 = pars[1L]
+    a1 = pars[2L]
+    b0 = pars[3L]
+    b1 = pars[4L]
     # Optimum and range
     o = a0 + a1 * Tlevel2  #Here we can try polimonial functions
     r = b0 + b1 * Tlevel2
@@ -81,5 +81,3 @@ niche.model = function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
     pML[pML <= 0] = .Machine$double.xmin  # Control to avoid computing issues
     return(-sum(log(pML)))
 }
-
-

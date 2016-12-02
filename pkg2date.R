@@ -5,9 +5,6 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-## change working directory
-setwd(args[1])
-
 ## update README / documentation
 ndc <- 60
 decoreq <- function(nb) paste(rep("=",nb), collapse="")
@@ -19,7 +16,7 @@ decor <- function(){
 cat(decoreq(.5*ndc-2), " START ", decoreq(.5*ndc-2), "\n\n")
 
 
-if (!as.numeric(args[2])) {
+if (!as.numeric(args[1])) {
   ##
   devtools::load_all(".")
   rmarkdown::render("README.Rmd", "all", quiet=TRUE)

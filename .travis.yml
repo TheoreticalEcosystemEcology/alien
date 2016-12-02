@@ -1,11 +1,12 @@
 language: r
 cache: packages
+warnings_are_errors: false
 notifications:
   email:
     recipients:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
-      
+
 r_packages:
   - covr
 

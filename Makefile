@@ -9,7 +9,7 @@ rscr = pkg2date.R
 all: $(md) $(chk)
 
 $(md): $(rdm)
-	Rscript --no-site-file  --no-init-file $(rscr) `pwd` 0
+	Rscript --no-site-file  --no-init-file $(rscr) 0
 
 $(chk): $(rfun) $(rtes)
-	Rscript --no-site-file  --no-init-file $(rscr) `pwd` 1
+	Rscript --no-site-file  --no-init-file $(rscr) 1

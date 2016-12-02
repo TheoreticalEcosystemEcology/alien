@@ -18,17 +18,17 @@
 #'
 #' @rdname predict.niche.bin
 #' @export
-predict.niche.bin = function(models, newdata) {
+predict.niche.bin <- function(models, newdata) {
     # Check if the newdata has the right format
     
     with(newdata, {
         npairs = length(Ti)
         
         # Lower boundary
-        lo = models$model_lo[1] + models$model_lo[2] * Ti
+        lo = models$model_lo[1L] + models$model_lo[2L] * Ti
         
         # Upper boundary
-        up = models$model_up[1] + models$model_up[2] * Ti
+        up = models$model_up[1L] + models$model_up[2L] * Ti
         
         # Compute interactions among pairs of species
         L = numeric(npairs)
