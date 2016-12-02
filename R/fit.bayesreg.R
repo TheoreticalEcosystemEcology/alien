@@ -38,12 +38,6 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
 
     runs<-10000
 
-    #Source model
-    source("Bayesian/Intercept.R")
-
-    #print model
-    print.noquote(readLines("Bayesian//Intercept.R"))
-
     #for parallel run
     Yobs=dat$Interactions
     Bird=as.numeric(as.factor(dat$I))
@@ -69,12 +63,6 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
     if(algorithm=="Binomial") {
 
       runs<-10000
-
-      #Source model
-      source("Bayesian/Binomial.R")
-
-      #print model
-      print.noquote(readLines("Bayesian//Binomial.R"))
 
       #for parallel run
       Yobs=dat$Interactions
