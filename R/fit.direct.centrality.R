@@ -18,8 +18,8 @@
 fit.direct.centrality = function(data, algorithm, ...) {
     
     if (algorithm == "logistic") 
-        model = glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 
-        model = glm(I ~ . * ., data, family = "poisson") else if (algorithm == "RF") {
+        model = stats::glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 
+        model = stats::glm(I ~ . * ., data, family = "poisson") else if (algorithm == "RF") {
         model = randomForest::randomForest(I ~ . * ., data, ...)
     }
     

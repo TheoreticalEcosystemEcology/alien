@@ -18,7 +18,7 @@
 #'
 #' @rdname predict.niche.bin
 #' @export
-predict.niche.bin = function(models, newdata) {
+predict.niche.bin <- function(models, newdata) {
     # Check if the newdata has the right format
     
     with(newdata, {
