@@ -1,67 +1,29 @@
+#' @name iEat_bin
+#' @title Instance-based machine learning method to predict biotic interactions
+#' @param S0 Matrix, catalogue of empirical data used to infer predictions
+#' @param S1 Vector of taxa forming networking for which topology is predicted
+#' @param S2 Vector of taxa in S1 for which we wish to predict resources (if unspecified, S2 == S1 and the whole network is predicted)
+#' @param sourceSim Matrix (numeric), source similarity matrix between S1 taxa and the union of S0 and S1 taxa, structure sourceSim[unique(S0,S1), S1]
+#' @param targetSim Matrix (numeric), source similarity matrix between S1 taxa and the union of S0 and S1 taxa, structure sourceSim[unique(S0,S1), S1] (if unspecified, targetSim == sourceSim and no similarity distinction between resources and consumers)
+#' @param K Integer, how many neighbours for K nearest neighbour evaluation
+#' @param minSim Integer, minimum similarity value accepted to consider taxa as similar (implemented to avoid unrealistic interactions)
+#' @param minWt Integer, minimum weight for candidate source to become a predicted source
+#' @param predict String, specifies whether the predictions are made from the "full algorithm", the "catalogue" or the "predictive" contribution. If unspecified, predict == 'full algorithm'. See Beauchesne et al. (2016) for more details. If predict == 'catalogue', the methodology corresponds to the approach presented by Gray et al. (2015).
+#' @return
+#' A dataframe with source taxa for which target predictions are made, target infered from catalogue data (empirical) and target infered from KNN algorithm
+#' @author
+#' David Beauchesne
+#' @importFrom magrittr %>%
+#' @rdname iEat_bin
+#' @export
+
+
+# TODO: Stops:
+    # if all S1 and S0 not in sourceSim & targetSim rows, stop
+    # if all S2 not in sourceSim & targetSim columns, stop
+    # matrices need to be numeric
+
 iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
-
-    # Parameters:
-        # S0        Matrix, catalogue of empirical data used to infer predictions
-        # S1        Vector, list of taxa forming networking for which topology is predicted
-        # S2        Vector, list of taxa in S1 for which we wish to predict resources
-        #               (if unspecified, S2 == S1 and the whole network is predicted)
-        # sourceSim   Matrix (numeric), source similarity matrix between S1 taxa and the union of S0 and S1 taxa,
-        #               structure sourceSim[unique(S0,S1), S1]
-        # targetSim    Matrix (numeric), source similarity matrix between S1 taxa and the union of S0 and S1 taxa,
-        #               structure sourceSim[unique(S0,S1), S1] (if unspecified,
-        #               targetSim == sourceSim and no similarity distinction between resources and consumers)
-        # K         Integer, how many neighbours for K nearest neighbour evaluation
-        # minSim    Integer, minimum similarity value accepted to consider taxa as similar (implemented to
-        #               avoid unrealistic interactions)
-        # minWt     Integer, minimum weight for candidate source to become a predicted source
-        # predict   String, specifies whether the predictions are made from the "full algorithm", the "catalogue"
-        #               or the "predictive" contribution. If unspecified, predict == 'full algorithm'. See
-        #               Beauchesne et al. (2016) for more details. If predict == 'catalogue', the methodology
-        #               corresponds to the approach presented by Gray et al. (2015).
-
-    # Output:
-        # A topology matrix of structure output[S1, S2]
-
-    # TODO: Stops:
-        # if all S1 and S0 not in sourceSim & targetSim rows, stop
-        # if all S2 not in sourceSim & targetSim columns, stop
-        # matrices need to be numeric
-
-    #Embedded functions
-    KNN <- function(taxa, matSim, K, minSim) {
-        # K nearest neighbout (KNN) selection
-        library(magrittr)
-        # Most similar taxa
-        similar <- matSim[taxa, ] %>%
-                    .[!names(.) %in% i] %>% # removing i from most similar targetSim
-                    .[order(., decreasing = TRUE)] %>%
-                    {
-                        if(.[K+1] == .[K]) # if K + 1 == K, randomly sample a most similar taxa and pick K most similar taxa
-                            c(.[which(. > .[K])], .[sample(which(. == .[K]))])[1:K]
-                            else .[1:K]
-                    } %>%
-                    .[!. == 0 & . > minSim] # remove all similarities == 0 and similarities below minSim
-        return(similar)
-    }
-
-    candLink <- function(similar, candidates) {
-            # Candidate links
-            for(l in names(similar)) { # extracting source candidates
-                # if((l %in% candidates[, 'target']) == TRUE) { # if candidate is already in candidate list, add source' with wt to its weight
-                if(l %in% candidates) { # if candidate is already in candidate list, add source' with wt to its weight
-                # candidates[which(candidates[, 'target'] == l), 'weight'] <- as.numeric(candidates[which(candidates[, 'target'] == l), 'weight']) + as.numeric(similar[l])
-                  candidates[which(candidates %in% l), 'weight'] <- as.numeric(candidates[which(candidates %in% l), 'weight']) + similar[l]
-                } else {
-                      candidates <- rbind(candidates, c(l,similar[l])) # if candidate is not in the list, add it source' with wt to its weight
-                }
-            }
-        return(candidates)
-    }
-
-    # Code
-    library(magrittr)
-
-    # Algorithm
     # Empty matrix created to store algorithm predictions
     predictions <- data.frame(source = S1,
                                 target_catalogue = character(length(S1)),
@@ -121,19 +83,32 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
         } #i
     }#if
     return(predictions)
-}#iEat
 
-# Simulated data for testing
-S0 <- paste0('Taxon_',1:100) %>%
-        data.frame(taxon = .,
-            source = replicate(n = length(.), expr = paste(sample(., round(runif(1,1,8))), collapse = ' | ')),
-            source = replicate(n = length(.), expr = paste(sample(., round(runif(1,1,8))), collapse = ' | ')),
-            row.names = .,
-            stringsAsFactors = FALSE)
-S1 <- as.character(sample(S0[,'taxon'], 10))
-S2 <- S1
-predict = 'full algorithm'
-K = 5
-minSim = 0.3
-minWt = 1
-sourceSim <- targetSim <- matrix(nrow = nrow(S0), ncol = length(S1), data = runif(nrow(S0) * length(S1), min = 0, max = 1), dimnames = list(S0[,'taxon'],S1))
+    #Embedded functions
+    KNN <- function(taxa, matSim, K, minSim) {
+        # K nearest neighbout (KNN) selection
+        # Most similar taxa
+        similar <- matSim[taxa, ] %>%
+                    .[!names(.) %in% i] %>% # removing i from most similar targetSim
+                    .[order(., decreasing = TRUE)] %>%
+                    {
+                        if(.[K+1] == .[K]) # if K + 1 == K, randomly sample a most similar taxa and pick K most similar taxa
+                            c(.[which(. > .[K])], .[sample(which(. == .[K]))])[1:K]
+                            else .[1:K]
+                    } %>%
+                    .[!. == 0 & . > minSim] # remove all similarities == 0 and similarities below minSim
+        return(similar)
+    }
+
+    candLink <- function(similar, candidates) {
+            # Candidate links
+            for(l in names(similar)) { # extracting source candidates
+                if(l %in% candidates) { # if candidate is already in candidate list, add source' with wt to its weight
+                  candidates[which(candidates %in% l), 'weight'] <- as.numeric(candidates[which(candidates %in% l), 'weight']) + similar[l]
+                } else {
+                      candidates <- rbind(candidates, c(l,similar[l])) # if candidate is not in the list, add it source' with wt to its weight
+                }
+            }
+        return(candidates)
+    }
+}#iEat
