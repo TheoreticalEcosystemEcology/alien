@@ -30,4 +30,4 @@ vignettes/*.pdf
 .DS_Store
 
 ## for the makefiles
-record*
+record_updates.txt
