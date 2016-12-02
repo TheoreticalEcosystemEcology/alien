@@ -13,7 +13,7 @@ ALIEN: The aim of the package is to predict All Links In Ecological Networks
 
 Tasks
 -----
-# Methods:
+    Methods:
     - Direct matching centrality (DG)
         - binomial
         - poisson
@@ -30,17 +30,4 @@ Tasks
     - Ben's magic (BW)
     - Ives' phylo (GB)
 
-# Paper&Package:
-    - Outline
-    - Package (By Christmas) (SV)
-    - Script paper (February)
-        - Real data (Nacho^2)
-        - Simulations (KC)
-    - Figures
-    - Tables (MB)
-    - Writing
-    - 2nd meeting (ESA?)
-<<<<<<< HEAD
-    
-=======
->>>>>>> master
+    # Package ready by Christmas
