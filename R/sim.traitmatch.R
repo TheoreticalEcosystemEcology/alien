@@ -51,7 +51,7 @@ sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.4,
         for (y in 1:size_y) {
             
             # intensity
-            N[x, y] <- inv.logit(alpha[x] + beta1[x] * traitmatch[x, y])
+            N[x, y] <- boot::inv.logit(alpha[x] + beta1[x] * traitmatch[x, y])
             
             # draw one state
             obs[x, y] <- rbinom(1, 1, N[x, y])
@@ -64,7 +64,7 @@ sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.4,
     ty <- data.frame(J = 1:length(traits_y), TraitJ = traits_y)
     
     # view trait matching
-    dat <- melt(obs)
+    dat <- reshape2::melt(obs)
     colnames(dat) <- c("I", "J", "Interactions")
     
     dat <- merge(dat, tx)
