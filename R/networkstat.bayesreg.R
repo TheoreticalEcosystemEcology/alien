@@ -6,26 +6,26 @@
 #'
 #' @return A data frame with the desired metrics for each of the draws of the network.
 #' @export
-network.bayesreg<-function(x,indices){
-  
-  #helper function for web prediction
-  makeN<-function(a,indices){
+network.bayesreg <- function(x, indices) {
     
-    #draw an observed state
-    a$state<-sapply(a$value,function(w) rbinom(1,1,prob=w))
+    # helper function for web prediction
+    makeN <- function(a, indices) {
+        
+        # draw an observed state
+        a$state <- sapply(a$value, function(w) rbinom(1, 1, prob = w))
+        
+        # cast into I by J matrix
+        predweb <- reshape2::acast(data = a, I ~ J, value.var = "state")
+        
+        # calculate network statistic
+        nstat <- bipartite::networklevel(predweb, indices)
+        data.frame(Metric = names(nstat), nstat)
+    }
     
-    #cast into I by J matrix
-    predweb<-reshape2::acast(data=a,I~J,value.var="state")
+    # calculate network stats for each model
+    nstats <- x %>% group_by(Draw, Chain) %>% do(makeN(., indices))
     
-    #calculate network statistic
-    nstat<-bipartite::networklevel(predweb,indices)
-    data.frame(Metric=names(nstat),nstat)
-  }
-  
-  #calculate network stats for each model
-  nstats<-x %>% group_by(Draw,Chain) %>% do(makeN(.,indices))
- 
-  return(nstats)
- }
+    return(nstats)
+}
 
 

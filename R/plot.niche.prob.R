@@ -27,19 +27,19 @@ plot_pred <- function(pars, Tlevel1, Tlevel2, xlab = "Trait level 2", ylab = "Tr
     legend = TRUE, pch = 19, ...) {
     incrementX <- (max(Tlevel2) - min(Tlevel2))/100
     incrementY <- (max(Tlevel1) - min(Tlevel1))/100
-    seqX = seq(min(Tlevel2), max(Tlevel2), incrementX)
-    seqY = seq(min(Tlevel1), max(Tlevel1), incrementY)
+    seqX <- seq(min(Tlevel2), max(Tlevel2), incrementX)
+    seqY <- seq(min(Tlevel1), max(Tlevel1), incrementY)
     
-    XY = expand.grid(seqX, seqY)
+    XY <- expand.grid(seqX, seqY)
     
     # Optimum and range
-    o = pars[1] + pars[2] * XY[, 1]
-    r = pars[3] + pars[4] * XY[, 1]
+    o <- pars[1] + pars[2] * XY[, 1]
+    r <- pars[3] + pars[4] * XY[, 1]
     
     # Compute the conditional
-    pLM = exp(-(o - XY[, 2])^2/2/r^2)
+    pLM <- exp(-(o - XY[, 2])^2/2/r^2)
     
-    Z = matrix(pLM, nrow = length(seqX), ncol = length(seqY))
+    Z <- matrix(pLM, nrow = length(seqX), ncol = length(seqY))
     
     graphics::par(mar = c(5.5, 4.1, 4.1, 5.5))  #tune up
     graphics::par(xpd = TRUE)

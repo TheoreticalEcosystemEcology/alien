@@ -12,7 +12,7 @@
 \arguments{
 \item{x}{A JAGS model file return from fit.bayesreg}
 
-\item{newdata}{A data frame with columns "I","J" and "Traitmatch"}
+\item{newdata}{A data frame with columns 'I','J' and 'Traitmatch'}
 }
 \value{
 A vector of probability of interaction values.

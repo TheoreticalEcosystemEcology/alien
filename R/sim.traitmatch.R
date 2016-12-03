@@ -23,7 +23,7 @@
 #' @export
 
 sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1, 
-    alpha_sigma = 0,replicates=1) {
+    alpha_sigma = 0, replicates = 1) {
     
     # Subtract both and take absolute value, convert cm
     traitmatch <- abs(sapply(traits_y, function(x) x - traits_x))
@@ -39,21 +39,22 @@ sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1,
     alpha <- rnorm(size_x, alpha_mu, alpha_sigma)
     
     # for each species loop through and create a replicate dataframe
-    obs <- array(dim = c(size_x, size_y,replicates))
-    N <- array(dim = c(size_x, size_y,replicates))
+    obs <- array(dim = c(size_x, size_y, replicates))
+    N <- array(dim = c(size_x, size_y, replicates))
     
     # create intensities
-    for (z in 1:replicates){
-    for (x in 1:size_x) {
-        for (y in 1:size_y) {
-            
-            # intensity
-            N[x,y,z] <- boot::inv.logit(alpha[x] + beta1[x] * traitmatch[x, y])
-            
-            # draw one state
-            obs[x,y,z] <- rbinom(1, 1, N[x,y,z])
+    for (z in 1:replicates) {
+        for (x in 1:size_x) {
+            for (y in 1:size_y) {
+                
+                # intensity
+                N[x, y, z] <- boot::inv.logit(alpha[x] + beta1[x] * traitmatch[x, 
+                  y])
+                
+                # draw one state
+                obs[x, y, z] <- rbinom(1, 1, N[x, y, z])
+            }
         }
-      }
     }
     
     # Create trait frame
@@ -62,7 +63,7 @@ sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1,
     
     # view trait matching
     dat <- reshape2::melt(obs)
-    colnames(dat) <- c("I", "J","Replicate","Interactions")
+    colnames(dat) <- c("I", "J", "Replicate", "Interactions")
     
     dat <- merge(dat, tx)
     dat <- merge(dat, ty)

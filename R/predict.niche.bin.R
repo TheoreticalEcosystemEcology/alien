@@ -22,17 +22,17 @@ predict.niche.bin <- function(models, newdata) {
     # Check if the newdata has the right format
     
     with(newdata, {
-        npairs = length(Ti)
+        npairs <- length(Ti)
         
         # Lower boundary
-        lo = models$model_lo[1L] + models$model_lo[2L] * Ti
+        lo <- models$model_lo[1L] + models$model_lo[2L] * Ti
         
         # Upper boundary
-        up = models$model_up[1L] + models$model_up[2L] * Ti
+        up <- models$model_up[1L] + models$model_up[2L] * Ti
         
         # Compute interactions among pairs of species
-        L = numeric(npairs)
-        L[Tj > lo & Tj < up] = 1
+        L <- numeric(npairs)
+        L[Tj > lo & Tj < up] <- 1
         
     })
     return(list(L = L))

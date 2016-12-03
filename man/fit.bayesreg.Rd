@@ -9,12 +9,12 @@
 fit.bayesreg(dat, algorithm = "Binomial", draws = 10000)
 }
 \arguments{
-\item{dat}{A data frame with columns named "I","J","Interactions","TraitI","TraitJ".
+\item{dat}{A data frame with columns named 'I','J','Interactions','TraitI','TraitJ'.
 I: The identity of the species on the upper level (eg. pollinators)
 J: The identity of the species on the lower level (eg. plants)
 Interactions: 1 (Observed) or 0 (non-detected)}
 
-\item{algorithm}{A string argument, either "Intercept" or "Poisson", see details
+\item{algorithm}{A string argument, either 'Intercept' or 'Poisson', see details
 Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)}
 
 \item{draws}{The number of MCMC draws to run before taking 100 samples from the posterior distribution}

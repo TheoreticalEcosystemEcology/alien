@@ -35,7 +35,7 @@ fit_it <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1, pars = c(a
     # lm(Tlevel1 ~ Tlevel2) pars = c(a0 = lm_M$coefficients[1],a1 =
     # lm_M$coefficients[2],b0 = sd(lm_M$residuals),b1 = 0) #another option Maximum
     # likelihood estimation
-    estim.pars = GenSA::GenSA(par = pars, fn = model, lower = par_lo, upper = par_hi, 
+    estim.pars <- GenSA::GenSA(par = pars, fn = model, lower = par_lo, upper = par_hi, 
         control = list(verbose = TRUE, max.time = max.time, smooth = FALSE), Tlevel1 = Tlevel1, 
         Tlevel2 = Tlevel2, mean_Tlevel1 = mean_Tlevel1, sd_Tlevel1 = sd_Tlevel1)
     estim.pars$par
