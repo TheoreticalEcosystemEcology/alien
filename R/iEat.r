@@ -24,6 +24,34 @@
     # matrices need to be numeric
 
 iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+    #Embedded functions
+    KNN <- function(taxa, matSim, K, minSim) {
+        # K nearest neighbout (KNN) majority vote selection to identify most similar taxa
+        similar <- matSim[taxa, ] %>%
+                    .[!names(.) %in% i] %>% # removing i from most similar targetSim
+                    .[order(., decreasing = TRUE)] %>%
+                    {
+                        if(.[K+1] == .[K]) # if K + 1 == K, randomly sample a most similar taxa and pick K most similar taxa
+                            c(.[which(. > .[K])], .[sample(which(. == .[K]))])[1:K]
+                            else .[1:K]
+                    } %>%
+                    .[!. == 0 & . > minSim] # remove all similarities == 0 and similarities below minSim
+        return(similar)
+    }
+
+    candLink <- function(similar, candidates) {
+            # Candidate links
+            for(l in names(similar)) { # extracting source candidates
+                if(l %in% candidates) { # if candidate is already in candidate list, add source' with wt to its weight
+                  candidates[which(candidates %in% l), 'weight'] <- as.numeric(candidates[which(candidates %in% l), 'weight']) + similar[l]
+                } else {
+                      candidates <- rbind(candidates, c(l,similar[l])) # if candidate is not in the list, add it source' with wt to its weight
+                }
+            }
+        return(candidates)
+    }
+
+    # Algorithm
     # Empty matrix created to store algorithm predictions
     predictions <- data.frame(source = S1,
                                 target_catalogue = character(length(S1)),
@@ -78,37 +106,13 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
                 }#j
             }#if
 
-            candidates <- candidates %>% .[which(.[, 'weight'] >= minWt), ] # remove candidates with a weight below MW
-            predictions[i, 'target_predictive'] <- paste(candidates[,'target'], collapse = ' | ')
+            predictions[i, 'target_predictive'] <- candidates %>%
+                                                        .[which(.[, 'weight'] >= 0.5), 'target'] %>%
+                                                        paste(., collapse = ' | ')
+
+            # candidates <- candidates %>% .[which(.[, 'weight'] >= minWt), ] # remove candidates with a weight below MW
+            # predictions[i, 'target_predictive'] <- paste(candidates[,'target'], collapse = ' | ')
         } #i
     }#if
     return(predictions)
-
-    #Embedded functions
-    KNN <- function(taxa, matSim, K, minSim) {
-        # K nearest neighbout (KNN) selection
-        # Most similar taxa
-        similar <- matSim[taxa, ] %>%
-                    .[!names(.) %in% i] %>% # removing i from most similar targetSim
-                    .[order(., decreasing = TRUE)] %>%
-                    {
-                        if(.[K+1] == .[K]) # if K + 1 == K, randomly sample a most similar taxa and pick K most similar taxa
-                            c(.[which(. > .[K])], .[sample(which(. == .[K]))])[1:K]
-                            else .[1:K]
-                    } %>%
-                    .[!. == 0 & . > minSim] # remove all similarities == 0 and similarities below minSim
-        return(similar)
-    }
-
-    candLink <- function(similar, candidates) {
-            # Candidate links
-            for(l in names(similar)) { # extracting source candidates
-                if(l %in% candidates) { # if candidate is already in candidate list, add source' with wt to its weight
-                  candidates[which(candidates %in% l), 'weight'] <- as.numeric(candidates[which(candidates %in% l), 'weight']) + similar[l]
-                } else {
-                      candidates <- rbind(candidates, c(l,similar[l])) # if candidate is not in the list, add it source' with wt to its weight
-                }
-            }
-        return(candidates)
-    }
 }#iEat
