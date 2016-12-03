@@ -2,20 +2,35 @@ Package: alienR
 Type: Package
 Title: Comparative analysis of interaction inference methods
 Version: 0.0.1
-Author: person("Steve", "Vissault", role = c("aut"))
-Maintainer: The package maintainer <yourself@somewhere.net>
+Date: 2016-12-03
+Author:
+  person("Ignasi", "Bartomeus", role = c("aut")),
+  person("Kevin", "Cazelles", role = c("aut")),
+  person("David", "Beauchesne", role = c("aut")),
+  person("Guillaume", "Blanchet", role = c("aut")),
+  person("Dominique", "Gravel", role = c("aut")),
+  person("Timothée", "Poisot", role = c("aut")),
+  person("Steve", "Vissault", role = c("aut")),
+  person("Ben", "Weinstein", role = c("aut")),
+Maintainer: Steve Vissault <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 Suggests:
     testthat (>= 0.8.0)
 Imports:
     GenSA,
-    quantreg,
-    randomForest,
     graphics,
     grDevices,
-    stats
+    quantreg,
+    magrittr,
+    randomForest,
+    R2jags (>= 0.5.7),
+    stats,
+SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
+NeedsCompilation: no
 License: MIT
+BugReports: https://github.com/TheoreticalEcosystemEcology/alienR/issues
 Encoding: UTF-8
 LazyData: true
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1

@@ -4,7 +4,7 @@
 #' @title Extract posterior distributions from Bayesian Regression Model
 #'
 #' @description A helper function for getting the chains from a JAGS model object outputted from fit.bayesreg
-#' @param x
+#' @param x 2bedone
 #' @author
 #' Ben Weinstein
 #'

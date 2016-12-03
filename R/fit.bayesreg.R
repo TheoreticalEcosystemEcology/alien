@@ -24,9 +24,6 @@
 #' With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
 #' $$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma$$
 #' $$\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma$$
-#' @example 
-#' simdat<-sim.traitmatch(10,10,rpois(10,30),rpois(10,20))
-#' 
 #' @return A jags model obect (see package R2Jags)
 #' @rdname fit.bayesreg
 #' @export
@@ -103,4 +100,3 @@ fit.bayesreg <- function(dat, algorithm = "Binomial") {
     m1$Algorithm <- algorithm
     return(m1)
 }
-
