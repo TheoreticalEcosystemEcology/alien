@@ -1,10 +1,7 @@
 
 sink("Bayesian/Poisson.jags")
 
-cat("C
-    B<-Birds
-    P<-PlantsC
-    
+cat("
     model {
 
     #Compute intensity for each pair of birds and plants

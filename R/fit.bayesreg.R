@@ -8,7 +8,7 @@
 #' Interactions: 1 (Observed) or 0 (non-detected)
 #' @param algorithm A string argument, either "Intercept" or "Poisson", see details
 #' Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)
-#' @param draws The number of MCMC draws to run before taking 500 samples from the posterior distribution
+#' @param draws The number of MCMC draws to run before taking 100 samples from the posterior distribution
 #' @details
 #' Intercept Model
 #' For each pair of species i interaction with species j
@@ -55,7 +55,7 @@ fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
   #MCMC options
   ni <- runs  # number of draws from the posterior
   nt <- 1  #thinning rate
-  nb <- max(0,runs-500) # number to discard for burn-in
+  nb <- max(0,runs-100) # number to discard for burn-in
   nc <- 2  # number of chains
   
   modelDat<-list("Yobs","Bird","Plant","Plants","Birds","Nobs")
@@ -67,7 +67,7 @@ fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
     
     #file path, needs to uncheck when building the package
     #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Intercept.jags",sep="")
-    modfile<-"R/Bayesian/Intercept.jags"
+    modfile<-"Intercept.jags"
     
     m1<-do.call(R2jags::jags.parallel,list(data=modelDat,model.file=modfile,parameters.to.save=ParsStage,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
   } else
@@ -81,7 +81,7 @@ fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
 
       #jags file.
       #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Binomial.jags",sep="")
-      modfile<-"R/Bayesian/Binomial.jags"
+      modfile<-"Binomial.jags"
       
       m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
     }
@@ -93,7 +93,7 @@ fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
     
     #jags file.
     #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Poisson.jags",sep="")
-    modfile<-"R/Bayesian/Poisson.jags"
+    modfile<-"Poisson.jags"
     m1<-do.call(R2jags::jags.parallel(list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F)))
   }
   
@@ -104,7 +104,7 @@ fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
     
     #jags file.
     modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Multinomial.jags",sep="")
-    modfile<-"R/Bayesian/Multinomial.jags"
+    modfile<-"Multinomial.jags"
     
     m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
   }

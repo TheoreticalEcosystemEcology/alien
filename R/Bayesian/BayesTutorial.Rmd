@@ -11,6 +11,9 @@ A short tutorial explaining the different options for fitting hierarchical bayes
 ```{r}
 library(alienR)
 library(ggplot2)
+
+#source scripts because I can't seem to understand how roxygen generates functions to the package! To delete once we understand how paths are handled in package creation
+sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names = T),source)
 ```
 
 # Simulate data
@@ -38,30 +41,33 @@ Get the matrix of probability of interactions among observed species. Since this
 
 ```{r}
 predframe<-predict.bayesreg(intercept)
+
+#summarize mean, lower 5th and upper 9th
+sumframe<-predframe %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95))
 ```
 
 ##View interactions
 ```{r}
-ggplot(predframe,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 But wait, there's more! Since we fit the model using MCMC, we have built in estimates in the uncertainty in species interactions.
 
 Upper 95th estimate
 ```{r}
-ggplot(predframe,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 Lower 5th estimate
 ```{r}
-ggplot(predframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
-Perhaps easier to see for an individual node. For the sake of plotting, let's just look at species B on the upper level (I=="b")
+If we want the distributions, instead of a summary we can plot the posterior predictions directly. For the sake of plotting, lets look at just one node.
 
 ```{r}
 justB<-predframe %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J)) + geom_pointrange(aes(ymin=lower,y=mean,ymax=upper)) + labs(y="Probability of interaction") + ggtitle("Interaction Probabilities for Species B in the higher level")
+ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
 # Binomial Model
@@ -76,34 +82,55 @@ Just as before, we can get the predicted matrix based on the model fit.
 
 ```{r}
 predframe2<-predict.bayesreg(binomial)
+
+#summarize mean, lower 5th and upper 9th
+sumframe<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 ```
 
 ##View interactions
 ```{r}
-ggplot(predframe2,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
-
-But wait, there's more! Since we fit the model using MCMC, we have built in estimates in the uncertainty in species interactions.
 
 Upper 95th estimate
 ```{r}
-ggplot(predframe2,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 Lower 5th estimate
 ```{r}
-ggplot(predframe2,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
-Perhaps easier to see for an individual node. For the sake of plotting, let's just look at species B on the upper level (I=="b")
+Create the same boxplot as in the intercept model
 
 ```{r}
 justB<-predframe2 %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J)) + geom_pointrange(aes(ymin=lower,y=mean,ymax=upper)) + labs(y="Probability of interaction") + ggtitle("Interaction Probabilities for Species B in the higher level")
+ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
 Notice that as we added information the confidence intervals greatly decreased.
 
-### View trait-matching function
+## View trait-matching function
 
 ```{r}
+ggplot(sumframe,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
+```
+
+# Generate networks and statistics
+
+One of the virtues of having a posterior distribution of interaction probabilities is that we can attach uncertainty to our predicted networks. By taking a binomial draw for each of our predicted interactions, we generate a binary network. From that binary network we can calculate our desired network statistics.
+
+```{r}
+intercept_stats<-network.bayesreg(predframe,indices=c("nestedness","connectance"))
+intercept_stats$Model<-"Intercept"
+binomial_stats<-network.bayesreg(predframe2,indices=c("nestedness","connectance"))
+binomial_stats$Model<-"Binomial"
+
+allstats<-rbind_all(list(intercept_stats,binomial_stats))
+
+#plot distribution fo variables
+ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_wrap(~Metric,scales='free',nrow=1) + theme_bw()  + labs(x="value")
+```
+
+Same data, different model, different network statistics! Models matter.

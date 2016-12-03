@@ -43,7 +43,7 @@ predict.bayesreg<-function(x,newdata=NULL){
     alphas$J<-as.numeric(stringr::str_match(alphas$parameter,pattern="\\[(\\d+),(\\d+)]")[,3])
     
     #return matrix as probability
-    df<-alphas %>% group_by(I,J) %>% mutate(value=boot::inv.logit(estimate)) %>% summarize(mean=mean(value),upper=quantile(value,0.95),lower=quantile(value,0.05))  
+    df<-alphas %>% group_by(I,J) %>% mutate(value=boot::inv.logit(estimate)) %>% select(I,J,value)  
     
     #merge with input data
     df$I<-levels(factor(dat$I))[df$I]
@@ -60,7 +60,7 @@ predict.bayesreg<-function(x,newdata=NULL){
     predfun<-function(alpha,beta,newdata){
       data.frame(newdata,value=boot::inv.logit(alpha + beta * newdata[["Traitmatch"]])
       )}
-    df<-parsm1 %>% filter(par %in% c("alpha_mu","beta_mu")) %>% select(Draw,Chain,par,estimate) %>% reshape2::dcast(.,Draw + Chain ~ par,value.var="estimate") %>% group_by(Draw,Chain)%>%  do((predfun(alpha=.$alpha_mu,beta=.$beta_mu,newdata))) %>% group_by(I,J) %>% summarize(mean=mean(value),upper=quantile(value,0.95),lower=quantile(value,0.05)) %>% inner_join(newdata) 
+    df<-parsm1 %>% filter(par %in% c("alpha_mu","beta_mu")) %>% select(Draw,Chain,par,estimate) %>% reshape2::dcast(.,Draw + Chain ~ par,value.var="estimate") %>% group_by(Draw,Chain)%>%  do((predfun(alpha=.$alpha_mu,beta=.$beta_mu,newdata))) %>% group_by(I,J) %>% inner_join(newdata) 
   }
 
   return(df)  
