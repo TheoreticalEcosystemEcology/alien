@@ -1,5 +1,5 @@
 ---
-title: "Bayesian Models"
+title: "Bayesian Models in Species Interactions"
 author: "Ben Weinstein"
 date: "December 2, 2016"
 output: html_document
@@ -7,5 +7,103 @@ output: html_document
 
 #Aim
 A short tutorial explaining the different options for fitting hierarchical bayesian models for species interactions using the package alienR
+
+```{r}
+library(alienR)
+library(ggplot2)
+```
+
+# Simulate data
+
+For this example, let's similiar some interaction data on trait-matching among species
+
+```{r}
+dat<-sim.traitmatch(size_x = 10,size_y = 20,traits_x = rpois(10,7),traits_y = rpois(20,10),alpha_sigma = 3,replicates=3)
+```
+
+We can view the trait-matching in this simulated dataset
+
+```{r}
+ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smooth(method="glm",method.args=list(family="binomial")) + ggtitle("Pairwise Trait-matching") + labs(y="Prob. of Interaction")
+```
+
+#Intercept Model
+We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
+
+```{r}
+intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept")
+```
+
+Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
+
+```{r}
+predframe<-predict.bayesreg(intercept)
+```
+
+##View interactions
+```{r}
+ggplot(predframe,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+But wait, there's more! Since we fit the model using MCMC, we have built in estimates in the uncertainty in species interactions.
+
+Upper 95th estimate
+```{r}
+ggplot(predframe,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+Lower 5th estimate
+```{r}
+ggplot(predframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+Perhaps easier to see for an individual node. For the sake of plotting, let's just look at species B on the upper level (I=="b")
+
+```{r}
+justB<-predframe %>% filter(I=="b") 
+ggplot(data=justB,aes(x=J)) + geom_pointrange(aes(ymin=lower,y=mean,ymax=upper)) + labs(y="Probability of interaction") + ggtitle("Interaction Probabilities for Species B in the higher level")
+```
+
+# Binomial Model
+
+An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
+
+```{r}
+binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial")
+```
+
+Just as before, we can get the predicted matrix based on the model fit.
+
+```{r}
+predframe2<-predict.bayesreg(binomial)
+```
+
+##View interactions
+```{r}
+ggplot(predframe2,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+But wait, there's more! Since we fit the model using MCMC, we have built in estimates in the uncertainty in species interactions.
+
+Upper 95th estimate
+```{r}
+ggplot(predframe2,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+Lower 5th estimate
+```{r}
+ggplot(predframe2,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+Perhaps easier to see for an individual node. For the sake of plotting, let's just look at species B on the upper level (I=="b")
+
+```{r}
+justB<-predframe2 %>% filter(I=="b") 
+ggplot(data=justB,aes(x=J)) + geom_pointrange(aes(ymin=lower,y=mean,ymax=upper)) + labs(y="Probability of interaction") + ggtitle("Interaction Probabilities for Species B in the higher level")
+```
+
+Notice that as we added information the confidence intervals greatly decreased.
+
+### View trait-matching function
 
 ```{r}

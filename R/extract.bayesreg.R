@@ -12,11 +12,11 @@
 #' Bartomeus et al. 2016. Functional Ecology.
 #'
 #'
-#' @rdname sim.traitmatch
+#' @rdname extract.bayesreg
 #' @export
 
-extract_par<-function(x){
-  parsO<-melt(x$BUGSoutput$sims.array)
+extract.bayesreg<-function(x){
+  parsO<-reshape2::melt(x$BUGSoutput$sims.array)
   colnames(parsO)<-c("Draw","Chain","parameter","estimate")
   
   #label species and plants
@@ -26,7 +26,7 @@ extract_par<-function(x){
   totrack<- x$parameters.to.save
   
   #assign species index to ragged frame.
-  sp_pl<-data.frame(parameter=l,Index=as.numeric(str_match(l,pattern="\\[(\\d+)]")[,2]),par=str_extract(l,"\\w+"))
+  sp_pl<-data.frame(parameter=l,Index=as.numeric(stringr::str_match(l,pattern="\\[(\\d+)]")[,2]),par=stringr::str_extract(l,"\\w+"))
   
   #merge levels
   pars<-merge(parsO,sp_pl)

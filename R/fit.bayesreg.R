@@ -8,7 +8,8 @@
 #' Interactions: 1 (Observed) or 0 (non-detected)
 #' @param algorithm A string argument, either "Intercept" or "Poisson", see details
 #' Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)
-#' #' @details
+#' @param draws The number of MCMC draws to run before taking 500 samples from the posterior distribution
+#' @details
 #' Intercept Model
 #' For each pair of species i interaction with species j
 #' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
@@ -30,13 +31,17 @@
 #' @return A jags model obect (see package R2Jags)
 #' @rdname fit.bayesreg
 #' @export
-fit.bayesreg<-function(dat,algorithm="Binomial"){
+fit.bayesreg<-function(dat,algorithm="Binomial",draws=10000){
+  
+  #call R2jags, seems not work just namespace ::
+  library(R2jags)
   
   #format traitmatch as matrix
   dat$Traitmatch<-abs(dat$TraitI-dat$TraitJ)
-  Traitmatch<-reshape2::acast(data=dat,I~J,value.var="Traitmatch")
+  Traitmatch<-reshape2::acast(data=dat,I~J,value.var="Traitmatch",fun=mean)
 
-  runs<-10000
+  #legacy name change.
+  runs<-draws
   
   #for parallel run
   Yobs=dat$Interactions
@@ -62,19 +67,21 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
     
     #file path, needs to uncheck when building the package
     #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Intercept.jags",sep="")
-    modfile<-"Bayesian/Intercept.jags"
+    modfile<-"R/Bayesian/Intercept.jags"
     
     m1<-do.call(R2jags::jags.parallel,list(data=modelDat,model.file=modfile,parameters.to.save=ParsStage,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
   } else
     
     if(algorithm=="Binomial") {
       
+      modelDat<-list("Yobs","Bird","Plant","Plants","Birds","Nobs","Traitmatch")
+      
       #Parameters to track
       ParsStage <- c("alpha","beta","alpha_mu","alpha_sigma","beta_sigma","beta_mu","ynew","fit","fitnew")
 
       #jags file.
       #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Binomial.jags",sep="")
-      modfile<-"Bayesian/Binomial.jags"
+      modfile<-"R/Bayesian/Binomial.jags"
       
       m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
     }
@@ -86,8 +93,8 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
     
     #jags file.
     #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Poisson.jags",sep="")
-    modfile<-"Bayesian/Poisson.jags"
-    m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
+    modfile<-"R/Bayesian/Poisson.jags"
+    m1<-do.call(R2jags::jags.parallel(list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F)))
   }
   
   if(algorithm=="Multinomial") {
@@ -97,12 +104,15 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
     
     #jags file.
     modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Multinomial.jags",sep="")
-    modfile<-"Bayesian/Multinomial.jags"
+    modfile<-"R/Bayesian/Multinomial.jags"
     
     m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
   }
   
+  #Append the algorith and dataset, it will be helpful for later
   m1$Algorithm<-algorithm
+  m1$data<-dat
+  
   return(m1)
 }
 
