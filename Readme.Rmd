@@ -84,5 +84,5 @@ make
 
 ## Contribute to this package
 
-```{r child = 'CONTRIBUTING'}
+```{r child = 'CONTRIBUTION'}
 ```
