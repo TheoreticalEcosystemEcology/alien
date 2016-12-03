@@ -11,9 +11,11 @@ A short tutorial explaining the different options for fitting hierarchical bayes
 ```{r}
 library(alienR)
 library(ggplot2)
+library(knitr)
+opts_chunk$set(warning=F,message=F)
 
 #source scripts because I can't seem to understand how roxygen generates functions to the package! To delete once we understand how paths are handled in package creation
-sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names = T),source)
+s<-sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names = T),source)
 ```
 
 # Simulate data
