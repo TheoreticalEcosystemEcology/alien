@@ -12,8 +12,8 @@ Author:
   person("Timothée", "Poisot", role = c("aut")),
   person("Steve", "Vissault", role = c("aut")),
   person("Ben", "Weinstein", role = c("aut")),
-Maintainer: Steve Vissault <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Maintainer: Steve Vissault <steve.vissault@usherbrooke.ca>
+Description: Comparative analysis of interaction inference methods
     Use four spaces when indenting paragraphs within the Description.
 Suggests:
     testthat (>= 0.8.0)
@@ -21,8 +21,8 @@ Imports:
     GenSA,
     graphics,
     grDevices,
-    quantreg,
     magrittr,
+    quantreg,
     randomForest,
     R2jags,
     stats,

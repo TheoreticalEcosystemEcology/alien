@@ -14,13 +14,13 @@ ALIEN: The aim of the package is to predict All Links In Ecological Networks
 Incoming content
 ----------------
 
-### Methods
+### Methods implemented
 
 -   Direct matching centrality (DG)
     -   binomial
     -   poisson
     -   RF
--   Indirect matching centrality (latent \~ traits) (DG)
+-   Indirect matching centrality (latent ~ traits) (DG)
 -   Niche binary (DG)
 -   Niche probabilistic (DG)
 -   iEat recommend (DB)
@@ -42,7 +42,7 @@ To build the metadata files (i.e. README, NAMESPACE, DESCRIPTION):
 
     ## Install packages
     pkgs = c('devtools','roxygen2','testthat','formatR','rmarkdown')
-    for(pkg in pkgs) if(!require(pkg))
+    for(pkg in pkgs) if(!require(pkg)) install.packages(pkg)
 
     ## Make sure you're working directory is set up correctly
     getwd()
@@ -63,9 +63,10 @@ To build the metadata files (i.e. README, NAMESPACE, DESCRIPTION):
     ## Testing the code with testthat package
     devtools::test()
 
-### Only for the developers on Mac OSX and linux
+### For developers on MacOS and Linux only
 
-All of the previous steps can be done with:
+All the steps described above are embedded in R script and integrated in
+a makefile:
 
     cd path/to/alienR
     make
@@ -87,7 +88,7 @@ Contribute to this package
     it should be a sentence. A good commit message is:
     `add informations about development practices`. A bad commit message
     is `CONTRIBUTING changes`
--   if the branching complexity of your function is \> 3 (number of
+-   if the branching complexity of your function is &gt; 3 (number of
     nested for / if / while), rewrite
 
 ### Styleguide
@@ -96,18 +97,17 @@ Contribute to this package
     `SimulatesNicheModel`.
 -   objects are declared with lowercase, underscores and small caps,
     *e.g.* `trophic_level`
--   `<-` is used for assignment
--   default values in function declarations have spaces around the `=`
-    (*e.g.* `arg = var`)
 -   namespaces with `::` (e.g `reshape2::acast`)
--   Packages dependancies are declared in the `DESCRIPTION` (import
-    section)
+-   Packages dependancies are declared in the `DESCRIPTION`
+    (import section)
 -   all `roxygen2` flags (e.g. @param etc.) are to be set up.
 -   R extension file has to be written in capital letter (e.g
     `fitBayesReg.R`)
 
-Have a look at
-[<http://adv-r.had.co.nz/Style.html>](http://adv-r.had.co.nz/Style.html)
+Have a look at <http://adv-r.had.co.nz/Style.html>
 
 For further details on namespaces:
-[<http://r-pkgs.had.co.nz/namespace.html>](http://r-pkgs.had.co.nz/namespace.html)
+<http://r-pkgs.had.co.nz/namespace.html>
+
+License: MIT
+------------
