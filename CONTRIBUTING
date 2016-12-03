@@ -9,8 +9,13 @@
 
 # Styleguide
 
-- function names are `CamelCased` verbs, *e.g.* `SimulatesNicheModel`
-- variable are lowercase with underscores and small caps, *e.g.* `trophic_level`
-- `<-` is used for assignment 
+- function names are explicit and with `CamelCased` verbs, *e.g.* `SimulatesNicheModel`.
+- objects are declared with lowercase, underscores and small caps, *e.g.* `trophic_level`
+- `<-` is used for assignment
 - default values in function declarations have spaces around the `=` (*e.g.* `arg = var`)
+- namespaces with `::` (e.g `reshape2::acast`)
+- Packages dependancies are declared in the `DESCRIPTION` (import section)
+- all `roxygen2` flags (e.g. @param etc.) are to be set up.
 
+Have a look at [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
+For further details on namespaces: [http://r-pkgs.had.co.nz/namespace.html](http://r-pkgs.had.co.nz/namespace.html)
