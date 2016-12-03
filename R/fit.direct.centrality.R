@@ -15,12 +15,12 @@
 #'
 #' @rdname fit.direct.centrality
 #' @export
-fit.direct.centrality = function(data, algorithm, ...) {
+fit.direct.centrality <- function(data, algorithm, ...) {
     
     if (algorithm == "logistic") 
-        model = stats::glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 
-        model = stats::glm(I ~ . * ., data, family = "poisson") else if (algorithm == "RF") {
-        model = randomForest::randomForest(I ~ . * ., data, ...)
+        model <- stats::glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 
+        model <- stats::glm(I ~ . * ., data, family = "poisson") else if (algorithm == "RF") {
+        model <- randomForest::randomForest(I ~ . * ., data, ...)
     }
     
     return(model)
