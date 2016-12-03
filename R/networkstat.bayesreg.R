@@ -4,10 +4,8 @@
 #' @param indices a vector of network statistics corresponding to network statistics (see details)
 #' @details Network statistics are calculated using the fucntion networklevel from the package bipartite, see ?networklevel for a list of available options.
 #'
-#' @return
+#' @return A data frame with the desired metrics for each of the draws of the network.
 #' @export
-#'
-#' @examples
 network.bayesreg<-function(x,indices){
   
   #helper function for web prediction

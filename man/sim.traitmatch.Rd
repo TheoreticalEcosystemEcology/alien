@@ -6,8 +6,8 @@
 \alias{trait-matching}
 \title{Simulating trait-matching among species}
 \usage{
-sim.traitmatch(size_x, size_y, traits_x, traits_y, beta_sigma = 0.4,
-  alpha_sigma = 0)
+sim.traitmatch(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1,
+  alpha_sigma = 0, replicates = 1)
 }
 \arguments{
 \item{size_x}{The number of species in the lower level (eg. plants)}
@@ -21,6 +21,8 @@ sim.traitmatch(size_x, size_y, traits_x, traits_y, beta_sigma = 0.4,
 \item{beta_sigma}{Variance among species in trait-matching slope.}
 
 \item{alpha_sigma}{Variance among species in trait-matching intercept.}
+
+\item{replicates}{The number of times the network was sampled. For example, Replicate = 1 will yield I*J data points}
 }
 \description{
 A helper functional for generating the probability of interaction among hypothetical species based on their traits.

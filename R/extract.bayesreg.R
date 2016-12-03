@@ -1,13 +1,9 @@
 #' @name extract.bayesreg
-#' @aliases getpars
-#'
 #' @title Extract posterior distributions from Bayesian Regression Model
 #'
 #' @description A helper function for getting the chains from a JAGS model object outputted from fit.bayesreg
-#' @param x
-#' @author
-#' Ben Weinstein
-#'
+#' @param x A JAGS model file from fit.bayesreg()
+#' @author Ben Weinstein
 #' @references
 #' Bartomeus et al. 2016. Functional Ecology.
 #'

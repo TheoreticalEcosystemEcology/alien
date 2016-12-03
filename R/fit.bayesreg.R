@@ -12,22 +12,19 @@
 #' @details
 #' Intercept Model
 #' For each pair of species i interaction with species j
-#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
-#' $$ logit(\rho_{i,j}) = \alpha_{i,j} $$
+#' \deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
+#' \deqn{ logit(\rho_{i,j}) = \alpha_{i,j} }
 #'
 #' With a hierarchical relationship among species i (eg. pollinators)
-#' $$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)$$
+#' \deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)}
 #'#' Intercept Model
 #' For each pair of species i interaction with species j
-#' $$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
-#' $$ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}$$
+#' \deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
+#' \deqn{ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}}
 #'
 #' With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
-#' $$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma$$
-#' $$\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma$$
-#' @example 
-#' simdat<-sim.traitmatch(10,10,rpois(10,30),rpois(10,20))
-#' 
+#' \deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma}
+#' \deqn{\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma}
 #' @return A jags model obect (see package R2Jags)
 #' @rdname fit.bayesreg
 #' @export
