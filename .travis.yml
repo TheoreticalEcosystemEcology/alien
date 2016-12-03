@@ -9,6 +9,7 @@ notifications:
 
 r_packages:
   - covr
+  - rjags
 
 after_success:
   - Rscript -e 'covr::codecov()'

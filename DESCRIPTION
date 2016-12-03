@@ -24,7 +24,7 @@ Imports:
     quantreg,
     magrittr,
     randomForest,
-    R2jags (>= 0.5.7),
+    R2jags,
     stats,
 SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
 NeedsCompilation: no
