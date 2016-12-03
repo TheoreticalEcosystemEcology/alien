@@ -35,64 +35,72 @@ fit.bayesreg<-function(dat,algorithm="Binomial"){
   #format traitmatch as matrix
   dat$Traitmatch<-abs(dat$TraitI-dat$TraitJ)
   Traitmatch<-reshape2::acast(data=dat,I~J,value.var="Traitmatch")
+
+  runs<-10000
+  
+  #for parallel run
+  Yobs=dat$Interactions
+  Bird=as.numeric(as.factor(dat$I))
+  Plant=as.numeric(as.factor(dat$J))
+  Birds=length(unique(dat$I))
+  Traitmatch=Traitmatch
+  Plants=length(unique(dat$J))
+  Nobs<-length(Yobs)
+  
+  #MCMC options
+  ni <- runs  # number of draws from the posterior
+  nt <- 1  #thinning rate
+  nb <- max(0,runs-500) # number to discard for burn-in
+  nc <- 2  # number of chains
+  
+  modelDat<-list("Yobs","Bird","Plant","Plants","Birds","Nobs")
   
   if(algorithm == "Intercept"){
     
-    runs<-10000
-    
-    #for parallel run
-    Yobs=dat$Interactions
-    Bird=as.numeric(as.factor(dat$I))
-    Plant=as.numeric(as.factor(dat$J))
-    Birds=length(unique(dat$I))
-    Traitmatch=Traitmatch
-    Plants=length(unique(dat$J))
-    Nobs<-length(Yobs)
-    
-    #MCMC options
-    ni <- runs  # number of draws from the posterior
-    nt <- 1  #thinning rate
-    nb <- max(0,runs-500) # number to discard for burn-in
-    nc <- 2  # number of chains
-    
-    modelDat<-list("Yobs","Bird","Plant","Plants","Birds","Nobs")
-    
+    #parameters to track
     ParsStage <- c("alpha","alpha_mu","ynew","fit","fitnew")
     
-    #file path
-    modfile<- paste(system.file(package="alienR"),"/Bayesian/Intercept.jags",sep="")
+    #file path, needs to uncheck when building the package
+    #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Intercept.jags",sep="")
+    modfile<-"Bayesian/Intercept.jags"
     
     m1<-do.call(R2jags::jags.parallel,list(data=modelDat,model.file=modfile,parameters.to.save=ParsStage,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
   } else
     
     if(algorithm=="Binomial") {
       
-      runs<-10000
-      
-      #for parallel run
-      Yobs=dat$Interactions
-      Bird=as.numeric(as.factor(dat$I))
-      Plant=as.numeric(as.factor(dat$J))
-      Birds=length(unique(dat$I))
-      Traitmatch=Traitmatch
-      Plants=length(unique(dat$J))
-      Nobs<-length(Yobs)
-      
       #Parameters to track
       ParsStage <- c("alpha","beta","alpha_mu","alpha_sigma","beta_sigma","beta_mu","ynew","fit","fitnew")
-      
-      #MCMC options
-      ni <- runs  # number of draws from the posterior
-      nt <- 1  #thinning rate
-      nb <- max(0,runs-500) # number to discard for burn-in
-      nc <- 2  # number of chains
-      
-      modelDat<-list("Yobs","Bird","Plant","Plants","Traitmatch","Birds","Nobs")
-      
-      modfile<- paste(system.file(package="alienR"),"/Bayesian/Binomial.jags",sep="")
+
+      #jags file.
+      #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Binomial.jags",sep="")
+      modfile<-"Bayesian/Binomial.jags"
       
       m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
     }
+  
+  if(algorithm=="Poisson") {
+    
+    #Parameters to track
+    ParsStage <- c("alpha","beta","alpha_mu","alpha_sigma","beta_sigma","beta_mu","ynew","fit","fitnew")
+    
+    #jags file.
+    #modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Poisson.jags",sep="")
+    modfile<-"Bayesian/Poisson.jags"
+    m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
+  }
+  
+  if(algorithm=="Multinomial") {
+    
+    #Parameters to track
+    ParsStage <- c("alpha","beta","alpha_mu","alpha_sigma","beta_sigma","beta_mu","ynew","fit","fitnew")
+    
+    #jags file.
+    modfile<- paste(system.file(package="alienR"),"/R/Bayesian/Multinomial.jags",sep="")
+    modfile<-"Bayesian/Multinomial.jags"
+    
+    m1<-do.call(R2jags::jags.parallel,list(data=modelDat,parameters.to.save=ParsStage,model.file=modfile,n.thin=nt, n.iter=ni,n.burnin=nb,n.chains=nc,DIC=F))
+  }
   
   m1$Algorithm<-algorithm
   return(m1)

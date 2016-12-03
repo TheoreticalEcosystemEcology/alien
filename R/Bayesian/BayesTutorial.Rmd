@@ -1,0 +1,11 @@
+---
+title: "Bayesian Models"
+author: "Ben Weinstein"
+date: "December 2, 2016"
+output: html_document
+---
+
+#Aim
+A short tutorial explaining the different options for fitting hierarchical bayesian models for species interactions using the package alienR
+
+```{r}

@@ -1,5 +1,5 @@
 
-sink("Bayesian/Poisson.jags")
+sink("Bayesian/Multinomial.jags")
 
 cat("C
     B<-Birds
@@ -7,26 +7,17 @@ cat("C
     
     model {
 
-    #Compute intensity for each pair of birds and plants
-    for (i in 1:Birds){
-    for (j in 1:Plants){
-    
-    #Process Model with log normal overdispersion
-    log(lambda[i,j])<-alpha[i] + beta1[i] * Traitmatch[i,j] 
-      }
-    }
-    
-    #Prediction
     for (x in 1:Nobs){
     
-    # Observed States
-    Yobs[x] ~ dpois(lambda[Bird[i],Plant[i]])
+    # Observed State
+    Yobs[x] ~ dmulti(size=TotalObs,prob=alpha[Bird[x],Plant[x]]) 
     
     #Assess Model Fit
     #Fit discrepancy statistics
     eval[x]<-lambda[Bird[x],Plant[x]]
     E[x]<-pow((Yobs[x]-eval[x]),2)/(eval[x]+0.5)
     
+    #Prediction
     ynew[x]~dpois(lambda[Bird[x],Plant[x]])
     E.new[x]<-pow((ynew[x]-eval[x]),2)/(eval[x]+0.5)
     
