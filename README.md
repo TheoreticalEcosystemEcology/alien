@@ -14,7 +14,7 @@ ALIEN: The aim of the package is to predict All Links In Ecological Networks
 Incoming content
 ----------------
 
-### Methods implemented
+### Methods
 
 -   Direct matching centrality (DG)
     -   binomial
@@ -108,5 +108,6 @@ Contribute to this package
 
 Have a look at
 [<http://adv-r.had.co.nz/Style.html>](http://adv-r.had.co.nz/Style.html)
+
 For further details on namespaces:
 [<http://r-pkgs.had.co.nz/namespace.html>](http://r-pkgs.had.co.nz/namespace.html)
