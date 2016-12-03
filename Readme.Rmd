@@ -8,16 +8,81 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Status
 
-### Version: 0.0.1
+**Early development**
+**Version**: 0.0.1
 
 [![Travis](https://travis-ci.org/TheoreticalEcosystemEcology/alienR.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alienR)
 [![Build status](https://ci.appveyor.com/api/projects/status/sk3sbvusvcyy0at0?svg=true)](https://ci.appveyor.com/project/TheoreticalEcosystemEcology/alienR/build/1.0.7)
 [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alienR/branch/master/graphs/badge.svg)](https://codecov.io/gh/KevCaz/recruitR)
 
 
-
-
 ## ALIEN: The aim of the package is to predict All Links In Ecological Networks
+
+## Incoming content
+
+### Methods implemented
+
+- Direct matching centrality (DG)
+    - binomial
+    - poisson
+    - RF
+- Indirect matching centrality (latent ~ traits) (DG)
+- Niche binary (DG)
+- Niche probabilistic (DG)
+- iEat recommend (DB)
+- iEat gap-filling   (DB)  
+- JSDM (GB)
+- Harris (KC)
+- Markov logic (A.T.?)
+- 4th corner (GB)
+- Ben's magic (BW)
+- Ives' phylo (GB)
+
+**Deadline:** Package ready by Christmas
+
+## Generate package metadata
+
+All enhancements to the README has to be written in the Readme.Rmd file.
+To build the metadata files (i.e. README, NAMESPACE, DESCRIPTION):
+
+```{r eval=FALSE}
+## Install packages
+pkgs = c('devtools','roxygen2','testthat','formatR','rmarkdown')
+for(pkg in pkgs) if(!require(pkg))
+
+## Make sure you're working directory is set up correctly
+getwd()
+
+## Create README file
+rmarkdown::render("README.Rmd", "all", quiet=TRUE)
+
+## Format the R code (e.g. indentation, assignment, etc.)
+formatR::tidy_dir("./R",arrow = getOption("formatR.arrow",TRUE))
+formatR::tidy_dir("./tests/test_that", arrow = getOption("formatR.arrow",TRUE))
+
+## Load your current version of the package
+devtools::load_all(".")
+
+## Create man pages
+devtools::document(".")
+
+## Testing the code with testthat package
+devtools::test()
+```
+
+### Only for the developers on Mac OSX and linux
+
+All of the previous steps can be done with:
+
+```bash
+cd path/to/alienR
+make
+```
+
+
+## Contribute to this package
+
+```{r child = 'CONTRIBUTING'}
+```
