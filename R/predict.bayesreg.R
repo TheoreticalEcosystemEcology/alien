@@ -43,7 +43,7 @@ predict.bayesreg<-function(x,newdata=NULL){
     alphas$J<-as.numeric(stringr::str_match(alphas$parameter,pattern="\\[(\\d+),(\\d+)]")[,3])
     
     #return matrix as probability
-    df<-alphas %>% group_by(I,J) %>% mutate(value=boot::inv.logit(estimate)) %>% select(I,J,value)  
+    df<-alphas %>% group_by(I,J) %>% mutate(value=boot::inv.logit(estimate)) %>% select(Draw,Chain,I,J,value)  
     
     #merge with input data
     df$I<-levels(factor(dat$I))[df$I]
