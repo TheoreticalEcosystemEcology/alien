@@ -20,7 +20,7 @@
 #' Ben Weinstein
 #'
 #' @references
-#' Weinstein et al. 2016. Oikos
+#' Weinstein et al. 2016. Oikos (in review)
 #'
 #' @rdname predict.bayesreg
 #' @importFrom magrittr %>%
