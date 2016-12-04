@@ -32,7 +32,6 @@ predict.bayesreg <- function(x, newdata = NULL) {
     
     # matching function
     if (x$Algorithm == "Intercept") {
-        
         # get intercepts
         alphas <- parsm1 %>% dplyr::defilter(par %in% c("alpha")) %>% dplyr::group_by(Draw, 
             Chain)
@@ -54,7 +53,6 @@ predict.bayesreg <- function(x, newdata = NULL) {
     
     # matching function
     if (x$Algorithm == "Binomial") {
-        
         # default is predicting the observed data frame
         if (is.null(newdata)) {
             newdata <- x$data %>% dplyr::select(I, J, Traitmatch) %>% dplyr::distinct()
@@ -64,6 +62,7 @@ predict.bayesreg <- function(x, newdata = NULL) {
         predfun <- function(alpha, beta, newdata) {
             data.frame(newdata, value = boot::inv.logit(alpha + beta * newdata[["Traitmatch"]]))
         }
+        # 
         df <- parsm1 %>% dplyr::filter(par %in% c("alpha_mu", "beta_mu")) %>% dplyr::select(Draw, 
             Chain, par, estimate) %>% reshape2::dcast(., Draw + Chain ~ par, value.var = "estimate") %>% 
             dplyr::group_by(Draw, Chain) %>% dplyr::do((predfun(alpha = .$alpha_mu, 
