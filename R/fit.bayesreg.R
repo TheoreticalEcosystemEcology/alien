@@ -31,6 +31,8 @@
 
 fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
   
+    #jags needs to be manually started
+    library(coda)
     stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial","Occupancy"))
     
     # format traitmatch as matrix
