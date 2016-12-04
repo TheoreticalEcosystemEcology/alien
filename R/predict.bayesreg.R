@@ -27,7 +27,6 @@
 #' @export
 
 predict.bayesreg <- function(x, newdata = NULL) {
-    
     parsm1 <- extract.bayesreg(x)
     
     # matching function

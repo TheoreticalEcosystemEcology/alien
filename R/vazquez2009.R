@@ -5,7 +5,7 @@
 #' @param keep.species 
 #' @param rep.cell 
 #' @details This is simply a wrapper function for the mgen function in the package bipartite, included here as part of the quantitative tests. See ?bipartite:mgen for details.
-#' @return
+#' @return A predicted matrix of interactions
 #' @export
 predict.vazquez2009<-function(web,n,keep.species=TRUE,rep.cell=T){
   df<-mgen(web, n, keep.species=keep.species, rep.cell=rep.cell) # Not allowing zero marginal sums

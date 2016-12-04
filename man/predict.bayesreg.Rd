@@ -34,6 +34,6 @@ If fit.bayesreg was fit to an intercept model, newdata is ignored, not possible 
 Ben Weinstein
 }
 \references{
-Weinstein et al. 2016. Oikos
+Weinstein et al. 2016. Oikos (in review)
 }
 

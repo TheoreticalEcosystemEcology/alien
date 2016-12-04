@@ -26,11 +26,14 @@
 #' \deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma}
 #' \deqn{\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma}
 #' @return A jags model obect (see package R2Jags)
-#'
+#' @import coda
 #' @export
 
 fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
-    
+  
+    #roxygen not honoring import?s
+    library(coda)
+  
     stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial"))
     
     # format traitmatch as matrix
@@ -116,7 +119,7 @@ fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
         
         # jags file.
         modfile <- paste0(tempdir(), "/Multinomial.jags")
-        multinomialToJags(modfile)
+        #multinomialToJags(modfile)
         # 
         m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, 
             model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, 
