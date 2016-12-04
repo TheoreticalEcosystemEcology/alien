@@ -27,46 +27,47 @@
 #' @export
 
 predict.bayesreg <- function(x, newdata = NULL) {
+
     parsm1 <- extract.bayesreg(x)
-    
+
     # matching function
     if (x$Algorithm == "Intercept") {
         # get intercepts
-        alphas <- parsm1 %>% dplyr::defilter(par %in% c("alpha")) %>% dplyr::group_by(Draw, 
+        alphas <- parsm1 %>% dplyr::filter(par %in% c("alpha")) %>% dplyr::group_by(Draw, 
             Chain)
-        
+
         # label species
-        alphas$I <- as.numeric(stringr::str_match(alphas$parameter, pattern = "\\[(\\d+),(\\d+)]")[, 
+        alphas$I <- as.numeric(stringr::str_match(alphas$parameter, pattern = "\\[(\\d+),(\\d+)]")[,
             2])
-        alphas$J <- as.numeric(stringr::str_match(alphas$parameter, pattern = "\\[(\\d+),(\\d+)]")[, 
+        alphas$J <- as.numeric(stringr::str_match(alphas$parameter, pattern = "\\[(\\d+),(\\d+)]")[,
             3])
-        
+
         # return matrix as probability
-        df <- alphas %>% dplyr::group_by(I, J) %>% dplyr::mutate(value = boot::inv.logit(estimate)) %>% 
+        df <- alphas %>% dplyr::group_by(I, J) %>% dplyr::mutate(value = boot::inv.logit(estimate)) %>%
             dplyr::select(Draw, Chain, I, J, value)
-        
+
         # merge with input data
         df$I <- levels(factor(dat$I))[df$I]
         df$J <- levels(factor(dat$J))[df$J]
     }
-    
+
     # matching function
     if (x$Algorithm == "Binomial") {
         # default is predicting the observed data frame
         if (is.null(newdata)) {
             newdata <- x$data %>% dplyr::select(I, J, Traitmatch) %>% dplyr::distinct()
         }
-        
+
         # Trait-matching functions
         predfun <- function(alpha, beta, newdata) {
             data.frame(newdata, value = boot::inv.logit(alpha + beta * newdata[["Traitmatch"]]))
         }
-        # 
-        df <- parsm1 %>% dplyr::filter(par %in% c("alpha_mu", "beta_mu")) %>% dplyr::select(Draw, 
-            Chain, par, estimate) %>% reshape2::dcast(., Draw + Chain ~ par, value.var = "estimate") %>% 
-            dplyr::group_by(Draw, Chain) %>% dplyr::do((predfun(alpha = .$alpha_mu, 
+        #
+        df <- parsm1 %>% dplyr::filter(par %in% c("alpha_mu", "beta_mu")) %>% dplyr::select(Draw,
+            Chain, par, estimate) %>% reshape2::dcast(., Draw + Chain ~ par, value.var = "estimate") %>%
+            dplyr::group_by(Draw, Chain) %>% dplyr::do((predfun(alpha = .$alpha_mu,
             beta = .$beta_mu, newdata))) %>% dplyr::group_by(I, J) %>% dplyr::inner_join(newdata)
     }
-    
+
     return(df)
 }

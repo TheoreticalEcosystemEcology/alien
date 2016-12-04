@@ -54,7 +54,7 @@ binomialToJags <- function(filename) {
       #derived posterior check
       fit<-sum(E[]) #Discrepancy for the observed data
       fitnew<-sum(E.new[])
-      }", 
+      }",
         file = filename, fill = TRUE)
 }
 
@@ -97,64 +97,44 @@ interceptToJags <- function(filename) {
     #derived posterior check
     fit<-sum(E[]) #Discrepancy for the observed data
     fitnew<-sum(E.new[])
-    }", 
+    }",
         file = filename, fill = TRUE)
 }
 
 #' @describeIn modelsToJags Multinomial model.
 #' @export
 multinomialToJags <- function(filename) {
-    cat("C
-    B<-Birds
-    P<-PlantsC
+    cat("model {
 
-    model {
-    for (x in 1:Nobs){
+        #The total visits of a given class is a multinomial draw from a vector of probabilities 1:k classes
+        tvisits[1:k] ~ dmulti(p[1:k],N)
 
-    # Observed State
-    Yobs[x] ~ dmulti(size=TotalObs,prob=alpha[Bird[x],Plant[x]])
+        #Those probabilities come from a dirichlet, such that they sum to one
+        p[1:k] ~ ddirch(alpha[1:k])
 
-    #Assess Model Fit
-    #Fit discrepancy statistics
-    eval[x]<-lambda[Bird[x],Plant[x]]
-    E[x]<-pow((Yobs[x]-eval[x]),2)/(eval[x]+0.5)
+        #Assess Model Fit
+        #Fit discrepancy statistics
+        eval<- alpha[i] * N
+        E<-pow((tvisits[1:k]-eval),2)/(eval+0.5)
 
-    #Prediction
-    ynew[x]~dpois(lambda[Bird[x],Plant[x]])
-    E.new[x]<-pow((ynew[x]-eval[x]),2)/(eval[x]+0.5)
+        #Prediction
+        ynew~dmulti(p[1:k],N)
+        E.new<-pow((ynew-eval[x]),2)/(eval+0.5)
 
-    }
+        #Priors
+        # The probability prior is equal probability among any two classes.
 
-    ###Priors
+        for (i in 1:k){
+        alpha[1:k]<-1/k
+        }
 
-    #Process Model
+        #derived posterior check
+        fit<-sum(E[]) #Discrepancy for the observed data
+        fitnew<-sum(E.new[]) #Discrepancy for the new data
 
-    #Species level priors
-    for (i in 1:Birds){
 
-    #Intercept
-    alpha[i] ~ dnorm(alpha_mu,alpha_tau)
-
-    #Traits slope
-    beta1[i] ~ dnorm(beta1_mu,beta1_tau)
-    }
-
-    #Group process priors
-
-    #Intercept
-    alpha_mu ~ dnorm(0,0.001)
-    alpha_tau ~ dunif(0,10)
-    alpha_sigma<-pow(1/alpha_tau,0.5)
-
-    #Trait
-    beta1_mu~dnorm(0,0.001)
-    beta1_tau ~ dunif(0,10)
-    beta1_sigma<-pow(1/beta1_tau,0.5)
-
-    #derived posterior check
-    fit<-sum(E[]) #Discrepancy for the observed data
-    fitnew<-sum(E.new[])
-    }", 
+        }
+        ",
         file = filename, fill = TRUE)
 }
 
@@ -216,6 +196,6 @@ poissonToJags <- function(filename) {
         #derived posterior check
         fit<-sum(E[]) #Discrepancy for the observed data
         fitnew<-sum(E.new[])
-        }", 
+        }",
         file = filename, fill = TRUE)
 }
