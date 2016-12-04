@@ -9,7 +9,6 @@
 #' @references
 #' Bartomeus et al. 2016. Functional Ecology.
 #'
-#'
 #' @rdname extract.bayesreg
 #' @export
 
@@ -25,7 +24,7 @@ extract.bayesreg <- function(x) {
     
     # assign species index to ragged frame.
     sp_pl <- data.frame(parameter = l, Index = as.numeric(stringr::str_match(l, pattern = "\\[(\\d+)]")[, 
-        2]), par = stringr::str_extract(l, "\\w+"))
+        2L]), par = stringr::str_extract(l, "\\w+"))
     
     # merge levels
     pars <- merge(parsO, sp_pl)
