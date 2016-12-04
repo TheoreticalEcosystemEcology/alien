@@ -193,3 +193,11 @@ ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_
 ```
 
 Same data, different model, different network statistics! Models matter. My point here is not that one model performed 'better', since the data was simulated in a similiar way. More that the models are not interchangable, and must be validated on quantitative and philosophical grounds.
+
+# Adding complexity.
+
+Due to samplind constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
+
+```{r}
+occupancy<-fit.bayesreg(dat,algorithm = "Occupancy")
+```

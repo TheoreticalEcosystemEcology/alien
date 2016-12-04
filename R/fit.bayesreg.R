@@ -31,10 +31,10 @@
 
 fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
   
-    #roxygen not honoring import?s
+    #roxygen not honoring import?
     library(coda)
   
-    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial"))
+    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial","Occupancy"))
     
     # format traitmatch as matrix
     dat$Traitmatch <- abs(dat$TraitI - dat$TraitJ)
@@ -129,7 +129,33 @@ fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
         #append classes
         m1$classes<-classes
     }
-    
+    if (algorithm == "Occupancy") {
+      
+      #encode replicate sampling.
+      Time<-dat$Replicate
+      Times <- max(dat$Replicate)
+      
+      modelDat <- list("Yobs","Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", "Traitmatch","Times","Time")
+      
+      #init unobserved variance
+      Ninit<-array(dim=c(Birds,Plants,Times),data=1)
+      InitStage <- function(){list(N=Ninit)}
+      
+      # Parameters to track
+      ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
+                     "beta_mu", "ynew", "fit", "fitnew")
+      
+      # jags file.
+      modfile <- paste0(tempdir(), "/Occupancy.jags")
+      OccupancyToJags(modfile)
+      # 
+      
+      m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
+                                                model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
+      
+      #append classes
+      m1$classes<-classes
+    }
     # Append the algorith and dataset, it will be helpful for later
     m1$Algorithm <- algorithm
     m1$data <- dat
