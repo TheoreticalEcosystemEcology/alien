@@ -6,7 +6,7 @@
 \alias{regression}
 \title{Hierarchical Bayesian Regression for estimating trait-matching in species interaction data}
 \usage{
-fit.bayesreg(dat, algorithm = "Binomial")
+fit.bayesreg(dat, algorithm = "Binomial", draws = 10000)
 }
 \arguments{
 \item{dat}{A data frame with columns named 'I','J','Interactions','TraitI','TraitJ'.
@@ -15,26 +15,29 @@ J: The identity of the species on the lower level (eg. plants)
 Interactions: 1 (Observed) or 0 (non-detected)}
 
 \item{algorithm}{A string argument, either 'Intercept' or 'Poisson', see details
-Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)
-#' @details
-Intercept Model
-For each pair of species i interaction with species j
-$$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
-$$ logit(\rho_{i,j}) = \alpha_{i,j} $$
+Must have JAGS v 4.0 > to run. Install jags [here](http://mcmc-jags.sourceforge.net/)}
 
-With a hierarchical relationship among species i (eg. pollinators)
-$$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)$$
-#' Intercept Model
-For each pair of species i interaction with species j
-$$ Obs_{i,j} \sim Binom(\rho_{i,j})$$
-$$ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}$$
-
-With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
-$$\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma$$
-$$\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma$$}
+\item{draws}{The number of MCMC draws to run before taking 100 samples from the posterior distribution}
 }
 \value{
 A jags model obect (see package R2Jags)
+}
+\details{
+Intercept Model
+For each pair of species i interaction with species j
+\deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
+\deqn{ logit(\rho_{i,j}) = \alpha_{i,j} }
+
+With a hierarchical relationship among species i (eg. pollinators)
+\deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)}
+#' Intercept Model
+For each pair of species i interaction with species j
+\deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
+\deqn{ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}}
+
+With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
+\deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma}
+\deqn{\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma}
 }
 \author{
 Ben Weinstein
