@@ -12,6 +12,7 @@ A short tutorial explaining the different options for fitting hierarchical bayes
 library(alienR)
 library(ggplot2)
 library(knitr)
+library(dplyr)
 opts_chunk$set(warning=F,message=F)
 
 #source scripts because I can't seem to understand how roxygen generates functions to the package! To delete once we understand how paths are handled in package creation
@@ -36,7 +37,7 @@ ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smoot
 We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
 
 ```{r}
-intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept")
+intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept",draws=1000)
 ```
 
 Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
@@ -77,7 +78,7 @@ ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Proba
 An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
 
 ```{r}
-binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial")
+binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial",draws=1000)
 ```
 
 Just as before, we can get the predicted matrix based on the model fit.
@@ -86,28 +87,28 @@ Just as before, we can get the predicted matrix based on the model fit.
 predframe2<-predict.bayesreg(binomial)
 
 #summarize mean, lower 5th and upper 9th
-sumframe<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
+sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 ```
 
 ##View interactions
 ```{r}
-ggplot(sumframe,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 Upper 95th estimate
 ```{r}
-ggplot(sumframe,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 Lower 5th estimate
 ```{r}
-ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
 
 Create the same boxplot as in the intercept model
 
 ```{r}
-justB<-predframe2 %>% filter(I=="b") 
+justB2<-predframe2 %>% filter(I=="b") 
 ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
@@ -116,7 +117,7 @@ Notice that as we added information the confidence intervals greatly decreased.
 ## View trait-matching function
 
 ```{r}
-ggplot(sumframe,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
+ggplot(sumframe2,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
 ```
 
 # Multinomial Model
@@ -125,6 +126,39 @@ Several different papers have been interested in assigning probability to each p
 
 ```{r}
 multinomial<-fit.bayesreg(dat,algorithm = "Multinomial")
+```
+
+Plot multinomial probabilities. Let's extract the model output directly.
+
+```{r}
+#extract pars
+predframe3<-predict.bayesreg(multinomial)
+```
+
+Remember that a multinomial draw is similiar to our intercept model, each pairwise interaction gets a seperate probability. 
+
+## Mean Interaction Probabilities
+```{r}
+sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(estimate),lower=quantile(estimate,0.05),upper=quantile(estimate,0.95)) 
+
+m_mean<-ggplot(sumframe3,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
+```
+
+Using species B from the upper level, as in the previous two models, as a visual.
+
+```{r}
+justB3<-predframe3 %>% filter(I=="b") 
+ggplot(data=justB,aes(x=J,y=estimate)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+```
+
+#Compare probabilities
+
+```{r}
+sumframe$Model<-"Intercept"
+sumframe2$Model<-"Binomial"
+sumframe3$Model<-"Multinomial"
+
+allsums<-bind_rows(list(sumframe1,sumframe2,sumframe3))
 ```
 
 # Generate networks and statistics

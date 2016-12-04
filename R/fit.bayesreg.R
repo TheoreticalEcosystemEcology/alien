@@ -119,11 +119,14 @@ fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
         
         # jags file.
         modfile <- paste0(tempdir(), "/Multinomial.jags")
-        #multinomialToJags(modfile)
+        multinomialToJags(modfile)
         # 
         m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, 
             model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, 
             DIC = F))
+        
+        #append classes
+        m1$classes<-classes
     }
     # Append the algorith and dataset, it will be helpful for later
     m1$Algorithm <- algorithm

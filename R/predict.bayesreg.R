@@ -30,7 +30,6 @@ predict.bayesreg <- function(x, newdata = NULL) {
 
     parsm1 <- extract.bayesreg(x)
 
-    # matching function
     if (x$Algorithm == "Intercept") {
         # get intercepts
         alphas <- parsm1 %>% dplyr::filter(par %in% c("alpha")) %>% dplyr::group_by(Draw, 
@@ -68,6 +67,20 @@ predict.bayesreg <- function(x, newdata = NULL) {
             dplyr::group_by(Draw, Chain) %>% dplyr::do((predfun(alpha = .$alpha_mu,
             beta = .$beta_mu, newdata))) %>% dplyr::group_by(I, J) %>% dplyr::inner_join(newdata)
     }
-
+    
+    if (x$Algorithm == "Multinomial") {
+      # get intercepts
+      alphas <- parsm1 %>% dplyr::filter(par %in% c("p"))
+      
+      #label and merge pairwise interactions 
+      classes<-x$classes
+      
+      #number the rows
+      classes$Index<-1:nrow(classes)
+      
+      #merge with data
+      df<-classes %>% select(I,J,Index) %>% inner_join(alphas) %>% select(-par)
+      }
+    
     return(df)
 }
