@@ -79,7 +79,7 @@ predict.bayesreg <- function(x, newdata = NULL) {
       classes$Index<-1:nrow(classes)
       
       #merge with data
-      df<-classes %>% select(I,J,Index) %>% inner_join(alphas) %>% select(-par)
+      df<-classes %>% select(I,J,Index) %>% inner_join(alphas) %>% select(-par) %>% mutate(value=estimate) %>% select(-estimate)
       }
     
     return(df)

@@ -8,6 +8,6 @@
 #' @return A predicted matrix of interactions
 #' @export
 predict.vazquez2009<-function(web,n,keep.species=TRUE,rep.cell=T){
-  df<-mgen(web, n, keep.species=keep.species, rep.cell=rep.cell) # Not allowing zero marginal sums
+  df<-mgen(pweb, n, keep.species=keep.species, rep.cell=rep.cell) # Not allowing zero marginal sums
   return(df)
 }

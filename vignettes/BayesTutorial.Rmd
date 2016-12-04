@@ -24,7 +24,7 @@ s<-sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names =
 For this example, let's similiar some interaction data on trait-matching among species
 
 ```{r}
-dat<-sim.traitmatch(size_x = 10,size_y = 20,traits_x = rpois(10,7),traits_y = rpois(20,10),alpha_sigma = 3,replicates=3)
+dat<-sim.traitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
 ```
 
 We can view the trait-matching in this simulated dataset
@@ -37,7 +37,7 @@ ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smoot
 We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
 
 ```{r}
-intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept",draws=1000)
+intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept",draws=10000)
 ```
 
 Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
@@ -70,7 +70,7 @@ If we want the distributions, instead of a summary we can plot the posterior pre
 
 ```{r}
 justB<-predframe %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
 # Binomial Model
@@ -78,7 +78,7 @@ ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Proba
 An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
 
 ```{r}
-binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial",draws=1000)
+binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial",draws=10000)
 ```
 
 Just as before, we can get the predicted matrix based on the model fit.
@@ -139,7 +139,7 @@ Remember that a multinomial draw is similiar to our intercept model, each pairwi
 
 ## Mean Interaction Probabilities
 ```{r}
-sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(estimate),lower=quantile(estimate,0.05),upper=quantile(estimate,0.95)) 
+sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
 
 m_mean<-ggplot(sumframe3,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
 ```
@@ -148,7 +148,7 @@ Using species B from the upper level, as in the previous two models, as a visual
 
 ```{r}
 justB3<-predframe3 %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J,y=estimate)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
 #Compare probabilities
@@ -158,8 +158,23 @@ sumframe$Model<-"Intercept"
 sumframe2$Model<-"Binomial"
 sumframe3$Model<-"Multinomial"
 
-allsums<-bind_rows(list(sumframe1,sumframe2,sumframe3))
+allsums<-bind_rows(list(sumframe,sumframe2,sumframe3))
+
+#side by side comparison of mean probabilites
+ggplot(allsums) + geom_tile(aes(x=I,y=J,fill=mean)) + facet_grid(~Model) + scale_fill_continuous(low="blue",high="red")
 ```
+
+For our example species B
+
+```{r}
+justB$Model<-"Intercept"
+justB2$Model<-"Binomial"
+justB3$Model<-"Multinomial"
+
+allB<-bind_rows(list(justB,justB2,justB3))
+ggplot(data=allB,aes(x=J,y=value)) + geom_boxplot(aes(fill=Model)) + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+```
+
 
 # Generate networks and statistics
 
@@ -177,4 +192,4 @@ allstats<-rbind_all(list(intercept_stats,binomial_stats))
 ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_wrap(~Metric,scales='free',nrow=1) + theme_bw()  + labs(x="value")
 ```
 
-Same data, different model, different network statistics! Models matter.
+Same data, different model, different network statistics! Models matter. My point here is not that one model performed 'better', since the data was simulated in a similiar way. More that the models are not interchangable, and must be validated on quantitative and philosophical grounds.
