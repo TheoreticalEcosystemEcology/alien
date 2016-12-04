@@ -14,15 +14,17 @@ Author:
   person("Ben", "Weinstein", role = c("aut")),
 Maintainer: Steve Vissault <steve.vissault@usherbrooke.ca>
 Description: Comparative analysis of interaction inference methods
-    Use four spaces when indenting paragraphs within the Description.
+      Use four spaces when indenting paragraphs within the Description.
 Suggests:
     testthat (>= 0.8.0)
 Imports:
+    boot,
+    dplyr,
     GenSA,
     graphics,
     grDevices,
-    magrittr,
     quantreg,
+    magrittr,
     randomForest,
     R2jags,
     stats,
