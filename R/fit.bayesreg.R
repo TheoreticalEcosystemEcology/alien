@@ -31,7 +31,7 @@
 
 fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
     
-    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson"))
+    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial"))
     
     # format traitmatch as matrix
     dat$Traitmatch <- abs(dat$TraitI - dat$TraitJ)
@@ -98,9 +98,22 @@ fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
     
     if (algorithm == "Multinomial") {
         
+        #The total number of interactions
+        N<-sum(dat$Interactions)
+        
+        #The total number of pairwise classes 
+        k=Birds * Plants
+        
+        #The number of total visits per class
+        classes<-dat %>% group_by(I,J) %>% summarise(totalvisits=sum(Interactions))
+        tvisits=classes$totalvisits
+        
+        #Send data to jags
+        modelDat <- list("N", "k", "tvisits")
+        
         # Parameters to track
-        ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
-            "beta_mu", "ynew", "fit", "fitnew")
+        ParsStage <- c("alpha", "p","fit","fitnew")
+        
         # jags file.
         modfile <- paste0(tempdir(), "/Multinomial.jags")
         multinomialToJags(modfile)

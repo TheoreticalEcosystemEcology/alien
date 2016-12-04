@@ -4,9 +4,6 @@ sink("Bayesian/Multinomial.jags")
 cat("
   model {
   
-    #The number of total classes is Birds * Plants
-    N=Birds*Plants
-    
     #The total visits of a given class is a multinomial draw from a vector of probabilities 1:k classes
     tvisits[1:k] ~ dmulti(p[1:k],N) 
 

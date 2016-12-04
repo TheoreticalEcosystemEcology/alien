@@ -119,6 +119,14 @@ Notice that as we added information the confidence intervals greatly decreased.
 ggplot(sumframe,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
 ```
 
+# Multinomial Model
+
+Several different papers have been interested in assigning probability to each pair of interactions based on a multinomial or direchlet distribution. 
+
+```{r}
+multinomial<-fit.bayesreg(dat,algorithm = "Multinomial")
+```
+
 # Generate networks and statistics
 
 One of the virtues of having a posterior distribution of interaction probabilities is that we can attach uncertainty to our predicted networks. By taking a binomial draw for each of our predicted interactions, we generate a binary network. From that binary network we can calculate our desired network statistics.
