@@ -31,9 +31,6 @@
 
 fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
   
-    #roxygen not honoring import?
-    library(coda)
-  
     stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial","Occupancy"))
     
     # format traitmatch as matrix
@@ -152,9 +149,6 @@ fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
       
       m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
                                                 model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
-      
-      #append classes
-      m1$classes<-classes
     }
     # Append the algorith and dataset, it will be helpful for later
     m1$Algorithm <- algorithm

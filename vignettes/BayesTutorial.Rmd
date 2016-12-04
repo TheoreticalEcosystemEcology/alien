@@ -8,15 +8,12 @@ output: html_document
 #Aim
 A short tutorial explaining the different options for fitting hierarchical bayesian models for species interactions using the package alienR
 
-```{r}
+```{r,message=F,warning=F}
 library(alienR)
 library(ggplot2)
 library(knitr)
 library(dplyr)
 opts_chunk$set(warning=F,message=F)
-
-#source scripts because I can't seem to understand how roxygen generates functions to the package! To delete once we understand how paths are handled in package creation
-s<-sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names = T),source)
 ```
 
 # Simulate data
@@ -174,7 +171,6 @@ justB3$Model<-"Multinomial"
 allB<-bind_rows(list(justB,justB2,justB3))
 ggplot(data=allB,aes(x=J,y=value)) + geom_boxplot(aes(fill=Model)) + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
-
 
 # Generate networks and statistics
 

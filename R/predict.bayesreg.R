@@ -1,31 +1,21 @@
 #' @name predict.bayesreg
-#' @aliases prediction bayesian regression
-#'
 #' @title Predict species interaction probabilities based on a fitted hierarchical bayesian regression
-#'
 #' @description A helper functional for generating the probability of interaction among hypothetical species based on their traits.
 #' The trait-matching function is currently |Trait_i - Trait_j|
 #' @param x A JAGS model file return from fit.bayesreg
 #' @param newdata A data frame with columns 'I','J' and 'Traitmatch'
 #' @details The newdata object gives the trait-matching between species I (eg. pollinator) and species J (eg. plant)
 #' If fit.bayesreg was fit to an intercept model, newdata is ignored, not possible to create a prediction of a new species. In this case, it is assumed that the user wants the probability matrix for all input species.
-#'
 #' @return A vector of probability of interaction values.
 #' I: Species in the higher level (eg. pollinators)
 #' J: Species in the lower level (eg. plants)
 #' mean: Mean probability of interaction
 #' lower: 0.05 quantile of the probability of interaction
 #' upper: 0.95 quantile of the probability of interaction
-#' @author
-#' Ben Weinstein
-#'
-#' @references
-#' Weinstein et al. 2016. Oikos (in review)
-#'
+#' @author Ben Weinstein
 #' @rdname predict.bayesreg
 #' @importFrom magrittr %>%
 #' @export
-
 predict.bayesreg <- function(x, newdata = NULL) {
 
     parsm1 <- extract.bayesreg(x)
