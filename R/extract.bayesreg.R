@@ -28,7 +28,6 @@ extract.bayesreg <- function(x) {
     
     # merge levels
     pars <- merge(parsO, sp_pl)
-    
     pars <- pars[!pars$par %in% "deviance", ]
     return(pars)
 }
