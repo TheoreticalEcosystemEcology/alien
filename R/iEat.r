@@ -20,6 +20,22 @@
 #'
 #' @importFrom magrittr %>%
 #'
+#' @example
+#' # Simulated data for testing
+#' ncat <- 100
+#' npred <- 10
+#' S0 <- paste0('Taxon_',1:ncat) %>%
+#'         data.frame(taxon = .,
+#'             target = replicate(n = length(.), expr = paste(sample(., round(runif(1,1,8))), collapse = ' | ')),
+#'             source = replicate(n = length(.), expr = paste(sample(., round(runif(1,1,8))), collapse = ' | ')),
+#'             row.names = .,
+#'             stringsAsFactors = FALSE)
+#' S1 <- as.character(sample(S0[,'taxon'], npred))
+#' S2 <- S1
+#' sourceSim <- targetSim <- matrix(nrow = nrow(S0), ncol = length(S1), data = runif(nrow(S0) * length(S1), min = 0, max = 1), dimnames = list(S0[,'taxon'],S1))
+#' # Predictions on simulated data
+#' iEat_bin(S0, S1, S2, sourceSim)
+#'
 #' @rdname iEat_bin
 #'
 #' @export
