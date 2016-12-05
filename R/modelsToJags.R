@@ -9,8 +9,6 @@
 #'
 #' @return
 #' A \code{.jags} file including the desired model.
-
-
 #' @describeIn modelsToJags Binomial model.
 #' @export
 binomialToJags <- function(filename) {

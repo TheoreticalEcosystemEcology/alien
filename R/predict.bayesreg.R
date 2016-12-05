@@ -12,7 +12,8 @@
 #' mean: Mean probability of interaction
 #' lower: 0.05 quantile of the probability of interaction
 #' upper: 0.95 quantile of the probability of interaction
-#' @author Ben Weinstein
+#' @author 
+#' Ben Weinstein
 #' @rdname predict.bayesreg
 #' @importFrom magrittr %>%
 #' @export
