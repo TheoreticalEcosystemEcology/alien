@@ -52,7 +52,7 @@ binomialToJags <- function(filename) {
       #derived posterior check
       fit<-sum(E[]) #Discrepancy for the observed data
       fitnew<-sum(E.new[])
-      }",
+      }", 
         file = filename, fill = TRUE)
 }
 
@@ -95,7 +95,7 @@ interceptToJags <- function(filename) {
     #derived posterior check
     fit<-sum(E[]) #Discrepancy for the observed data
     fitnew<-sum(E.new[])
-    }",
+    }", 
         file = filename, fill = TRUE)
 }
 
@@ -132,7 +132,7 @@ multinomialToJags <- function(filename) {
 
 
         }
-        ",
+        ", 
         file = filename, fill = TRUE)
 }
 
@@ -194,14 +194,14 @@ poissonToJags <- function(filename) {
         #derived posterior check
         fit<-sum(E[]) #Discrepancy for the observed data
         fitnew<-sum(E.new[])
-        }",
+        }", 
         file = filename, fill = TRUE)
 }
 #' @describeIn modelsToJags Occupancy model.
 #' @export
 OccupancyToJags <- function(filename) {
-  
-  cat("model {
+    
+    cat("model {
     #Compute intensity for each pair of birds and plants
     for (i in 1:Birds){
       for (j in 1:Plants){
@@ -280,6 +280,6 @@ OccupancyToJags <- function(filename) {
     fitnew<-sum(E.new[])
     
     
-  }",
-  file = filename, fill = TRUE)
-  }
+  }", 
+        file = filename, fill = TRUE)
+}
