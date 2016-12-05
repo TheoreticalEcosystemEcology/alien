@@ -34,7 +34,7 @@ ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smoot
 We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
 
 ```{r}
-intercept<-fit_bayesreg(dat = dat,algorithm = "Intercept",draws=10000)
+intercept<-fit_bayesreg(dat = dat,algorithm = "Intercept",draws=50000)
 ```
 
 Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
@@ -75,7 +75,7 @@ ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of in
 An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
 
 ```{r}
-binomial<-fit_bayesreg(dat=dat,algorithm = "Binomial",draws=10000)
+binomial<-fit_bayesreg(dat=dat,algorithm = "Binomial",draws=50000)
 ```
 
 Just as before, we can get the predicted matrix based on the model fit.
@@ -85,36 +85,6 @@ predframe2<-predict_bayesreg(binomial)
 
 #summarize mean, lower 5th and upper 9th
 sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
-```
-
-##View interactions
-```{r}
-ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=mean)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
-```
-
-Upper 95th estimate
-```{r}
-ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
-```
-
-Lower 5th estimate
-```{r}
-ggplot(sumframe2,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
-```
-
-Create the same boxplot as in the intercept model
-
-```{r}
-justB2<-predframe2 %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
-```
-
-Notice that as we added information the confidence intervals greatly decreased.
-
-## View trait-matching function
-
-```{r}
-ggplot(sumframe2,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
 ```
 
 # Multinomial Model
@@ -130,35 +100,37 @@ Plot multinomial probabilities. Let's extract the model output directly.
 ```{r}
 #extract pars
 predframe3<-predict_bayesreg(multinomial)
+sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
+justB3<-predframe3 %>% filter(I=="b") 
 ```
 
 Remember that a multinomial draw is similiar to our intercept model, each pairwise interaction gets a seperate probability. 
 
-## Mean Interaction Probabilities
-```{r}
-sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
+# Adding complexity using occupancy models
 
-m_mean<-ggplot(sumframe3,aes(x=as.factor(I),y=J,fill=upper)) + geom_tile() + scale_fill_continuous(low="blue",high="red") + labs(x="I")
-```
-
-Using species B from the upper level, as in the previous two models, as a visual.
+Due to sampling constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
 
 ```{r}
-justB3<-predframe3 %>% filter(I=="b") 
-ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+occupancy<-fit_bayesreg(dat,algorithm = "Occupancy")
 ```
 
-#Compare probabilities
+We are interested in the underlying affinity of species interactions, which are partionally observed due to detectability.
+
+```{r}
+predframe4<-predict_bayesreg(occupancy)
+sumframe4<-predframe4 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
+justB4<-predframe4 %>% filter(I=="b") 
+```
+
+# Compare model results
 
 ```{r}
 sumframe$Model<-"Intercept"
 sumframe2$Model<-"Binomial"
 sumframe3$Model<-"Multinomial"
-
-allsums<-bind_rows(list(sumframe,sumframe2,sumframe3))
-
-#side by side comparison of mean probabilites
-ggplot(allsums) + geom_tile(aes(x=I,y=J,fill=mean)) + facet_grid(~Model) + scale_fill_continuous(low="blue",high="red")
+sumframe4$Model<-"Occupancy"
+allframes<-bind_rows(sumframe,sumframe2,sumframe3,sumframe4)
+ggplot(allframes,aes(x=I,y=J,fill=mean)) + geom_tile() + facet_wrap(~Model) + scale_color_continuous(low='blue',high='red')
 ```
 
 For our example species B
@@ -167,9 +139,16 @@ For our example species B
 justB$Model<-"Intercept"
 justB2$Model<-"Binomial"
 justB3$Model<-"Multinomial"
+justB4$Model<-"Occupancy"
 
-allB<-bind_rows(list(justB,justB2,justB3))
+allB<-bind_rows(list(justB,justB2,justB3,justB4))
 ggplot(data=allB,aes(x=J,y=value)) + geom_boxplot(aes(fill=Model)) + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
+```
+
+## View trait-matching function
+
+```{r}
+ggplot(sumframe2,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() + geom_ribbon(alpha=0.7,fill="black") + labs(y="Probability of Interaction") + theme_bw()
 ```
 
 # Generate networks and statistics
@@ -189,11 +168,3 @@ ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_
 ```
 
 Same data, different model, different network statistics! Models matter. My point here is not that one model performed 'better', since the data was simulated in a similiar way. More that the models are not interchangable, and must be validated on quantitative and philosophical grounds.
-
-# Adding complexity.
-
-Due to sampling constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
-
-```{r}
-occupancy<-fit_bayesreg(dat,algorithm = "Occupancy")
-```

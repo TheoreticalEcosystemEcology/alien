@@ -41,7 +41,6 @@ predict_bayesreg <- function(x, newdata = NULL) {
         df$J <- levels(factor(dat$J))[df$J]
     }
 
-    # matching function
     if (x$Algorithm == "Binomial") {
         # default is predicting the observed data frame
         if (is.null(newdata)) {
@@ -72,6 +71,21 @@ predict_bayesreg <- function(x, newdata = NULL) {
       #merge with data
       df<-classes %>% select(I,J,Index) %>% inner_join(alphas) %>% select(-par) %>% mutate(value=estimate) %>% select(-estimate)
       }
+    if (x$Algorithm == "Occupancy") {
+      # default is predicting the observed data frame
+      if (is.null(newdata)) {
+        newdata <- x$data %>% dplyr::select(I, J, Traitmatch) %>% dplyr::distinct()
+      }
+      
+      # Trait-matching functions
+      predfun <- function(alpha, beta, newdata) {
+        data.frame(newdata, value = boot::inv.logit(alpha + beta * newdata[["Traitmatch"]]))
+      }
+      #
+      df <- parsm1 %>% dplyr::filter(par %in% c("alpha_mu", "beta_mu")) %>% dplyr::select(Draw,
+                                                                                          Chain, par, estimate) %>% reshape2::dcast(., Draw + Chain ~ par, value.var = "estimate") %>% dplyr::group_by(Draw, Chain) %>% dplyr::do((predfun(alpha = .$alpha_mu,
+                                                            beta = .$beta_mu, newdata))) %>% dplyr::group_by(I, J) %>% dplyr::inner_join(newdata)
+    }
     
     return(df)
 }

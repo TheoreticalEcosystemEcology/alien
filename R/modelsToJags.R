@@ -256,7 +256,7 @@ OccupancyToJags <- function(filename) {
       alpha[i] ~ dnorm(alpha_mu,alpha_tau)
       
       #Traits slope 
-      beta1[i] ~ dnorm(beta1_mu,beta1_tau)    
+      beta1[i] ~ dnorm(beta_mu,beta_tau)    
     }
     
     #Group Detection Prior
@@ -271,9 +271,9 @@ OccupancyToJags <- function(filename) {
     alpha_sigma<-pow(1/alpha_tau,0.5) 
     
     #Trait
-    beta1_mu~dnorm(0,0.01)
-    beta1_tau ~ dt(0,1,1)I(0,)
-    beta1_sigma<-pow(1/beta1_tau,0.5)
+    beta_mu~dnorm(0,0.01)
+    beta_tau ~ dt(0,1,1)I(0,)
+    beta_sigma<-pow(1/beta_tau,0.5)
     
     #derived posterior check
     fit<-sum(E[]) #Discrepancy for the observed data
