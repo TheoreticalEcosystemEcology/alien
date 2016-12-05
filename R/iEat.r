@@ -1,5 +1,7 @@
 #' @name iEat_bin
+#'
 #' @title Instance-based machine learning method to predict biotic interactions
+#'
 #' @param S0 Matrix, catalogue of empirical data used to infer predictions
 #' @param S1 Vector of taxa forming networking for which topology is predicted
 #' @param S2 Vector of taxa in S1 for which we wish to predict resources (if unspecified, S2 == S1 and the whole network is predicted)
@@ -9,12 +11,17 @@
 #' @param minSim Integer, minimum similarity value accepted to consider taxa as similar (implemented to avoid unrealistic interactions)
 #' @param minWt Integer, minimum weight for candidate source to become a predicted source
 #' @param predict String, specifies whether the predictions are made from the "full algorithm", the "catalogue" or the "predictive" contribution. If unspecified, predict == 'full algorithm'. See Beauchesne et al. (2016) for more details. If predict == 'catalogue', the methodology corresponds to the approach presented by Gray et al. (2015).
+#'
 #' @return
 #' A dataframe with source taxa for which target predictions are made, target infered from catalogue data (empirical) and target infered from KNN algorithm
+#'
 #' @author
 #' David Beauchesne
+#'
 #' @importFrom magrittr %>%
+#'
 #' @rdname iEat_bin
+#'
 #' @export
 
 
@@ -24,6 +31,18 @@
     # matrices need to be numeric
 
 iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+    #Checkups for data structure
+    if (sum(!S0[, 'taxon'] %in% rownames(sourceSim)) > 0 | sum(!S0[, 'taxon'] %in% rownames(targetSim)) > 0)
+        stop('Taxa in S0 have to be included as rows in the similarity matrices.')
+    if (sum(!S1 %in% rownames(sourceSim)) > 0 | sum(!S1 %in% rownames(targetSim)) > 0)
+        stop('Taxa in S1 have to be included as rows in the similarity matrices.')
+    if (sum(!S2 %in% rownames(sourceSim)) > 0 | sum(!S2 %in% rownames(targetSim)) > 0)
+        stop('Taxa in S2 have to be included as columns in the similarity matrices.')
+    if (sum(!S2 %in% S1) > 0)
+        stop('Taxa in S2 have to be included in S1')
+    if (!is.numeric(sourceSim) | !is.numeric(targetSim))
+        stop('Similarity matrices have to be numerical')
+
     #Embedded functions
     KNN <- function(taxa, matSim, K, minSim) {
         # K nearest neighbout (KNN) majority vote selection to identify most similar taxa
