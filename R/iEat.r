@@ -109,9 +109,6 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
             predictions[i, 'target_predictive'] <- candidates %>%
                                                         .[which(.[, 'weight'] >= 0.5), 'target'] %>%
                                                         paste(., collapse = ' | ')
-
-            # candidates <- candidates %>% .[which(.[, 'weight'] >= minWt), ] # remove candidates with a weight below MW
-            # predictions[i, 'target_predictive'] <- paste(candidates[,'target'], collapse = ' | ')
         } #i
     }#if
     return(predictions)
