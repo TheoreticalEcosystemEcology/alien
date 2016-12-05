@@ -40,12 +40,6 @@
 #'
 #' @export
 
-
-# TODO: Stops:
-    # if all S1 and S0 not in sourceSim & targetSim rows, stop
-    # if all S2 not in sourceSim & targetSim columns, stop
-    # matrices need to be numeric
-
 iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
     #Checkups for data structure
     if (sum(!S0[, 'taxon'] %in% rownames(sourceSim)) > 0 | sum(!S0[, 'taxon'] %in% rownames(targetSim)) > 0)
