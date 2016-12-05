@@ -85,6 +85,10 @@ predframe2<-predict_bayesreg(binomial)
 
 #summarize mean, lower 5th and upper 9th
 sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
+
+#Just b
+justB2<-predframe2 %>% filter(I=="b") 
+
 ```
 
 # Multinomial Model
@@ -100,6 +104,8 @@ Plot multinomial probabilities. Let's extract the model output directly.
 ```{r}
 #extract pars
 predframe3<-predict_bayesreg(multinomial)
+
+#calculate summary
 sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
 justB3<-predframe3 %>% filter(I=="b") 
 ```
@@ -119,6 +125,8 @@ We are interested in the underlying affinity of species interactions, which are 
 ```{r}
 predframe4<-predict_bayesreg(occupancy)
 sumframe4<-predframe4 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
+
+#just one species
 justB4<-predframe4 %>% filter(I=="b") 
 ```
 
