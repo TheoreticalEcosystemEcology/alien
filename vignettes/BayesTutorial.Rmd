@@ -13,7 +13,7 @@ library(alienR)
 library(ggplot2)
 library(knitr)
 library(dplyr)
-opts_chunk$set(warning=F,message=F)
+opts_chunk$set(warning=F,message=F,include=T)
 ```
 
 # Simulate data
@@ -34,13 +34,13 @@ ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smoot
 We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
 
 ```{r}
-intercept<-fit.bayesreg(dat = dat,algorithm = "Intercept",draws=10000)
+intercept<-fit_bayesreg(dat = dat,algorithm = "Intercept",draws=10000)
 ```
 
 Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
 
 ```{r}
-predframe<-predict.bayesreg(intercept)
+predframe<-predict_bayesreg(intercept)
 
 #summarize mean, lower 5th and upper 9th
 sumframe<-predframe %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95))
@@ -75,13 +75,13 @@ ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of in
 An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
 
 ```{r}
-binomial<-fit.bayesreg(dat=dat,algorithm = "Binomial",draws=10000)
+binomial<-fit_bayesreg(dat=dat,algorithm = "Binomial",draws=10000)
 ```
 
 Just as before, we can get the predicted matrix based on the model fit.
 
 ```{r}
-predframe2<-predict.bayesreg(binomial)
+predframe2<-predict_bayesreg(binomial)
 
 #summarize mean, lower 5th and upper 9th
 sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
@@ -122,14 +122,14 @@ ggplot(sumframe2,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() +
 Several different papers have been interested in assigning probability to each pair of interactions based on a multinomial or direchlet distribution. 
 
 ```{r}
-multinomial<-fit.bayesreg(dat,algorithm = "Multinomial")
+multinomial<-fit_bayesreg(dat,algorithm = "Multinomial")
 ```
 
 Plot multinomial probabilities. Let's extract the model output directly.
 
 ```{r}
 #extract pars
-predframe3<-predict.bayesreg(multinomial)
+predframe3<-predict_bayesreg(multinomial)
 ```
 
 Remember that a multinomial draw is similiar to our intercept model, each pairwise interaction gets a seperate probability. 
@@ -195,5 +195,5 @@ Same data, different model, different network statistics! Models matter. My poin
 Due to samplind constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
 
 ```{r}
-occupancy<-fit.bayesreg(dat,algorithm = "Occupancy")
+occupancy<-fit_bayesreg(dat,algorithm = "Occupancy")
 ```

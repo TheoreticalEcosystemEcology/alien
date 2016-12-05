@@ -1,4 +1,4 @@
-#' @name extract.bayesreg
+#' @name extract_bayesreg
 #' @title Extract posterior distributions from Bayesian Regression Model
 #'
 #' @description A helper function for getting the chains from a JAGS model object outputted from fit.bayesreg
@@ -9,10 +9,10 @@
 #' @references
 #' Bartomeus et al. 2016. Functional Ecology.
 #'
-#' @rdname extract.bayesreg
+#' @rdname extract_bayesreg
 #' @export
 
-extract.bayesreg <- function(x) {
+extract_bayesreg <- function(x) {
     parsO <- reshape2::melt(x$BUGSoutput$sims.array)
     colnames(parsO) <- c("Draw", "Chain", "parameter", "estimate")
     

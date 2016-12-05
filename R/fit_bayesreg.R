@@ -1,4 +1,4 @@
-#' @name fit.bayesreg
+#' @name fit_bayesreg
 #' @aliases bayesian regression
 #' @author Ben Weinstein
 #' @title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
@@ -29,7 +29,7 @@
 #' @import coda
 #' @export
 
-fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
+fit_bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
   
     #jags needs to be manually started
     library(coda)

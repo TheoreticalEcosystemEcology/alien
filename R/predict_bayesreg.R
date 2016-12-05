@@ -1,4 +1,4 @@
-#' @name predict.bayesreg
+#' @name predict_bayesreg
 #' @title Predict species interaction probabilities based on a fitted hierarchical bayesian regression
 #' @description A helper functional for generating the probability of interaction among hypothetical species based on their traits.
 #' The trait-matching function is currently |Trait_i - Trait_j|
@@ -14,12 +14,12 @@
 #' upper: 0.95 quantile of the probability of interaction
 #' @author 
 #' Ben Weinstein
-#' @rdname predict.bayesreg
+#' @rdname predict_bayesreg
 #' @importFrom magrittr %>%
 #' @export
-predict.bayesreg <- function(x, newdata = NULL) {
+predict_bayesreg <- function(x, newdata = NULL) {
 
-    parsm1 <- extract.bayesreg(x)
+    parsm1 <- extract_bayesreg(x)
 
     if (x$Algorithm == "Intercept") {
         # get intercepts
