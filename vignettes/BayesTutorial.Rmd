@@ -192,7 +192,7 @@ Same data, different model, different network statistics! Models matter. My poin
 
 # Adding complexity.
 
-Due to samplind constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
+Due to sampling constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
 
 ```{r}
 occupancy<-fit_bayesreg(dat,algorithm = "Occupancy")
