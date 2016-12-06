@@ -1,7 +1,7 @@
 context("Models")
 
 test_that("integrated model works", {
-    out <- integrated.model(pars = c(1,1,1,1),
+    out <- integratedModel(pars = c(1,1,1,1),
                             Tlevel1 = rnorm(10),
                             Tlevel2 = rnorm(10),
                             mean_Tlevel1 = 0,
@@ -21,7 +21,7 @@ test_that("integrated model works", {
 # })
 
 test_that("neutral model works", {
-  out <- neutral.model(pars = NULL,
+  out <- neutralModel(pars = NULL,
                           Tlevel1 = rnorm(10),
                           Tlevel2 = rnorm(10),
                           mean_Tlevel1 = 0,

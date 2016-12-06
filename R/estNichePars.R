@@ -1,4 +1,4 @@
-#' @name fit.niche.prob
+#' @name estNichPars
 #'
 #' @title Fit a model using Genaralized Simulated Annealing (SA) functions.
 #'
@@ -28,7 +28,7 @@
 #' Dominique Gravel and Ignasi Bartomeus
 #'
 #' @export
-fit_it <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1, pars = c(a0 = 0, 
+estNichPars <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1, pars = c(a0 = 0, 
     a1 = 0, b0 = 0, b1 = 0), par_lo = c(a0 = -5000, a1 = -5000, b0 = -5000, b1 = -5000), 
     par_hi = c(a0 = 5000, a1 = 5000, b0 = 5000, b1 = 5000), max.time = 1800) {
     # Initial values pars = c(a0 = 0, a1 = 0, b0 = 0, b1 = 0) #default lm_M =
@@ -40,5 +40,3 @@ fit_it <- function(model, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1, pars = c(a
         Tlevel2 = Tlevel2, mean_Tlevel1 = mean_Tlevel1, sd_Tlevel1 = sd_Tlevel1)
     estim.pars$par
 }
-
-
