@@ -23,4 +23,3 @@ weighted_mean(c(2,3,4), c(1,1,2))
 weighted_sd(c(2,3,4), c(2,1,2))
 
 }
-
