@@ -19,7 +19,8 @@ a value with the weighted mean or sd.
 just weighted mean and sd.
 }
 \examples{
-weighted_mean(c(2,3,4), c(1,1,2))
-weighted_sd(c(2,3,4), c(2,1,2))
+weightedMean(c(2,3,4), c(1,1,2))
+weightedSd(c(2,3,4), c(2,1,2))
 
 }
+
