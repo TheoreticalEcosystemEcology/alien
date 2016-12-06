@@ -17,5 +17,5 @@
 #' @export
 residuals.niche.prob <- function(pars, Tlevel1, Tlevel2) {
     pred <- predict.niche.prob(pars, Tlevel1, Tlevel2, replicates = 1)[[1L]]
-    1 - pred
+    return(1 - pred)
 }

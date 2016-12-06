@@ -25,8 +25,8 @@ if (!as.numeric(args[1])) {
 } else {
   ## format the code
   cat("##-- tidying ........\n")
-  formatR::tidy_dir("./R")
-  formatR::tidy_dir("./tests/test_that")
+  formatR::tidy_dir("./R",arrow = getOption("formatR.arrow",TRUE))
+  formatR::tidy_dir("./tests/test_that", arrow = getOption("formatR.arrow",TRUE))
   decor()
   ## load the package
   cat("##-- loading ........\n")

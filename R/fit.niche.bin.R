@@ -16,11 +16,11 @@
 #'
 #' @rdname fit.niche.bin
 #' @export
-fit.niche.bin = function(data, thresh) {
+fit.niche.bin <- function(data, thresh) {
     # input data should be checked Fit model
-    model_o = stats::lm(Tj ~ Ti, data)
-    model_lo = quantreg::rq(Tj ~ Ti, tau = thresh, data)
-    model_up = quantreg::rq(Tj ~ Ti, tau = 1 - thresh, data)
+    model_o <- stats::lm(Tj ~ Ti, data)
+    model_lo <- quantreg::rq(Tj ~ Ti, tau = thresh, data)
+    model_up <- quantreg::rq(Tj ~ Ti, tau = 1 - thresh, data)
     
     # Return results
     return(list(model_o = model_o, model_lo = model_lo, model_up = model_up))
