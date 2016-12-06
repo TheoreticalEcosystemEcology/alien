@@ -1,12 +1,12 @@
 #' Generate network statistics from a hierarchical bayesian model of species interactions
-#' @name network.bayesreg
+#' @name networkBayesReg
 #' @param x A predicted model object from predict.bayesreg
 #' @param indices a vector of network statistics corresponding to network statistics (see details)
 #' @details Network statistics are calculated using the fucntion networklevel from the package bipartite, see ?networklevel for a list of available options.
 #'
 #' @return A data frame with the desired metrics for each of the draws of the network.
 #' @export
-network.bayesreg <- function(x, indices) {
+networkBayesReg <- function(x, indices) {
     
     # helper function for web prediction
     makeN <- function(a, indices) {
@@ -27,5 +27,3 @@ network.bayesreg <- function(x, indices) {
     
     return(nstats)
 }
-
-

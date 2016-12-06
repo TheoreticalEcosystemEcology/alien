@@ -1,4 +1,4 @@
-#' @name fit.direct.centrality
+#' @name fitDirectCentrality
 #'
 #' @title Direct matching centrality
 #'
@@ -13,9 +13,8 @@
 #'
 #' @references
 #'
-#' @rdname fit.direct.centrality
 #' @export
-fit.direct.centrality <- function(data, algorithm, ...) {
+fitDirectCentrality <- function(data, algorithm, ...) {
     
     if (algorithm == "logistic") 
         model <- stats::glm(I ~ . * ., data, family = "binomial") else if (algorithm == "poisson") 

@@ -1,4 +1,4 @@
-#' @name predict.niche.prob
+#' @name predNicheProb
 #'
 #' @title Predict new data points using traitmatch function generated with fit.niche.prob
 #'
@@ -20,7 +20,7 @@
 #'
 #'
 #' @export
-predict.niche.prob <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
+predNicheProb <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
     out <- list()
     # Optimum and range
     o <- pars[1L] + pars[2L] * Tlevel2
