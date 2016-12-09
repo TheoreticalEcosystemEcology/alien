@@ -1,4 +1,4 @@
-#' @name sim.traitmatch.R
+#' @name simTraitmatch.R
 #' @aliases trait-matching
 #'
 #' @title Simulating trait-matching among species
@@ -12,6 +12,7 @@
 #' @param beta_sigma Variance among species in trait-matching slope.
 #' @param alpha_sigma Variance among species in trait-matching intercept.
 #' @param replicates The number of times the network was sampled. For example, Replicate = 1 will yield I*J data points
+#' @param type string binary or quantitative network?
 #' @author
 #' Ben Weinstein
 #'
@@ -19,11 +20,11 @@
 #' Bartomeus et al. 2016. Functional Ecology.
 #'
 #'
-#' @rdname sim.traitmatch
+#' @rdname simTraitmatch
 #' @export
 
-sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1, 
-    alpha_sigma = 0, replicates = 1) {
+simTraitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1, 
+    alpha_sigma = 0, replicates = 1,type="binary") {
     
     # Subtract both and take absolute value, convert cm
     traitmatch <- abs(sapply(traits_y, function(x) x - traits_x))
@@ -48,8 +49,10 @@ sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1,
             for (y in 1:size_y) {
                 
                 # intensity
-                N[x, y, z] <- boot::inv.logit(alpha[x] + beta1[x] * traitmatch[x, 
-                  y])
+                if(type=="binary"){
+                  N[x, y, z] <- boot::inv.logit(alpha[x] + beta1[x] * traitmatch[x,y])}
+                if(type=="quantitative"){
+                N[x, y, z] <- boot::exp(alpha[x] + beta1[x] * traitmatch[x,y])}
                 
                 # draw one state
                 obs[x, y, z] <- rbinom(1, 1, N[x, y, z])

@@ -1,4 +1,4 @@
-#' @name fit_bayesreg
+#' @name fitBayesreg
 #' @aliases bayesian regression
 #' @author Ben Weinstein
 #' @title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
@@ -12,24 +12,24 @@
 #' @details
 #' Intercept Model
 #' For each pair of species i interaction with species j
-#' \deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
-#' \deqn{ logit(\rho_{i,j}) = \alpha_{i,j} }
+#' \eqn{ Obs_i,j ~ Binom(\rho_i,j)}
+#' \eqn{ logit(\rho_{i,j}) = \alpha_i,j}
 #'
 #' With a hierarchical relationship among species i (eg. pollinators)
-#' \deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma)}
+#' \deqn{\alpha_{i,j} ~ Normal(\alpha_\mu,\alpha_\sigma)}
 #'#' Intercept Model
 #' For each pair of species i interaction with species j
-#' \deqn{ Obs_{i,j} \sim Binom(\rho_{i,j})}
+#' \deqn{ Obs_{i,j} ~ Binom(\rho_{i,j})}
 #' \deqn{ logit(\rho_{i,j}) = \alpha_{i,j} + \beta_{i,j}}
 #'
 #' With a hierarchical relationship among species intercepts and slopes i (eg. pollinators)
-#' \deqn{\alpha_{i,j} \sim Normal(\alpha_\mu,\alpha_\sigma}
-#' \deqn{\beta_{i,j} \sim Normal(\beta_\mu,\beta_\sigma}
+#' \deqn{\alpha_{i,j} ~ Normal(\alpha_\mu,\alpha_\sigma}
+#' \deqn{\beta_{i,j} ~ Normal(\beta_\mu,\beta_\sigma}
 #' @return A jags model obect (see package R2Jags)
 #' @import coda
 #' @export
 
-fit_bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
+fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
   
     #jags needs to be manually started
     library(coda)
@@ -152,6 +152,30 @@ fit_bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
       m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
                                                 model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
     }
+    if (algorithm == "Nmixture") {
+      
+      #encode replicate sampling.
+      Time<-dat$Replicate
+      Times <- max(dat$Replicate)
+      
+      modelDat <- list("Yobs","Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", "Traitmatch","Times","Time")
+      
+      #init unobserved variance
+      Ninit<-array(dim=c(Birds,Plants,Times),data=1)
+      InitStage <- function(){list(N=Ninit)}
+      
+      # Parameters to track
+      ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
+                     "beta_mu", "ynew", "fit", "fitnew")
+      
+      # jags file.
+      modfile <- paste0(tempdir(), "/Nmixture.jags")
+      NmixtureToJags(modfile)
+      # 
+      m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
+                                                model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
+    }
+    
     # Append the algorith and dataset, it will be helpful for later
     m1$Algorithm <- algorithm
     m1$data <- dat

@@ -21,7 +21,7 @@ opts_chunk$set(warning=F,message=F,include=T)
 For this example, let's similiar some interaction data on trait-matching among species
 
 ```{r}
-dat<-sim.traitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
+dat<-simTraitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
 ```
 
 We can view the trait-matching in this simulated dataset
@@ -34,13 +34,13 @@ ggplot(dat,aes(x=abs(TraitI-TraitJ),y=Interactions)) + geom_point() + geom_smoot
 We can then fit a hierarchical bayesian model. The simplest model is an intercept model, such that the probability of interaction is fixed for each pair of species.
 
 ```{r}
-intercept<-fit_bayesreg(dat = dat,algorithm = "Intercept",draws=50000)
+intercept<-fitBayesreg(dat = dat,algorithm = "Intercept",draws=50000)
 ```
 
 Get the matrix of probability of interactions among observed species. Since this is the intercept model, we are just interested in the probabilities of our observed matrix. This is the default of the predict function.
 
 ```{r}
-predframe<-predict_bayesreg(intercept)
+predframe<-predictBayesreg(intercept)
 
 #summarize mean, lower 5th and upper 9th
 sumframe<-predframe %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95))
@@ -75,20 +75,19 @@ ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of in
 An intercept model may work well in some situations, but we often are collecting data to test some underlying ecological mechansim. For example, to test trait-matching among network partners. IN the intercept model, we never used the trait values we simulated. Let's correct that.
 
 ```{r}
-binomial<-fit_bayesreg(dat=dat,algorithm = "Binomial",draws=50000)
+binomial<-fitBayesreg(dat=dat,algorithm = "Binomial",draws=50000)
 ```
 
 Just as before, we can get the predicted matrix based on the model fit.
 
 ```{r}
-predframe2<-predict_bayesreg(binomial)
+predframe2<-predictBayesreg(binomial)
 
 #summarize mean, lower 5th and upper 9th
 sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 
 #Just b
 justB2<-predframe2 %>% filter(I=="b") 
-
 ```
 
 # Multinomial Model
@@ -96,14 +95,14 @@ justB2<-predframe2 %>% filter(I=="b")
 Several different papers have been interested in assigning probability to each pair of interactions based on a multinomial or direchlet distribution. 
 
 ```{r}
-multinomial<-fit_bayesreg(dat,algorithm = "Multinomial")
+multinomial<-fitBayesreg(dat,algorithm = "Multinomial")
 ```
 
 Plot multinomial probabilities. Let's extract the model output directly.
 
 ```{r}
 #extract pars
-predframe3<-predict_bayesreg(multinomial)
+predframe3<-predictBayesreg(multinomial)
 
 #calculate summary
 sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
@@ -117,13 +116,13 @@ Remember that a multinomial draw is similiar to our intercept model, each pairwi
 Due to sampling constraints, it is usually impossible to fully monitor a network and resolve interactions among all species.
 
 ```{r}
-occupancy<-fit_bayesreg(dat,algorithm = "Occupancy")
+occupancy<-fitBayesreg(dat,algorithm = "Occupancy")
 ```
 
 We are interested in the underlying affinity of species interactions, which are partionally observed due to detectability.
 
 ```{r}
-predframe4<-predict_bayesreg(occupancy)
+predframe4<-predictBayesreg(occupancy)
 sumframe4<-predframe4 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 
 #just one species
@@ -176,3 +175,9 @@ ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_
 ```
 
 Same data, different model, different network statistics! Models matter. My point here is not that one model performed 'better', since the data was simulated in a similiar way. More that the models are not interchangable, and must be validated on quantitative and philosophical grounds.
+
+# Quantitative Data
+
+```{r}
+dat<-simTraitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
+```
