@@ -30,10 +30,10 @@
 #' @export
 
 fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
-  
-    #jags needs to be manually started
+
     library(coda)
-    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson","Multinomial","Occupancy"))
+    stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson", "Multinomial", 
+        "Occupancy"))
     
     # format traitmatch as matrix
     dat$Traitmatch <- abs(dat$TraitI - dat$TraitJ)
@@ -100,21 +100,21 @@ fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
     
     if (algorithm == "Multinomial") {
         
-        #The total number of interactions
-        N<-sum(dat$Interactions)
+        # The total number of interactions
+        N <- sum(dat$Interactions)
         
-        #The total number of pairwise classes 
-        k=Birds * Plants
+        # The total number of pairwise classes
+        k <- Birds * Plants
         
-        #The number of total visits per class
-        classes<-dat %>% group_by(I,J) %>% summarise(totalvisits=sum(Interactions))
-        tvisits=classes$totalvisits
+        # The number of total visits per class
+        classes <- dat %>% group_by(I, J) %>% summarise(totalvisits = sum(Interactions))
+        tvisits <- classes$totalvisits
         
-        #Send data to jags
+        # Send data to jags
         modelDat <- list("N", "k", "tvisits")
         
         # Parameters to track
-        ParsStage <- c("alpha", "p","fit","fitnew")
+        ParsStage <- c("alpha", "p", "fit", "fitnew")
         
         # jags file.
         modfile <- paste0(tempdir(), "/Multinomial.jags")
@@ -125,32 +125,36 @@ fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
             model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, 
             DIC = F))
         
-        #append classes
-        m1$classes<-classes
+        # append classes
+        m1$classes <- classes
     }
     if (algorithm == "Occupancy") {
-      
-      #encode replicate sampling.
-      Time<-dat$Replicate
-      Times <- max(dat$Replicate)
-      
-      modelDat <- list("Yobs","Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", "Traitmatch","Times","Time")
-      
-      #init unobserved variance
-      Ninit<-array(dim=c(Birds,Plants,Times),data=1)
-      InitStage <- function(){list(N=Ninit)}
-      
-      # Parameters to track
-      ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
-                     "beta_mu", "ynew", "fit", "fitnew")
-      
-      # jags file.
-      modfile <- paste0(tempdir(), "/Occupancy.jags")
-      OccupancyToJags(modfile)
-      # 
-      
-      m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
-                                                model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
+        
+        # encode replicate sampling.
+        Time <- dat$Replicate
+        Times <- max(dat$Replicate)
+        
+        modelDat <- list("Yobs", "Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", 
+            "Traitmatch", "Times", "Time")
+        
+        # init unobserved variance
+        Ninit <- array(dim = c(Birds, Plants, Times), data = 1)
+        InitStage <- function() {
+            list(N = Ninit)
+        }
+        
+        # Parameters to track
+        ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
+            "beta_mu", "ynew", "fit", "fitnew")
+        
+        # jags file.
+        modfile <- paste0(tempdir(), "/Occupancy.jags")
+        OccupancyToJags(modfile)
+        # 
+        
+        m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, 
+            inits = InitStage, model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, 
+            n.chains = nc, DIC = F))
     }
     if (algorithm == "Nmixture") {
       

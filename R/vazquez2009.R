@@ -7,7 +7,7 @@
 #' @details This is simply a wrapper function for the mgen function in the package bipartite, included here as part of the quantitative tests. See ?bipartite:mgen for details.
 #' @return A predicted matrix of interactions
 #' @export
-predict.vazquez2009<-function(web,n,keep.species=TRUE,rep.cell=T){
-  df<-mgen(pweb, n, keep.species=keep.species, rep.cell=rep.cell) # Not allowing zero marginal sums
-  return(df)
+predict.vazquez2009 <- function(web, n, keep.species = TRUE, rep.cell = T) {
+    df <- mgen(pweb, n, keep.species = keep.species, rep.cell = rep.cell)  # Not allowing zero marginal sums
+    return(df)
 }
