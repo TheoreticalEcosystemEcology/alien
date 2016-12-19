@@ -1,4 +1,4 @@
-#' @name fit.bayesreg
+#' @name fitBayesReg
 #' @aliases bayesian regression
 #' @author Ben Weinstein
 #' @title Hierarchical Bayesian Regression for estimating trait-matching in species interaction data
@@ -29,7 +29,7 @@
 #'
 #' @export
 
-fit.bayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
+fitBayesReg <- function(dat, algorithm = "Binomial", draws = 10000) {
     
     stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson"))
     

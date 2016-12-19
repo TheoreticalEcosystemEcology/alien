@@ -1,7 +1,8 @@
 context("Models")
 
+## 2B improved
 test_that("integrated model works", {
-    out <- integrated.model(pars = c(1,1,1,1),
+    out <- integratedModel(pars = c(1,1,1,1),
                             Tlevel1 = rnorm(10),
                             Tlevel2 = rnorm(10),
                             mean_Tlevel1 = 0,
@@ -20,11 +21,20 @@ test_that("integrated model works", {
 #   expect_equal(TRUE, TRUE)#is.numeric(out))
 # })
 
+## 2B improved
 test_that("neutral model works", {
-  out <- neutral.model(pars = NULL,
+  out <- neutralModel(pars = NULL,
                           Tlevel1 = rnorm(10),
                           Tlevel2 = rnorm(10),
                           mean_Tlevel1 = 0,
                           sd_Tlevel1 = 1)
+  expect_equal(TRUE, is.numeric(out))
+})
+
+
+test_that("residuals computation for the niche model works", {
+  out <- residualsNicheProb(pars = c(1,1,1,1),
+                          Tlevel1 = rnorm(10),
+                          Tlevel2 = rnorm(10))
   expect_equal(TRUE, is.numeric(out))
 })

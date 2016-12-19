@@ -1,4 +1,4 @@
-#' @name sim.traitmatch.R
+#' @name simTraitMatch
 #' @aliases trait-matching
 #'
 #' @title Simulating trait-matching among species
@@ -19,11 +19,10 @@
 #' Bartomeus et al. 2016. Functional Ecology.
 #'
 #'
-#' @rdname sim.traitmatch
 #' @export
 
-sim.traitmatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1, 
-    alpha_sigma = 0, replicates = 1) {
+simTraitMatch <- function(size_x, size_y, traits_x, traits_y, beta_sigma = 0.1, alpha_sigma = 0, 
+    replicates = 1) {
     
     # Subtract both and take absolute value, convert cm
     traitmatch <- abs(sapply(traits_y, function(x) x - traits_x))

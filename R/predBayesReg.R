@@ -1,4 +1,4 @@
-#' @name predict.bayesreg
+#' @name predBayesReg
 #' @aliases prediction bayesian regression
 #'
 #' @title Predict species interaction probabilities based on a fitted hierarchical bayesian regression
@@ -22,11 +22,10 @@
 #' @references
 #' Weinstein et al. 2016. Oikos
 #'
-#' @rdname predict.bayesreg
 #' @importFrom magrittr %>%
 #' @export
 
-predict.bayesreg <- function(x, newdata = NULL) {
+predBayesReg <- function(x, newdata = NULL) {
     
     parsm1 <- extract.bayesreg(x)
     

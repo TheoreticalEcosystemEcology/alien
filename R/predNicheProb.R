@@ -1,4 +1,4 @@
-#' @name predict.niche.prob
+#' @name predNicheProb
 #'
 #' @title Predict new data points using traitmatch function generated with fit.niche.prob
 #'
@@ -13,14 +13,14 @@
 #' The next elements are as many predicted interaction as replicates.
 #'
 #' @note
-#' See more here: https://github.com/ibartomeus/trait_match
+#' See more here: \url{https://github.com/ibartomeus/trait_match}
 #'
 #' @author
 #' Dominique Gravel and Ignasi Bartomeus
 #'
 #'
 #' @export
-predict.niche.prob <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
+predNicheProb <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
     out <- list()
     # Optimum and range
     o <- pars[1L] + pars[2L] * Tlevel2
@@ -35,5 +35,5 @@ predict.niche.prob <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
     for (i in 1:replicates + 1) {
         out[[i]] <- rbinom(length(Tlevel1), size = 1, prob = pLM)
     }
-    out
+    return(out)
 }
