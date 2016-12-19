@@ -23,7 +23,7 @@ The next elements are as many predicted interaction as replicates.
 It generates predicted interactions based on new data.
 }
 \note{
-See more here: https://github.com/ibartomeus/trait_match
+See more here: \url{https://github.com/ibartomeus/trait_match}
 }
 \author{
 Dominique Gravel and Ignasi Bartomeus
