@@ -35,53 +35,64 @@
 #' @keywords manip
 #' @keywords classes
 #' @export
-as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, interact = NULL, 
-    siteSp = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL, 
-    resCon = NULL, location = NULL, scaleSiteEnv = TRUE, scaleTrait = TRUE, interceptSiteEnv = TRUE, 
+as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, interact = NULL,
+    siteSp = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL,
+    resCon = NULL, location = NULL, scaleSiteEnv = TRUE, scaleTrait = TRUE, interceptSiteEnv = TRUE,
     interceptTrait = TRUE) {
+
+    #===============================  Test which args exists
+
+    args <- c("coOcc", "coAbund", "interact", "siteSp", "siteEnv", "traitSp", "traitInd",
+        "phylo", "resCon", "location")
+
+    exist_args <- sapply(args, exists)
+    exist_args <- names(exist_args[exist_args == TRUE])
+
+    # ================== Start Checking ==================
+
     #### F. Guillaume Blanchet - December 2016 Check for number of columns
     if (!is.null(interactPair)) {
         ### Check for number of columns
         if (ncol(interactPair) < 4) {
-            stop("'indSp' needs to have at least four columns")
+            stop("'interactPair' needs to have at least four columns")
         }
-        
+
         ### Check for row names
         if (is.null(rownames(interactPair))) {
             rownames(interactPair) <- paste("pair", 1:ncol(interactPair), sep = "")
             print("row names names were added to 'interactPair'")
         }
-        
+
         ### Check for column names
         if (is.null(colnames(interactPair))) {
             colnames(interactPair)[1] <- "sp1"
             colnames(interactPair)[2] <- "sp2"
             colnames(interactPair)[3] <- "strength"
-            colnames(interactPair)[4:ncol(interactPair)] <- paste("site", 1:(ncol(interactPair) - 
+            colnames(interactPair)[4:ncol(interactPair)] <- paste("site", 1:(ncol(interactPair) -
                 3), sep = "")
             print("column names were added to 'interactPair'")
         }
-        
+
         ### Check class
-        
+
         ### Make sure indSp is a data.frame
         if (!is.data.frame(interactPair)) {
             interactPair <- as.data.frame(interactPair)
         }
-        
+
         ### Make sure the first, second, and fourth column are factor
         if (!all(sapply(interactPair, class)[c(1, 2, 4:ncol(interactPair))] == "factor")) {
             interactPair <- as.data.frame(lapply(interactPair, as.factor))
         }
-        
+
         ### Make sure the third column is numeric
         if (!is.numeric(interactPair[, 3])) {
             interactPair[, 3] <- as.numeric(interactPair[, 3])
         }
     }
-    
+
     # ============================== Individual traits long data
-    # ==============================
+
     if (!is.null(traitInd)) {
         ### Check for number of columns
         if (ncol(traitInd) < 2) {
@@ -92,151 +103,152 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
             rownames(traitInd) <- paste("Ind", 1:ncol(traitInd), sep = "")
             print("row names names were added to 'traitInd'")
         }
-        
+
         ### Check for column names
         if (is.null(column(traitInd))) {
             colnames(traitInd)[1] <- "sp"
-            colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) - 
+            colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) -
                 1), sep = "")
             print("column names were added to 'traitInd'")
         }
-        
+
         ### Check class
-        
+
         ### Make sure traitInd is a data.frame
         if (!is.data.frame(traitInd)) {
             traitInd <- as.data.frame(traitInd)
         }
-        
+
         ### Make sure the first column is a factor (all other columns are free form)
         if (!is.factor(traitInd[, 1])) {
             traitInd[, 1] <- as.factor(traitInd[, 1])
         }
     }
-    
-    # ========== Convert ========== coAbund
+
+    # ========== Convert ==========
     nsp <- nlevels(interactPair[, 1]) + nlevels(interactPair[, 2])
     coAbund <- matrix(NA, nrow = nsp, ncol = nsp)
     colnames(coAbund) <- c(levels(interactPair[, 1]), levels(interactPair[, 2]))
     rownames(coAbund) <- c(levels(interactPair[, 1]), levels(interactPair[, 2]))
-    
+
     for (i in 1:nrow(interactPair)) {
         coAbund[interactPair[i, 1], interactPair[i, 2]] <- interactPair[i, 3]
         coAbund[interactPair[i, 2], interactPair[i, 1]] <- interactPair[i, 3]
     }
-    
+
     # =============================== Check all other matrix types
     # =============================== resCon is a special case that needs to be
     # checked independently
+
     if (!is.null(resCon)) {
         ### Check format
         if (length(dim(resCon)) != 2) {
             stop("'resCon' should be a table")
         }
-        
+
         ### Row names
         if (is.null(rownames(resCon))) {
             rownames(resCon) <- paste("Resource", 1:ncol(resCon), sep = "")
             print("rownames names were added to 'resCon'")
         }
-        
+
         ### Column names
         if (is.null(colnames(resCon))) {
             colnames(resCon) <- paste("Consumer", 1:ncol(resCon), sep = "")
             print("column names were added to 'resCon'")
         }
-        
+
         ### Build interact matrix
         matSize <- nrow(resCon) + ncol(resCon)
         interact <- matrix(NA, nrow = matSize, ncol = matSize)
         interact[1:nrow(resCon), 1:ncol(resCon)] <- resCon
-        interact[(nrow(resCon) + 1):(ncol(resCon) + nrow(resCon)), (ncol(resCon) + 
+        interact[(nrow(resCon) + 1):(ncol(resCon) + nrow(resCon)), (ncol(resCon) +
             1):(nrow(resCon) + ncol(resCon))] <- t(resCon)
     }
-    
+
     #### Check format
     if (!is.null(coOcc)) {
         if (nrow(coOcc) != ncol(coOcc)) {
             stop("'coOcc' should be a square table")
         }
-        
+
         ### Check if symmetry
         if (!isSymmetric(coOcc)) {
             stop("'coOcc' need to be a symmetric matrix")
         }
-        
+
         ### Check positive definiteness
         if (!all(unique(coOcc) == c(0, 1))) {
             stop("'coOcc' should include only 0s and 1s")
         }
     }
-    
+
     if (!is.null(coAbund)) {
         if (nrow(coAbund) != ncol(coAbund)) {
             stop("'coAbund' should be a square table")
         }
-        
+
         ### Check if symmetry
         if (!isSymmetric(coAbund)) {
             stop("'coAbund' need to be a symmetric matrix")
         }
-        
+
         ### Check positive definiteness
         if (!all(coAbund) >= 0) {
             stop("All values in 'coAbund' should be larger or equal to 0")
         }
     }
-    
+
     if (!is.null(interact)) {
         if (nrow(interact) != ncol(interact)) {
             stop("'interact' should be a square table")
         }
-        
+
         ### Check positive definiteness
         if (!all(interact) >= 0) {
             stop("All values in 'interact' should be larger or equal to 0")
         }
     }
-    
+
     if (!is.null(siteSp)) {
         if (length(dim(siteSp)) != 2) {
             stop("'siteSp' should be a table")
         }
     }
-    
+
     if (!is.null(siteEnv)) {
         if (length(dim(siteEnv)) != 2) {
             stop("'siteEnv' should be a table")
         }
     }
-    
+
     if (!is.null(traitSp)) {
         if (length(dim(traitSp)) != 2) {
             stop("'traitSp' should be a table")
         }
     }
-    
+
     if (!is.null(phylo)) {
         if (nrow(phylo) != ncol(phylo)) {
             stop("'phylo' should be a square table")
         }
-        
+
         ### Check if symmetry
         if (!isSymmetric(phylo)) {
             stop("'phylo' need to be a symmetric matrix")
         }
-        
+
         ### Check positive definiteness
         if (any(eigen(phylo)$value < 0)) {
             stop("'phylo' need to be a positive definite matrix")
         }
-        
+
         ### Check if phylo is positive definite
         if (!all(eigen(phylo)$value > 0)) {
             stop("'phylo' need to positive definite (i.e. all eigenvalues need to be positive)")
         }
     }
-    
+
     if (!is.null(location)) {
         if (is.factor(location)) {
             location <- data.frame(location = location)
@@ -251,7 +263,7 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
             }
         }
     }
-    
+
     ### ICI -- Need to be checked ICI -- Need to be checked ICI -- Need to be checked
     ### ICI -- Need to be checked Check if dimensions of all tables match
     if (!is.null(siteSp)) {
@@ -260,19 +272,19 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
                 stop("'siteEnv' and 'siteSp' should have the same number of rows")
             }
         }
-        
+
         if (!is.null(traitSp)) {
             if (ncol(siteSp) != nrow(traitSp)) {
                 stop("'siteSp' and 'traitSp' should have the same number of columns")
             }
         }
-        
+
         if (!is.null(phylo)) {
             if (ncol(siteSp) != ncol(phylo)) {
                 stop("The number of columns of 'siteSp' should equal the number of rows and columns of 'phylo'")
             }
         }
-        
+
         if (!is.null(location)) {
             if (nrow(location) != nrow(siteSp)) {
                 stop("'location' and 'siteSp' should have a the same number of rows")
@@ -281,62 +293,63 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
     }
     ### ICI -- Need to be checked ICI -- Need to be checked ICI -- Need to be checked
     ### ICI -- Need to be checked
-    
+
     #### Check column names
+
     if (!is.null(coOcc)) {
         if (is.null(colnames(coOcc))) {
             colnames(coOcc) <- paste("sp", 1:ncol(coOcc), sep = "")
             print("column names were added to 'coOcc'")
         }
     }
-    
+
     if (!is.null(coAbund)) {
         if (is.null(colnames(coAbund))) {
             colnames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
             print("column names were added to 'coAbund'")
         }
     }
-    
+
     if (!is.null(interact)) {
         if (is.null(colnames(interact))) {
             colnames(interact) <- paste("sp", 1:ncol(interact), sep = "")
             print("column names were added to 'interact'")
         }
     }
-    
+
     if (!is.null(siteSp)) {
         if (is.null(colnames(siteSp))) {
             colnames(siteSp) <- paste("sp", 1:ncol(siteSp), sep = "")
             print(paste("column names were added to 'siteSp'"))
         }
     }
-    
+
     if (!is.null(siteEnv)) {
         if (is.null(colnames(siteEnv))) {
             colnames(siteEnv) <- paste("env", 1:ncol(siteEnv), sep = "")
             print("column names were added to 'siteEnv'")
         }
     }
-    
+
     if (!is.null(traitSp)) {
         if (is.null(colnames(traitSp))) {
             colnames(traitSp) <- paste("traitSp", 1:ncol(traitSp), sep = "")
             print("column names were added to 'traitSp'")
         }
     }
-    
+
     if (!is.null(phylo)) {
         if (is.null(colnames(phylo))) {
             colnames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
             print("column names were added to 'phylo'")
         }
     }
-    
+
     if (!is.null(colnames(location))) {
         colnames(location) <- paste("location", 1:ncol(location), sep = "")
         print("column names were added to 'location'")
     }
-    
+
     #### Check row names
     if (!is.null(coOcc)) {
         if (is.null(rownames(coOcc))) {
@@ -344,58 +357,58 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
             print("row names were added to 'coOcc'")
         }
     }
-    
+
     if (!is.null(coAbund)) {
         if (is.null(rownames(coAbund))) {
             rownames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
             print("row names were added to 'coAbund'")
         }
     }
-    
+
     if (!is.null(interact)) {
         if (is.null(rownames(interact))) {
             rownames(interact) <- paste("sp", 1:ncol(interact), sep = "")
             print("row names were added to 'interact'")
         }
     }
-    
+
     if (!is.null(siteSp)) {
         if (is.null(rownames(siteSp))) {
             rownames(siteSp) <- paste("site", 1:nrow(siteSp), sep = "")
             print(paste("row names were added to 'siteSp'"))
         }
     }
-    
+
     if (!is.null(siteEnv)) {
         if (is.null(rownames(siteEnv))) {
             rownames(siteEnv) <- paste("site", 1:nrow(siteEnv), sep = "")
             print("row names were added to 'siteEnv'")
         }
     }
-    
+
     if (!is.null(traitSp)) {
         if (is.null(rownames(traitSp))) {
             rownames(traitSp) <- paste("sp", 1:nrow(traitSp), sep = "")
             print("row names were added to 'traitSp'")
         }
     }
-    
+
     if (!is.null(phylo)) {
         if (is.null(rownames(phylo))) {
             rownames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
             print("row names were added to 'phylo'")
         }
     }
-    
+
     if (!is.null(location)) {
         rownames(location) <- paste("site", 1:nrow(location), sep = "")
     }
-    
+
     ### If coAbund is available, coOcc can be constructed
     if (!is.null(coAbund)) {
         coOcc <- ifelse(coAbund > 0, 1, 0)
     }
-    
+
     ### Add an intercept to siteEnv and scale
     if (!is.null(siteEnv)) {
         if (interceptSiteEnv) {
@@ -426,7 +439,7 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
             }
         }
     }
-    
+
     ### Add an intercept to traitSp
     if (!is.null(traitSp)) {
         if (interceptTrait) {
@@ -455,79 +468,75 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
             }
         }
     }
-    
+
     #### Check classes
+
     if (!is.null(coOcc)) {
         if (!is.matrix(coOcc)) {
             coOcc <- as.matrix(coOcc)
             print("'coOcc' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(coAbund)) {
         if (!is.matrix(coAbund)) {
             coAbund <- as.matrix(coAbund)
             print("'coAbund' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(interact)) {
         if (!is.matrix(interact)) {
             interact <- as.matrix(interact)
             print("'interact' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(resCon)) {
         if (!is.matrix(resCon)) {
             resCon <- as.matrix(resCon)
             print("'resCon' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(siteSp)) {
         if (!is.matrix(siteSp)) {
             siteSp <- as.matrix(siteSp)
             print("'siteSp' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(siteEnv)) {
         if (!is.matrix(siteEnv)) {
             siteEnv <- as.matrix(siteEnv)
             print("'siteEnv' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(traitSp)) {
         if (!is.matrix(traitSp)) {
             traitSp <- as.matrix(traitSp)
             print("'traitSp' was converted to a matrix")
         }
     }
-    
+
     if (!is.null(phylo)) {
         if (!is.matrix(phylo)) {
             phylo <- as.matrix(phylo)
             print("'phylo' was converted to a matrix")
         }
     }
-    
-    # ================== Return results ================== Test which obj exists
-    args <- c("coOcc", "coAbund", "interact", "siteSp", "siteEnv", "traitSp", "traitInd", 
-        "phylo", "resCon", "location")
-    
-    existArgs <- sapply(args, exists)
-    existArgs <- names(existArgs[existArgs == TRUE])
-    
+
+    # ================== Return results ==================
+
+
     ## Create res list with NULL
-    res <- list(coOcc = NULL, coAbund = NULL, interact = NULL, siteSp = NULL, siteEnv = NULL, 
+    res <- list(coOcc = NULL, coAbund = NULL, interact = NULL, siteSp = NULL, siteEnv = NULL,
         traitSp = NULL, traitInd = NULL, phylo = NULL, resCon = NULL, location = NULL)
-    
+
     ## Fill the list with existing object
-    for (obj in existArgs) res[obj] <- get(obj)
-    
-    
+    for (obj in exist_args) res[obj] <- get(obj)
+
     class(res) <- "alienData"
     return(res)
 }
