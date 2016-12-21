@@ -1,4 +1,4 @@
-#' @name plot.niche.model
+#' @name plotPred
 #'
 #' @title Plot the predicted model output with data points on top.
 #'
@@ -23,7 +23,7 @@
 #' Dominique Gravel and Ignasi Bartomeus
 #'
 #' @export
-plot_pred <- function(pars, Tlevel1, Tlevel2, xlab = "Trait level 2", ylab = "Trait level 1", 
+plotPred <- function(pars, Tlevel1, Tlevel2, xlab = "Trait level 2", ylab = "Trait level 1", 
     legend = TRUE, pch = 19, ...) {
     incrementX <- (max(Tlevel2) - min(Tlevel2))/100
     incrementY <- (max(Tlevel1) - min(Tlevel1))/100

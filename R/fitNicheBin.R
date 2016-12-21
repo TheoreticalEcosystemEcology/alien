@@ -1,4 +1,4 @@
-#' @name fit.niche.prob
+#' @name fitNicheBin
 #'
 #' @title This function use a pair of traits.
 #'
@@ -14,9 +14,8 @@
 #'
 #' @references
 #'
-#' @rdname fit.niche.bin
 #' @export
-fit.niche.bin <- function(data, thresh) {
+fitNicheBin <- function(data, thresh) {
     # input data should be checked Fit model
     model_o <- stats::lm(Tj ~ Ti, data)
     model_lo <- quantreg::rq(Tj ~ Ti, tau = thresh, data)

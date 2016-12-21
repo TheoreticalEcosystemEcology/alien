@@ -1,4 +1,4 @@
-#' @name predict.direct.centrality
+#' @name predDirectCentrality
 #'
 #' @title Predict direct matching centrality
 #'
@@ -13,9 +13,8 @@
 #'
 #' @references
 #'
-#' @rdname predict.direct.centrality
 #' @export
-predict.direct.centrality <- function(newdata, model, replicates) {
+predDirectCentrality <- function(newdata, model, replicates) {
     
     p <- predict(model, newdata, type = "response")
     
