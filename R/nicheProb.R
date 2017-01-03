@@ -1,7 +1,7 @@
-#' @name niche.prob
-#' @aliases integrated.model
-#' @aliases niche.model
-#' @aliases neutral.model
+#' @name nicheProb
+#' @aliases integratedModel
+#' @aliases nicheModel
+#' @aliases neutralModel
 #'
 #' @title Bayesian models for characterizing trait-based species interactions.
 #'
@@ -25,9 +25,8 @@
 #'Williams, R.J., Anandanadesan, A. and Purves, D. (2010) The probabilistic niche model reveals the niche structure and role of body size in a complex food web. PloS one, 5, e12092.
 #'Williams, R.J. and Martinez, N.D. (2000) Simple rules yield complex food webs. Nature, 404, 180–183.
 #'
-#' @rdname niche.prob
 #' @export
-integrated.model <- function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
+integratedModel <- function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
     a0 <- pars[1L]
     a1 <- pars[2L]
     b0 <- pars[3L]
@@ -47,7 +46,7 @@ integrated.model <- function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
     return(-sum(log(pML)))
 }
 #' @export
-neutral.model <- function(pars = NULL, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
+neutralModel <- function(pars = NULL, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
     if (!is.null(pars)) 
         warning("The neutral_model function does not use the content of the argument pars")
     # Compute the conditional
@@ -62,7 +61,7 @@ neutral.model <- function(pars = NULL, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel
     return(-sum(log(pML)))
 }
 #' @export
-niche.model <- function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
+nicheModel <- function(pars, Tlevel1, Tlevel2, mean_Tlevel1, sd_Tlevel1) {
     a0 <- pars[1L]
     a1 <- pars[2L]
     b0 <- pars[3L]

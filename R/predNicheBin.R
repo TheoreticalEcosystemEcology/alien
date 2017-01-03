@@ -1,4 +1,4 @@
-#' @name predict.niche.bin
+#' @name predNicheBin
 #'
 #' @title This function use a pair of traits.
 #'
@@ -16,9 +16,8 @@
 #'
 #' @references
 #'
-#' @rdname predict.niche.bin
 #' @export
-predict.niche.bin <- function(models, newdata) {
+predNicheBin <- function(models, newdata) {
     # Check if the newdata has the right format
     
     with(newdata, {

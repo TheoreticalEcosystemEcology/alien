@@ -11,7 +11,6 @@
 #'
 #' @rdname extractBayesreg
 #' @export
-
 extractBayesreg <- function(x) {
     parsO <- reshape2::melt(x$BUGSoutput$sims.array)
     colnames(parsO) <- c("Draw", "Chain", "parameter", "estimate")

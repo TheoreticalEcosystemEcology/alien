@@ -30,7 +30,7 @@
 #' @export
 
 fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
-
+    
     library(coda)
     stopifnot(algorithm %in% c("Binomial", "Intercept", "Poisson", "Multinomial", 
         "Occupancy"))
@@ -157,27 +157,31 @@ fitBayesreg <- function(dat, algorithm = "Binomial", draws = 10000) {
             n.chains = nc, DIC = F))
     }
     if (algorithm == "Nmixture") {
-      
-      #encode replicate sampling.
-      Time<-dat$Replicate
-      Times <- max(dat$Replicate)
-      
-      modelDat <- list("Yobs","Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", "Traitmatch","Times","Time")
-      
-      #init unobserved variance
-      Ninit<-array(dim=c(Birds,Plants,Times),data=1)
-      InitStage <- function(){list(N=Ninit)}
-      
-      # Parameters to track
-      ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
-                     "beta_mu", "ynew", "fit", "fitnew")
-      
-      # jags file.
-      modfile <- paste0(tempdir(), "/Nmixture.jags")
-      NmixtureToJags(modfile)
-      # 
-      m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, inits=InitStage, 
-                                                model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, n.chains = nc, DIC = F))
+        
+        # encode replicate sampling.
+        Time <- dat$Replicate
+        Times <- max(dat$Replicate)
+        
+        modelDat <- list("Yobs", "Ninit", "Bird", "Plant", "Plants", "Birds", "Nobs", 
+            "Traitmatch", "Times", "Time")
+        
+        # init unobserved variance
+        Ninit <- array(dim = c(Birds, Plants, Times), data = 1)
+        InitStage <- function() {
+            list(N = Ninit)
+        }
+        
+        # Parameters to track
+        ParsStage <- c("alpha", "beta", "alpha_mu", "alpha_sigma", "beta_sigma", 
+            "beta_mu", "ynew", "fit", "fitnew")
+        
+        # jags file.
+        modfile <- paste0(tempdir(), "/Nmixture.jags")
+        NmixtureToJags(modfile)
+        # 
+        m1 <- do.call(R2jags::jags.parallel, list(data = modelDat, parameters.to.save = ParsStage, 
+            inits = InitStage, model.file = modfile, n.thin = nt, n.iter = ni, n.burnin = nb, 
+            n.chains = nc, DIC = F))
     }
     
     # Append the algorith and dataset, it will be helpful for later
