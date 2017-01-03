@@ -1,7 +1,7 @@
 #' @name predictBayesreg
 #' @title Predict species interaction probabilities based on a fitted hierarchical bayesian regression
 #' @description A helper functional for generating the probability of interaction among hypothetical species based on their traits.
-#' The trait-matching function is currently |Trait_i - Trait_j|
+#' The trait-matching function is currently x=|Trait_i - Trait_j|
 #' @param x A JAGS model file return from fit.bayesreg
 #' @param newdata A data frame with columns 'I','J' and 'Traitmatch'
 #' @details The newdata object gives the trait-matching between species I (eg. pollinator) and species J (eg. plant)
