@@ -25,6 +25,7 @@ Imports:
     coda,
     dplyr,
     GenSA,
+    geiger,
     graphics,
     grDevices,
     quantreg,
