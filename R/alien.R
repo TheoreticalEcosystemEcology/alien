@@ -1,6 +1,8 @@
-#' alien
+#' alienR
 #'
-#' @name alien
+#' @name alienR
 #' @docType package
 #' @description This should predict interactions!
+#' @importFrom Rcpp evalCpp
+#' @useDynLib alienR
 NULL

@@ -1,5 +1,6 @@
 rfun := $(wildcard R/*.R)
 rman := $(wildcard man/)
+rcpp := $(wildcard src/*.cpp)
 rtes := $(wildcard tests/testthat/*.R)
 rdm = README.Rmd
 md = README.md
@@ -12,7 +13,7 @@ all: $(md) $(chk)
 $(md): $(rdm)
 	Rscript --no-site-file  --no-init-file $(rscr) 0
 
-$(chk): $(rfun) $(rtes) $(rman)
+$(chk): $(rfun) $(rtes) $(rman) $(rcpp)
 	Rscript --no-site-file  --no-init-file $(rscr) 1
 
 clean:
