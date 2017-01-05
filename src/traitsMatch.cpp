@@ -1,4 +1,3 @@
-// // [[Rcpp::export]]
 // NumericMatrix traitsMatch(int nbsp, double alpha, NumericVector tr1, NumericVector tr2){
 //   // if no interaction => feed upon the pp
 //   NumericMatrix metaweb(nbsp, nbsp);
@@ -14,3 +13,4 @@
 // 	}
 //   return metaweb;
 // }
+//

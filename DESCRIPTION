@@ -9,6 +9,7 @@ Author:
   person("Guillaume", "Blanchet", role = c("aut")),
   person("Kevin", "Cazelles", role = c("aut")),
   person("Dominique", "Gravel", role = c("aut")),
+  person("Ignacio", "Morales Castilla", role = c("aut")),
   person("Timothée", "Poisot", role = c("aut")),
   person("Steve", "Vissault", role = c("aut")),
   person("Ben", "Weinstein", role = c("aut")),
@@ -19,8 +20,9 @@ Suggests:
     testthat (>= 0.8.0)
 LinkingTo: Rcpp
 Imports:
-    Rcpp (>= 0.12.7),
+    ape,
     boot,
+    coda,
     dplyr,
     GenSA,
     graphics,
@@ -28,9 +30,9 @@ Imports:
     quantreg,
     magrittr,
     randomForest,
+    Rcpp (>= 0.12.7),
     R2jags,
-    stats,
-    coda
+    stats
 SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
 NeedsCompilation: no
 License: MIT
