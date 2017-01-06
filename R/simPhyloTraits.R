@@ -13,9 +13,10 @@
 #' Ignacio Morales Castilla
 #' Kevin Cazelles
 #'
+#' @export
+#'
 #' @examples
 #' mattr <- simPhyloTraits(100, 3, 'lambda', 0)
-
 simPhyloTraits <- function(nsps, ntraits = 1, model = c("lambda", "delta", "OU"), 
     param) {
     tree <- geiger::sim.bdtree(0.5, n = nsps)
