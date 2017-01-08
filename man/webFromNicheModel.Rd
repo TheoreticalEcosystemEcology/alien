@@ -8,13 +8,16 @@ This function is an implementation of the niche model which generates
 food webs based on 1- a number of species, 2- a niche axis and 3- a value of
 comnectance.}
 \usage{
-webFromNicheModel(nbsp, connec, connect_all = FALSE, niche = NULL)
+webFromNicheModel(nbsp, connec, connect_all = FALSE, unbias = FALSE,
+  niche = NULL)
 }
 \arguments{
 \item{nbsp}{an integer giving the number of species considered.}
 
 \item{connec}{a real positive between 0 and .5 indicating the connectance
 of the network to be generated.}
+
+\item{unbias}{logical. If TRUE, then the first species may not be a basal species.}
 
 \item{niche}{a vector real positive between 0 and 1 standing for the niche axis.
 Default is set to \code{NULL}, in such case the niche axis is automatically generated.}
@@ -23,14 +26,18 @@ Default is set to \code{NULL}, in such case the niche axis is automatically gene
 least one prey (but the niche with the lowest niche value).}
 }
 \value{
-A logical matrix describing pairwise interactions.
+A logical matrix describing pairwise interactions. A given line
+describe the diet of a given species while a column decribes the set of
+predator accociated to a particular species.
 }
 \details{
-Two remarks. First, according to Williams and Martinez (2000),
+Three remarks. First, according to Williams and Martinez (2000),
 the species with the lowest niche value is considered as a basal and thus
 has no trait. This introduces a slight bias (\emph{e.g} the
-expected connectance is lower than the expected values \code{connec}).
-Second if one uses its own customed niche axis, values should be between 0 and
+expected connectance is lower than the expected values \code{connec}). Second,
+forcing all the species to be connected introduces another biais (connectance)
+tends to be more connected than expected.
+Third, if one uses its own customed niche axis, values should be between 0 and
 and 1 and the expected connectance (\code{connec}) can vary significantly if the
 distribution of niche values differ from the uniform distribution used in
 Williams and Martinez (2000)

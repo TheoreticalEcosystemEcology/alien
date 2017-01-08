@@ -17,4 +17,4 @@ $(chk): $(rfun) $(rtes) $(rman) $(rcpp)
 	Rscript --no-site-file  --no-init-file $(rscr) 1
 
 clean:
-	rm -rf man/* NAMESPACES
+	rm -rf man/* NAMESPACES src/*.o src/*.so R/RcppExports.R src/RcppExports.cpp

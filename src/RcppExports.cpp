@@ -5,17 +5,34 @@
 
 using namespace Rcpp;
 
+// traitsBasedJointCooc
+NumericMatrix traitsBasedJointCooc(NumericVector val, NumericMatrix metaweb, double alpha, NumericVector trait1, Nullable<NumericVector> trait2, Nullable<NumericVector> trait3);
+RcppExport SEXP alienR_traitsBasedJointCooc(SEXP valSEXP, SEXP metawebSEXP, SEXP alphaSEXP, SEXP trait1SEXP, SEXP trait2SEXP, SEXP trait3SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type val(valSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type metaweb(metawebSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type trait1(trait1SEXP);
+    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type trait2(trait2SEXP);
+    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type trait3(trait3SEXP);
+    rcpp_result_gen = Rcpp::wrap(traitsBasedJointCooc(val, metaweb, alpha, trait1, trait2, trait3));
+    return rcpp_result_gen;
+END_RCPP
+}
 // webFromNicheModel
-LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all, Nullable<NumericVector> niche);
-RcppExport SEXP alienR_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP nicheSEXP) {
+LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all, bool unbias, Nullable<NumericVector> niche);
+RcppExport SEXP alienR_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP unbiasSEXP, SEXP nicheSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type nbsp(nbspSEXP);
     Rcpp::traits::input_parameter< double >::type connec(connecSEXP);
     Rcpp::traits::input_parameter< bool >::type connect_all(connect_allSEXP);
+    Rcpp::traits::input_parameter< bool >::type unbias(unbiasSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type niche(nicheSEXP);
-    rcpp_result_gen = Rcpp::wrap(webFromNicheModel(nbsp, connec, connect_all, niche));
+    rcpp_result_gen = Rcpp::wrap(webFromNicheModel(nbsp, connec, connect_all, unbias, niche));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -1,6 +1,5 @@
-#' Write models as JAGS file.
 #'
-#' Write one of the available model into a \code{.jags} file.
+#' Write one of the available model into a \\code{.jags} file.
 #'
 #' @author
 #' Ben Weistein
@@ -8,7 +7,7 @@
 #' @param filename A connection, or a character string naming the file to print to.
 #'
 #' @return
-#' A \code{.jags} file including the desired model.
+#' A \\code{.jags} file including the desired model.
 #' @describeIn modelsToJags Binomial model.
 #' @export
 binomialToJags <- function(filename) {
@@ -55,6 +54,7 @@ binomialToJags <- function(filename) {
       }", 
         file = filename, fill = TRUE)
 }
+
 
 #' @describeIn modelsToJags Intercept model.
 #' @export
@@ -136,6 +136,7 @@ multinomialToJags <- function(filename) {
         file = filename, fill = TRUE)
 }
 
+
 #' @describeIn modelsToJags Poisson model.
 #' @export
 poissonToJags <- function(filename) {
@@ -197,10 +198,10 @@ poissonToJags <- function(filename) {
         }", 
         file = filename, fill = TRUE)
 }
+
 #' @describeIn modelsToJags Occupancy model.
 #' @export
 OccupancyToJags <- function(filename) {
-    
     cat("model {
     #Compute intensity for each pair of birds and plants
     for (i in 1:Birds){
