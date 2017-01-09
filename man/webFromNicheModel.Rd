@@ -2,11 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{webFromNicheModel}
 \alias{webFromNicheModel}
-\title{Generate a web using the niche model.
-
-This function is an implementation of the niche model which generates
-food webs based on 1- a number of species, 2- a niche axis and 3- a value of
-comnectance.}
+\title{Generate a web using the niche model.}
 \usage{
 webFromNicheModel(nbsp, connec, connect_all = FALSE, unbias = FALSE,
   niche = NULL)
@@ -29,6 +25,11 @@ least one prey (but the niche with the lowest niche value).}
 A logical matrix describing pairwise interactions. A given line
 describe the diet of a given species while a column decribes the set of
 predator accociated to a particular species.
+}
+\description{
+This function is an implementation of the niche model which generates
+food webs based on 1- a number of species, 2- a niche axis and 3- a value of
+comnectance.
 }
 \details{
 Three remarks. First, according to Williams and Martinez (2000),

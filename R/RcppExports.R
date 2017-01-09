@@ -5,13 +5,14 @@
 #'
 #' @title Traits-based joint co-occurrence.
 #'
+#' @description
 #' This function generates occurrence probabilities of a set of interacting
 #' given for a given set of environnmental values.
 #'
 #' @author
 #' Kevin Cazelles
 #'
-#' @param val a numerical vector including the environmental values.
+#' @param env a numerical vector including the environmental values.
 #' @param metaweb a numerical matrix depicting the biotic interactions.
 #' @param alpha a real positive number determining the importance of interactions: the
 #' higher it is the more interactions impact occurrence values.
@@ -19,23 +20,21 @@
 #' @param trait2 a optional numerical vector giving the probabilities of presence at the optimal value
 #' @param trait3 a optional numerical vector giving the generalities of species.
 #'
-#' @return A numeric gradient x species matrix of presence probabilities of the
+#' @return
+#' A numeric gradient x species matrix of presence probabilities of the
 #' interacting species associated to the environmental values.
-#'
-#'
-#' @examples
-#' traitsBasedJointCooc(seq(-1,1,.1), webFromNicheModel(10, .1), 1, runif(10))
 NULL
 
 #' @export
-traitsBasedJointCooc <- function(val, metaweb, alpha, trait1, trait2 = NULL, trait3 = NULL) {
-    .Call('alienR_traitsBasedJointCooc', PACKAGE = 'alienR', val, metaweb, alpha, trait1, trait2, trait3)
+traitsBasedJointCooc <- function(env, metaweb, alpha, trait1, trait2 = NULL, trait3 = NULL) {
+    .Call('alienR_traitsBasedJointCooc', PACKAGE = 'alienR', env, metaweb, alpha, trait1, trait2, trait3)
 }
 
 #' @name webFromNicheModel
 #'
 #' @title Generate a web using the niche model.
 #'
+#' @description
 #' This function is an implementation of the niche model which generates
 #' food webs based on 1- a number of species, 2- a niche axis and 3- a value of
 #' comnectance.
@@ -76,5 +75,50 @@ traitsBasedJointCooc <- function(val, metaweb, alpha, trait1, trait2 = NULL, tra
 #'
 webFromNicheModel <- function(nbsp, connec, connect_all = FALSE, unbias = FALSE, niche = NULL) {
     .Call('alienR_webFromNicheModel', PACKAGE = 'alienR', nbsp, connec, connect_all, unbias, niche)
+}
+
+#' @name webFromTraitMatching
+#'
+#' @title Generate a web using a trait matching approach.
+#'
+#' @description
+#' This function generates a food webs based on 1- a trait matching between
+#' two traits, 2- a generality trait and 3- an efficiency trait.
+#'
+#' @author
+#' Kevin Cazelles
+#'
+#' @param nbsp an integer giving the number of species considered.
+#' @param trait1 an numeric vector giving the first trait to be matched with the second one. If NULL (the default values) then values are drawn from an uniform distribution.
+#' @param trait2 an numeric vector giving the second trait to be matched with the first one. if NULL (the default values) then values are drawn from an uniform distribution.
+#' @param trait3 an numeric vector giving the first trait to be matched if NULL (the default values) then values are drawn from an uniform distribution.
+#' @param trait4 an numeric vector (between 0 and 1) giving the first trait to be matched if NULL (the default values) then values are drawn from an uniform distribution.
+#'
+#' @return A logical matrix describing pairwise interactions. A given line
+#' describe the diet of a given species while a column decribes the set of
+#' predator accociated to a particular species.
+#'
+#' @details
+#' For any couple of species (i,j) the probability that i interact with
+#' (\emph{e.g.} i feeds upon j) is as follows:
+#' \deqn{p(M_{i,j}=1) = trait4_i e^{-\left(-\frac{trait1_i-trait2_j}{trait3_i}\right)^2}}{%
+#'       p(M_{i,j}=1) = trait4[i] exp(-((trait1[i]-trait2[j])/trait3[i])^2)}
+#' The length of all trait vectors must equal the number of species otherwise
+#' an error is returned.
+#' This apporach has been used with feeding traits in a version revisited of
+#' niche model implemented (see \lik[pkg:alienR]{webFromNicheModel}) by Williams
+#' \emph{et al.} (2010) where \code{trait4} is common to all species.
+#'
+#' @references
+#' Williams, R. J., Anandanadesan, A. & Purves, D. (2010) The probabilistic
+#' niche model reveals the niche structure and role of body size in a complex
+#' food web. PLoS One 5.
+#'
+NULL
+
+#'
+#' @export
+webFromTraitMatching <- function(nbsp, trait1 = NULL, trait2 = NULL, trait3 = NULL, trait4 = NULL) {
+    .Call('alienR_webFromTraitMatching', PACKAGE = 'alienR', nbsp, trait1, trait2, trait3, trait4)
 }
 

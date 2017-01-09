@@ -5,6 +5,7 @@ using namespace Rcpp;
 //'
 //' @title Generate a web using the niche model.
 //'
+//' @description
 //' This function is an implementation of the niche model which generates
 //' food webs based on 1- a number of species, 2- a niche axis and 3- a value of
 //' comnectance.

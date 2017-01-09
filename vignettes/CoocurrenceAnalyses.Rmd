@@ -1,0 +1,26 @@
+---
+title: "Inferring interactions from co-occurrence data"
+author: "Kevin Cazelles"
+date: "January 9, 2017"
+output: html_document
+---
+
+#Aim
+A short tutorial explaining how to analysis co-occurrence data to infer interactions.
+
+```{r setup, echo=FALSE}
+opts_chunk$set(warning=F,message=F,include=T)
+```
+
+```{r, message=F, warning=F}
+library(alienR)
+```
+
+# Simulate data
+
+## Simulate trait
+
+
+```{r dataset}
+tr1 <- simPhyloTraits(100, 1, 'lambda', 0)
+```

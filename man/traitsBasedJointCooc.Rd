@@ -2,12 +2,9 @@
 % Please edit documentation in R/RcppExports.R
 \name{traitsBasedJointCooc}
 \alias{traitsBasedJointCooc}
-\title{Traits-based joint co-occurrence.
-
-This function generates occurrence probabilities of a set of interacting
-given for a given set of environnmental values.}
+\title{Traits-based joint co-occurrence.}
 \arguments{
-\item{val}{a numerical vector including the environmental values.}
+\item{env}{a numerical vector including the environmental values.}
 
 \item{metaweb}{a numerical matrix depicting the biotic interactions.}
 
@@ -24,8 +21,9 @@ higher it is the more interactions impact occurrence values.}
 A numeric gradient x species matrix of presence probabilities of the
 interacting species associated to the environmental values.
 }
-\examples{
-traitsBasedJointCooc(seq(-1,1,.1), webFromNicheModel(10, .1), 1, runif(10))
+\description{
+This function generates occurrence probabilities of a set of interacting
+given for a given set of environnmental values.
 }
 \author{
 Kevin Cazelles
