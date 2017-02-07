@@ -3,7 +3,7 @@
 #' @description This functions is used to format the data
 #'
 #' @param idObs A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpecies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).
-#' @param interactPair A data.frame with unique identifier of species name (consistent with idSp in idObs data.frame) in the two first columns called idSpeFrom and idSpTo, the strength of the interaction in the third column (see details) and location (in space and/or time) where the species was found in the following columns where species were found (see details).
+#' @param interactPair A data.frame with the first two columns are idFrom and idTo, be aware that these columns determined the sens of the interaction TODO: Explains that interactPair contains interaction at the finest level (individus or species). Finaly, the thrid column is the strength of the interaction (Please see details).
 #' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided some methods could build it base on interactPair data.frame.
 #' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species.
 #' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites.
@@ -17,12 +17,12 @@
 #'
 #' @details
 #'
-#' The strength of the interactions defined in the third column of \code{interactPair} can be an NA or any numerical value.
-#' In addition, species location (sites), will be converted to a factor. Note that there can be multiple sets of locations that can be considered, each one defined by a different factor.
+#' The strength of the interactions defined in the third column of \code{interactPair} can be a 0 if no direct interaction has been observed (defined as true absence of interaction) or any numerical value. Undocumented interactions among species or individus will be assumed as NA by default.
 #'
 #' @return
 #'
 #' An object of the class \code{alienData} is returned by \code{as.alienData}.
+#' TODO: Declare more accurately the structure of object returned by the function.
 #'
 #' @author F. Guillaume Blanchet & Steve Vissault
 #'
