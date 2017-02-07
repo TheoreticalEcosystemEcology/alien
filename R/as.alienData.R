@@ -2,17 +2,17 @@
 #'
 #' @description This functions is used to format the data
 #'
-#' @param interactPair A data.frame with species name in the two first columns (two interacting species), the strength of the interaction in the third column (see details) and location (in space or time) where the species was found in the following columns where species were found (see details).
+#' @param idObs A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpecies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSpecies) observed at time (idTime) and location (idSite).
+#' @param interactPair A data.frame with idSpecies name in the two first columns (two interacting species), the strength of the interaction in the third column (see details) and location (in space and/or time) where the species was found in the following columns where species were found (see details).
 #' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species.
 #' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species.
 #' @param interact A square non-symmetric matrix that presents the interaction includes any types of values.
 #' @param siteSp A matrix or a data.frame where each column is a species.
 #' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites.
 #' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species.
-#' @param traitInd A matric or a data.frame where each column is a trait characterizing an individual.
+#' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual.
 #' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details).
 #' @param resCon A matrix or data.frame where rows are resources and columns are consumers.
-#' @param location A factor defining a sample location (in space or through time) or a data.frame characterizing multiple locations.
 #' @param scaleSiteEnv Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.
 #' @param scaleTrait Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.
 #' @param interceptSiteEnv Logical. Whether a column of 1s should be added to X. Default is TRUE.
@@ -25,9 +25,9 @@
 #'
 #' @return
 #'
-#' An object of the class \code{alienData} is returned by \code{as.Netdata}.
+#' An object of the class \code{alienData} is returned by \code{as.alienData}.
 #'
-#' @author F. Guillaume Blanchet
+#' @author F. Guillaume Blanchet & Steve Vissault
 #'
 #' @importFrom stats sd
 #' @examples
@@ -35,27 +35,69 @@
 #' @keywords manip
 #' @keywords classes
 #' @export
-as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, interact = NULL,
+
+# TODO:
+# - location factors have to match with other objects
+# - Ind and sp ID (Think traits) has to match with other objects
+
+as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbund = NULL, interact = NULL,
     siteSp = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL,
-    resCon = NULL, location = NULL, scaleSiteEnv = TRUE, scaleTrait = TRUE, interceptSiteEnv = TRUE,
+    resCon = NULL, scaleSiteEnv = TRUE, scaleTrait = TRUE, interceptSiteEnv = TRUE,
     interceptTrait = TRUE) {
 
-    #===============================  Test which args exists
+    #===== Test which args exists
 
-    args <- c("coOcc", "coAbund", "interact", "siteSp", "siteEnv", "traitSp", "traitInd",
+    args <- c("idObs","coOcc", "coAbund", "interact", "siteSp", "siteEnv", "traitSp", "traitInd",
         "phylo", "resCon", "location")
 
     exist_args <- sapply(args, exists)
     exist_args <- names(exist_args[exist_args == TRUE])
 
+    # ====== Test Mandatory field
+
+    if(!("idObs" %in% exist_args)){
+        stop("idObs argument cannot be NULL")
+    }
+
+    # Test idObs structure
+    if(!is.data.frame(idObs) && !is.matrix(idObs) && ncol(idObs) != 3){
+      stop("idObs has to be a matrix/dataframe with 3 columns: idSite, idSp, idInd")
+    }
+
+    if(is.matrix(idObs)){
+      idObs <- as.data.frame(idObs)
+      print("'idObs' converted as data.frame")
+    }
+
+    # Check for column names
+    if (is.null(colnames(idObs))) {
+        colnames(idObs)[1] <- "idSite"
+        colnames(idObs)[2] <- "idSp"
+        colnames(idObs)[3] <- "idInd"
+        print("column names were added to 'idObs'")
+    }
+
+    # Check for duplicates rows
+    if(idObs[duplicated(idObs),] != NULL){
+      stop(cat("some idObs entries are duplicated: \n",idObs[duplicated(idObs),]))
+    }
+
+    # Cast all columns has factors
+    if (!all(sapply(idObs, class)[1:3] == "factor")) {
+        idObs <- as.data.frame(lapply(idObs, as.factor))
+    }
+
     # ================== Start Checking ==================
 
-    #### F. Guillaume Blanchet - December 2016 Check for number of columns
     if (!is.null(interactPair)) {
         ### Check for number of columns
-        if (ncol(interactPair) < 4) {
-            stop("'interactPair' needs to have at least four columns")
+        if (ncol(interactPair) != 4) {
+            stop("'interactPair' needs to have four columns: idSite, idSp1, idSp2, strength")
         }
+
+
+        ## Check consistency among idSp1, idSp2, idSite with idObs table
+        if()
 
         ### Check for row names
         if (is.null(rownames(interactPair))) {
@@ -65,11 +107,10 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
 
         ### Check for column names
         if (is.null(colnames(interactPair))) {
-            colnames(interactPair)[1] <- "sp1"
-            colnames(interactPair)[2] <- "sp2"
-            colnames(interactPair)[3] <- "strength"
-            colnames(interactPair)[4:ncol(interactPair)] <- paste("site", 1:(ncol(interactPair) -
-                3), sep = "")
+            colnames(interactPair)[1] <- "idSite"
+            colnames(interactPair)[2] <- "idSp1"
+            colnames(interactPair)[3] <- "idSp2"
+            colnames(interactPair)[4] <- "strength"
             print("column names were added to 'interactPair'")
         }
 
@@ -95,7 +136,7 @@ as.alienData <- function(interactPair = NULL, coOcc = NULL, coAbund = NULL, inte
 
     if (!is.null(traitInd)) {
         ### Check for number of columns
-        if (ncol(traitInd) < 2) {
+        if (ncol(traitInd) <= 2) {
             stop("'traitInd' needs to have at least two columns")
         }
         ### Check for row names
