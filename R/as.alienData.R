@@ -171,34 +171,6 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     }
 
     # =============================== Check all other matrix types
-    # =============================== resCon is a special case that needs to be
-    # checked independently
-
-    if (!is.null(resCon)) {
-        ### Check format
-        if (length(dim(resCon)) != 2) {
-            stop("'resCon' should be a table")
-        }
-
-        ### Row names
-        if (is.null(rownames(resCon))) {
-            rownames(resCon) <- paste("Resource", 1:ncol(resCon), sep = "")
-            print("rownames names were added to 'resCon'")
-        }
-
-        ### Column names
-        if (is.null(colnames(resCon))) {
-            colnames(resCon) <- paste("Consumer", 1:ncol(resCon), sep = "")
-            print("column names were added to 'resCon'")
-        }
-
-        ### Build interact matrix
-        matSize <- nrow(resCon) + ncol(resCon)
-        interact <- matrix(NA, nrow = matSize, ncol = matSize)
-        interact[1:nrow(resCon), 1:ncol(resCon)] <- resCon
-        interact[(nrow(resCon) + 1):(ncol(resCon) + nrow(resCon)), (ncol(resCon) +
-            1):(nrow(resCon) + ncol(resCon))] <- t(resCon)
-    }
 
     #### Check format
     if (!is.null(coOcc)) {
