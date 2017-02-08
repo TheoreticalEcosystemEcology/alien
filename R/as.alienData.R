@@ -164,21 +164,45 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     # Turn interactPair into interacSp and interacInd MATRICES
 
     # if interactPair at individus level
-    if(!all(levels(interactPair$idTo) %in% levels(idObs$idInd))){
+    if(all(c(levels(interactPair$idTo),levels(interactPair$idFrom)) %in% levels(idObs$idInd))){
 
+      ## built interacInd
       nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
-      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
-      colnames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-      rownames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      interacInd <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interacInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      rownames(interacInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
 
 
       for (i in 1:nrow(interactPair)) {
-          interacSp[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+          interacInd[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+      }
+
+      ## Retrieve Sp ids from idObs
+      idFromSp <- merge(interactPair,idObs,by.x="idFrom",by.y="idInd")[,'idSp']
+      idToSp <- merge(interactPair,idObs,by.x="idTo",by.y="idInd")[,'idSp']
+
+      # Create interactPair with idSp
+      interactPairSp <- interactPair
+      interactPairSp$idFrom <- idFromSp
+      interactPairSp$idTo <- idToSp
+
+      ## Aggregate
+      ### TODO: WARNING - If the strength is not a count. The sum might not be appropriate.
+      interactPairSp <- aggregate(strength ~ idFrom + idTo,interactPairSp, FUN=sum)
+
+      ## built interacSp
+      nsp <- nlevels(interactPairSp$idTo) + nlevels(interactPairSp$idFrom)
+      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interacSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
+      rownames(interacSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
+
+
+      for (i in 1:nrow(interactPairSp)) {
+          interacSp[interactPairSp[i, 'idFrom'], interactPairSp[i, 'idTo']] <- interactPairSp[i, 'strength']
       }
 
 
-
-    } else if(!all(levels(interactPair$idTo) %in% levels(idObs$idSp))){
+    } else if(all(c(levels(interactPair$idTo),levels(interactPair$idFrom)) %in% levels(idObs$idSp))){
 
       # if interactPair at species level
       nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
