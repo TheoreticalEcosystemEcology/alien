@@ -160,19 +160,44 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     }
 
-    # ========== Turn interactPair into interac MATRIX ==========
+    # OBJECT: interactSp and interacInd ================================================
+    # Turn interactPair into interacSp and interacInd MATRICES
 
-    nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
-    interac <- matrix(NA, nrow = nsp, ncol = nsp)
-    colnames(interac) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-    rownames(interac) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+    # if interactPair at individus level
+    if(!all(levels(interactPair$idTo) %in% levels(idObs$idInd))){
+
+      nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      rownames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
 
 
-    for (i in 1:nrow(interactPair)) {
-        interac[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+      for (i in 1:nrow(interactPair)) {
+          interacSp[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+      }
+
+
+
+    } else if(!all(levels(interactPair$idTo) %in% levels(idObs$idSp))){
+
+      # if interactPair at species level
+      nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      rownames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+
+
+      for (i in 1:nrow(interactPair)) {
+          interacSp[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+      }
+
+      # let interacInd null
+      interacInd <- NULL
+
     }
 
-    # ============================== Individual traits long data
+
+    # OBJECT: traitInd ================================================
 
     if (!is.null(traitInd)) {
         ### Check for number of columns
@@ -199,6 +224,36 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Make sure the first column is a factor (all other columns are free form)
         if (!is.factor(traitInd[, 1])) {
             traitInd[, 1] <- as.factor(traitInd[, 1])
+        }
+    }
+
+    # OBJECT: traitSp ================================================
+
+    if (!is.null(traitSp)) {
+        ### Check for number of columns
+        if (ncol(traitSp) <= 2) {
+            stop("'traitSp' needs to have at least two columns")
+        }
+
+
+        ### Check for column names
+        if (is.null(column(traitSp))) {
+            colnames(traitSp)[1] <- "idInd"
+            colnames(traitSp)[2:ncol(traitSp)] <- paste("trait", 1:(ncol(traitSp) -
+                1), sep = "")
+            print("column names were added to 'traitSp'")
+        }
+
+        ### Check class
+
+        ### Make sure traitSp is a data.frame
+        if (!is.data.frame(traitSp)) {
+            traitSp <- as.data.frame(traitSp)
+        }
+
+        ### Make sure the first column is a factor (all other columns are free form)
+        if (!is.factor(traitSp[, 1])) {
+            traitSp[, 1] <- as.factor(traitSp[, 1])
         }
     }
 
