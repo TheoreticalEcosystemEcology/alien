@@ -490,8 +490,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     
     ## Create res list with NULL
-    res <- list(idObs = idObs, coOcc = NULL, coAbund = NULL, siteEnv = NULL, traitSp = NULL, 
-        traitInd = NULL, phylo = NULL)
+    res <- list(idObs = idObs, interactSp = NULL, interactInd = NULL, coOcc = NULL, 
+        coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL)
     
     
     attr(res, "coOccFrom") <- coOccFrom
