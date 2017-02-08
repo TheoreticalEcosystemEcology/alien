@@ -46,7 +46,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     exist_args <- sapply(args, exists)
     exist_args <- names(exist_args[exist_args == TRUE])
 
-    # ====== Test Mandatory field
+    # OBJECT: idObs ================================================
 
     if(!("idObs" %in% exist_args)){
         stop("idObs argument cannot be NULL")
@@ -54,21 +54,14 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     # Test idObs structure
     if(!is.data.frame(idObs) && !is.matrix(idObs) && ncol(idObs) != 4){
-      stop("idObs has to be a matrix/dataframe with 3 columns: idSite, idVisit, idSp, idInd")
+      stop("idObs has to be a matrix/dataframe with 4 columns")
+      colnames(idObs) <- c("idSite","idTime","idSp","idInd")
+      print("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
     }
 
     if(is.matrix(idObs)){
       idObs <- as.data.frame(idObs)
       print("'idObs' converted as data.frame")
-    }
-
-    # Check for column names
-    if (is.null(colnames(idObs))) {
-        colnames(idObs)[1] <- "idSite"
-        colnames(idObs)[2] <- "idTime"
-        colnames(idObs)[3] <- "idSp"
-        colnames(idObs)[4] <- "idInd"
-        print("column names were added to 'idObs'")
     }
 
     # Check for duplicates rows
@@ -77,35 +70,20 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     }
 
     # Cast all columns has factors
-    if (!all(sapply(idObs, class)[1:3] == "factor")) {
-        idObs <- apply(idObs,2,as.factor)
+    if (!all(sapply(idObs, class)[1:4] == "factor")) {
+        idObs <- as.data.frame(lapply(idObs, as.factor))
     }
 
-    # ================== Start Checking ==================
+    # OBJECT: interactPair ================================================
 
     if (!is.null(interactPair)) {
         ### Check for number of columns
-        if (ncol(interactPair) != 3) {
-            stop("'interactPair' needs to have three columns: idInd1, idInd2, strength or idSp1, idSp2, strength")
+        if (!is.data.frame(interactPair) && !is.matrix(interactPair) && ncol(interactPair) != 3) {
+            stop("'interactPair' has to be a matrix/dataframe with 3 columns")
+            colnames(interactPair) <- c("idTo","idFrom","strength")
+            print("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
         }
 
-        ## Check consistency among idSp1, idSp2, idSite with idObs table
-        if()
-
-        ### Check for row names
-        if (is.null(rownames(interactPair))) {
-            rownames(interactPair) <- paste("pair", 1:ncol(interactPair), sep = "")
-            print("row names names were added to 'interactPair'")
-        }
-
-        ### Check for column names
-        if (is.null(colnames(interactPair))) {
-            colnames(interactPair)[1] <- "idSite"
-            colnames(interactPair)[2] <- "idSp1"
-            colnames(interactPair)[3] <- "idSp2"
-            colnames(interactPair)[4] <- "strength"
-            print("column names were added to 'interactPair'")
-        }
 
         ### Check class
 
@@ -115,14 +93,57 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
 
         ### Make sure the first, second, and fourth column are factor
-        if (!all(sapply(interactPair, class)[c(1, 2, 4:ncol(interactPair))] == "factor")) {
+        if (!all(sapply(interactPair, class)[1:3] == "factor")) {
             interactPair <- as.data.frame(lapply(interactPair, as.factor))
         }
 
         ### Make sure the third column is numeric
-        if (!is.numeric(interactPair[, 3])) {
-            interactPair[, 3] <- as.numeric(interactPair[, 3])
+        if (!is.numeric(interactPair$strength)) {
+            interactPair$strength <- as.numeric(interactPair$strength)
         }
+
+        ## Check data consistency
+
+        ## Check if idFrom and idTo are in levels(idSpe) or levels(idInd) and not both
+        ## interactPair are observations at species level OR at individual level but not both
+        if(any(levels(interactPair$idFrom) %in% levels(idObs$idSp))
+        && any(levels(interactPair$idFrom) %in% levels(idObs$idInd))){
+          stop("'idFrom' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
+        }
+
+        if(any(levels(interactPair$idTo) %in% levels(idObs$idSp))
+        && any(levels(interactPair$idTo) %in% levels(idObs$idInd))){
+          stop("'idTo' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
+        }
+
+        ## WHERE interactPair are Species
+        # Check if all ids exists in idObs
+        if(any(c(levels(interactPair$idFrom),levels(interactPair$idTo)) %in% levels(idObs$idSp))){
+
+          if(!all(levels(interactPair$idFrom) %in% levels(idObs$idSp))){
+            stop(cat("Some species ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]
+          }
+
+          if(!all(levels(interactPair$idTo) %in% levels(idObs$idSp))){
+            stop(cat("Some species ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]
+          }
+
+        }
+
+        ## WHERE interactPair are individu
+        # Check if all ids exists in idObs
+        if(any(c(levels(interactPair$idFrom),levels(interactPair$idTo)) %in% levels(idObs$idInd))){
+
+          if(!all(levels(interactPair$idFrom) %in% levels(idObs$idInd))){
+            stop(cat("Some individus ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]
+          }
+
+          if(!all(levels(interactPair$idTo) %in% levels(idObs$idInd))){
+            stop(cat("Some individus ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]
+          }
+
+        }
+
     }
 
     # ============================== Individual traits long data
