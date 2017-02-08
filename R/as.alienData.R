@@ -6,7 +6,7 @@
 #' @param interactPair A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).
 #' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the interactSp matrix (see return section).
 #' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.
-#' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites.
+#' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times.
 #' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.
 #' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
 #' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.
@@ -272,7 +272,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
 
 
-        ### Make sure interactPair is a data.frame
+        ### Make sure traitSp is a data.frame
         if(is.matrix(traitSp)){
           traitSp <- as.data.frame(traitSp)
           message("'traitSp' converted as data.frame")
@@ -303,7 +303,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     if (!is.null(coOcc)) {
 
         # co-occurence matrix has been provided by the user
-        coOcc_infer <- FALSE
+        coOccFrom <- 'user'
 
         if (nrow(coOcc) != ncol(coOcc)) {
             stop("'coOcc' should be a square table")
@@ -332,13 +332,12 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     } else {
       # Generate coOcc
-      # co-occurence matrix has been inferred from the interactSp
-      coOcc_infer <- TRUE
-
       ### If coAbund is available, coOcc has to be built from it, else buid coOcc from interactSp.
       if (!is.null(coAbund)) {
+          coOccFrom <- 'coAbund'
           coOcc <- ifelse(coAbund > 0, 1, 0)
       } else {
+          coOccFrom <- 'interactSp'
           coOcc <- ifelse(interactSp > 0, 1, 0)
       }
 
@@ -349,9 +348,33 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
 
     if (!is.null(siteEnv)) {
-        if (length(dim(siteEnv)) != 2) {
-            stop("'siteEnv' should be a table")
-        }
+      ### Check for number of columns
+      if (!is.data.frame(siteEnv) && !is.matrix(siteEnv) && ncol(siteEnv) <= 2 ) {
+          stop("'siteEnv' has to be a matrix/dataframe with at least 2 columns")
+      }
+
+      ### Make sure traitSp is a data.frame
+      if(is.matrix(siteEnv)){
+        siteEnv <- as.data.frame(siteEnv)
+        message("'traitSp' converted as data.frame")
+      }
+
+      # Rename columns
+      if(ncol(siteEnv) <= 2) {
+        colnames(siteEnv)[1] <- "idSite"
+        message("First column in 'siteEnv' have been rename to: 'idSite'")
+      }
+
+      ### Make sure the first column is a factor (all other columns are free form)
+      if (!is.factor(siteEnv$idSite)) {
+          siteEnv$idSite <- as.factor(siteEnv$idSite)
+      }
+
+      ### Make sure 'idSite' levels are referenced into idObs
+      if (!all(levels(siteEnv$idSite) %in% levels(idObs$idSite))){
+          stop(cat("Some site ids are not referenced in 'idObs': \n", levels(siteEnv$idSite)[!which(levels(siteEnv$idSite) %in% levels(idObs$idSite))]))
+      }
+
     }
 
     # TRANSFORM: SCALE AND INTERCEPT OPTIONS ================================================
@@ -452,6 +475,13 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     ## Create res list with NULL
     res <- list(idObs = idObs, coOcc = NULL, coAbund = NULL, siteEnv = NULL,
         traitSp = NULL, traitInd = NULL, phylo = NULL)
+
+
+    attr(res, 'coOccFrom') <- coOccFrom
+    attr(res, 'scaleSiteEnv') <- scaleSiteEnv
+    attr(res, 'scaleTrait') <- scaleTrait
+    attr(res, 'interceptSiteEnv') <- interceptSiteEnv
+    attr(res, 'interceptTrait') <- interceptTrait
 
     ## Fill the list with existing object
     for (obj in exist_args) res[obj] <- get(obj)
