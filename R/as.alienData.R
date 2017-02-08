@@ -2,14 +2,14 @@
 #'
 #' @description This functions is used to format the data
 #'
-#' @param idObs A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpecies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).
-#' @param interactPair A data.frame with the first two columns are idFrom and idTo, be aware that these columns determined the sens of the interaction TODO: Explains that interactPair contains interaction at the finest level (individus or species). Finaly, the thrid column is the strength of the interaction (Please see details).
-#' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided some methods could build it base on interactPair data.frame.
-#' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species.
+#' @param idObs A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpcies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).
+#' @param interactPair A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).
+#' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the interactSp matrix (see return section).
+#' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.
 #' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites.
-#' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species.
-#' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual.
-#' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details).
+#' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.
+#' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
+#' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.
 #' @param scaleSiteEnv Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.
 #' @param scaleTrait Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.
 #' @param interceptSiteEnv Logical. Whether a column of 1s should be added to X. Default is TRUE.
@@ -113,7 +113,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
         ## Check data consistency
 
-        ## Check if idFrom and idTo are in levels(idSpe) or levels(idInd) and not both
+        ## Check if idFrom and idTo are in levels(idSp) or levels(idInd) and not both
         ## interactPair are observations at species level OR at individual level but not both
         if(any(levels(interactPair$idFrom) %in% levels(idObs$idSp))
         && any(levels(interactPair$idFrom) %in% levels(idObs$idInd))){
@@ -161,21 +161,21 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     }
 
-    # OBJECT: interactSp and interacInd ================================================
-    # Turn interactPair into interacSp and interacInd MATRICES
+    # OBJECT: interactSp and interactInd ================================================
+    # Turn interactPair into interactSp and interactInd MATRICES
 
     # if interactPair at individus level
     if(all(c(levels(interactPair$idTo),levels(interactPair$idFrom)) %in% levels(idObs$idInd))){
 
-      ## built interacInd
+      ## built interactInd
       nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
-      interacInd <- matrix(NA, nrow = nsp, ncol = nsp)
-      colnames(interacInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-      rownames(interacInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      interactInd <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      rownames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
 
 
       for (i in 1:nrow(interactPair)) {
-          interacInd[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+          interactInd[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
       }
 
       ## Retrieve Sp ids from idObs
@@ -191,15 +191,15 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
       ### TODO: WARNING - If the strength is not a count. The sum might not be appropriate.
       interactPairSp <- aggregate(strength ~ idFrom + idTo,interactPairSp, FUN=sum)
 
-      ## built interacSp
+      ## built interactSp
       nsp <- nlevels(interactPairSp$idTo) + nlevels(interactPairSp$idFrom)
-      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
-      colnames(interacSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
-      rownames(interacSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
+      interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interactSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
+      rownames(interactSp) <- c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))
 
 
       for (i in 1:nrow(interactPairSp)) {
-          interacSp[interactPairSp[i, 'idFrom'], interactPairSp[i, 'idTo']] <- interactPairSp[i, 'strength']
+          interactSp[interactPairSp[i, 'idFrom'], interactPairSp[i, 'idTo']] <- interactPairSp[i, 'strength']
       }
 
 
@@ -207,17 +207,17 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
       # if interactPair at species level
       nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
-      interacSp <- matrix(NA, nrow = nsp, ncol = nsp)
-      colnames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-      rownames(interacSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      colnames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      rownames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
 
 
       for (i in 1:nrow(interactPair)) {
-          interacSp[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
+          interactSp[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
       }
 
-      # let interacInd null
-      interacInd <- NULL
+      # let interactInd null
+      interactInd <- NULL
 
     }
 
@@ -298,11 +298,13 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     }
 
+    # OBJECT: coOcc ================================================
 
-    # =============================== Check all other matrix types
-
-    #### Check format
     if (!is.null(coOcc)) {
+
+        # co-occurence matrix has been provided by the user
+        coOcc_infer <- FALSE
+
         if (nrow(coOcc) != ncol(coOcc)) {
             stop("'coOcc' should be a square table")
         }
@@ -316,23 +318,35 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if (!all(unique(coOcc) == c(0, 1))) {
             stop("'coOcc' should include only 0s and 1s")
         }
+
+        ### Check if colnames and rownames are not null
+        if (is.null(rownames(coOcc)) | is.null(colnames(coOcc)) ) {
+            stop("'coOcc' cannot have rownames or/and colnames NULL, both should referred to idSp in the 'idObs' data.frame")
+        }
+
+        ### Check if colnames and rownames are referenced in idObs
+        if (!all(c(rownames(coOcc),colnames(coOcc)) %in% levels(idObs$idSp))) {
+            stop("Some unique identifiers of species provided in rows and columns names of 'coOcc' are not documented in 'idObs' data.frame")
+        }
+
+
+    } else {
+      # Generate coOcc
+      # co-occurence matrix has been inferred from the interactSp
+      coOcc_infer <- TRUE
+
+      ### If coAbund is available, coOcc has to be built from it, else buid coOcc from interactSp.
+      if (!is.null(coAbund)) {
+          coOcc <- ifelse(coAbund > 0, 1, 0)
+      } else {
+          coOcc <- ifelse(interactSp > 0, 1, 0)
+      }
+
     }
 
-    if (!is.null(coAbund)) {
-        if (nrow(coAbund) != ncol(coAbund)) {
-            stop("'coAbund' should be a square table")
-        }
 
-        ### Check if symmetry
-        if (!isSymmetric(coAbund)) {
-            stop("'coAbund' need to be a symmetric matrix")
-        }
+    # OBJECT: siteEnv ================================================
 
-        ### Check positive definiteness
-        if (!all(coAbund) >= 0) {
-            stop("All values in 'coAbund' should be larger or equal to 0")
-        }
-    }
 
     if (!is.null(siteEnv)) {
         if (length(dim(siteEnv)) != 2) {
@@ -340,119 +354,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
     }
 
-    if (!is.null(traitSp)) {
-        if (length(dim(traitSp)) != 2) {
-            stop("'traitSp' should be a table")
-        }
-    }
-
-    if (!is.null(phylo)) {
-        if (nrow(phylo) != ncol(phylo)) {
-            stop("'phylo' should be a square table")
-        }
-
-        ### Check if symmetry
-        if (!isSymmetric(phylo)) {
-            stop("'phylo' need to be a symmetric matrix")
-        }
-
-        ### Check positive definiteness
-        if (any(eigen(phylo)$value < 0)) {
-            stop("'phylo' need to be a positive definite matrix")
-        }
-
-        ### Check if phylo is positive definite
-        if (!all(eigen(phylo)$value > 0)) {
-            stop("'phylo' need to positive definite (i.e. all eigenvalues need to be positive)")
-        }
-    }
-
-    #### Check column names
-
-    if (!is.null(coOcc)) {
-        if (is.null(colnames(coOcc))) {
-            colnames(coOcc) <- paste("sp", 1:ncol(coOcc), sep = "")
-            message("column names were added to 'coOcc'")
-        }
-    }
-
-    if (!is.null(coAbund)) {
-        if (is.null(colnames(coAbund))) {
-            colnames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
-            message("column names were added to 'coAbund'")
-        }
-    }
-
-    if (!is.null(siteEnv)) {
-        if (is.null(colnames(siteEnv))) {
-            colnames(siteEnv) <- paste("env", 1:ncol(siteEnv), sep = "")
-            message("column names were added to 'siteEnv'")
-        }
-    }
-
-    if (!is.null(traitSp)) {
-        if (is.null(colnames(traitSp))) {
-            colnames(traitSp) <- paste("traitSp", 1:ncol(traitSp), sep = "")
-            message("column names were added to 'traitSp'")
-        }
-    }
-
-    if (!is.null(phylo)) {
-        if (is.null(colnames(phylo))) {
-            colnames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
-            message("column names were added to 'phylo'")
-        }
-    }
-
-    if (!is.null(colnames(location))) {
-        colnames(location) <- paste("location", 1:ncol(location), sep = "")
-        message("column names were added to 'location'")
-    }
-
-    #### Check row names
-    if (!is.null(coOcc)) {
-        if (is.null(rownames(coOcc))) {
-            rownames(coOcc) <- paste("sp", 1:ncol(coOcc), sep = "")
-            message("row names were added to 'coOcc'")
-        }
-    }
-
-    if (!is.null(coAbund)) {
-        if (is.null(rownames(coAbund))) {
-            rownames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
-            message("row names were added to 'coAbund'")
-        }
-    }
-
-    if (!is.null(siteEnv)) {
-        if (is.null(rownames(siteEnv))) {
-            rownames(siteEnv) <- paste("site", 1:nrow(siteEnv), sep = "")
-            message("row names were added to 'siteEnv'")
-        }
-    }
-
-    if (!is.null(traitSp)) {
-        if (is.null(rownames(traitSp))) {
-            rownames(traitSp) <- paste("sp", 1:nrow(traitSp), sep = "")
-            message("row names were added to 'traitSp'")
-        }
-    }
-
-    if (!is.null(phylo)) {
-        if (is.null(rownames(phylo))) {
-            rownames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
-            message("row names were added to 'phylo'")
-        }
-    }
-
-    if (!is.null(location)) {
-        rownames(location) <- paste("site", 1:nrow(location), sep = "")
-    }
-
-    ### If coAbund is available, coOcc can be constructed
-    if (!is.null(coAbund)) {
-        coOcc <- ifelse(coAbund > 0, 1, 0)
-    }
+    # TRANSFORM: SCALE AND INTERCEPT OPTIONS ================================================
 
     ### Add an intercept to siteEnv and scale
     if (!is.null(siteEnv)) {
@@ -514,7 +416,21 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
     }
 
-    #### Check classes
+    #### Check classes for coOcc, coAbund, interactSp, interactInd
+
+    if (!is.null(interactSp)) {
+        if (!is.matrix(interactSp)) {
+            interactSp <- as.matrix(interactSp)
+            message("'coOcc' was converted to a matrix")
+        }
+    }
+
+    if (!is.null(interactInd)) {
+        if (!is.matrix(interactInd)) {
+            interactInd <- as.matrix(interactInd)
+            message("'coOcc' was converted to a matrix")
+        }
+    }
 
     if (!is.null(coOcc)) {
         if (!is.matrix(coOcc)) {
@@ -527,27 +443,6 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if (!is.matrix(coAbund)) {
             coAbund <- as.matrix(coAbund)
             message("'coAbund' was converted to a matrix")
-        }
-    }
-
-    if (!is.null(siteEnv)) {
-        if (!is.matrix(siteEnv)) {
-            siteEnv <- as.matrix(siteEnv)
-            message("'siteEnv' was converted to a matrix")
-        }
-    }
-
-    if (!is.null(traitSp)) {
-        if (!is.matrix(traitSp)) {
-            traitSp <- as.matrix(traitSp)
-            message("'traitSp' was converted to a matrix")
-        }
-    }
-
-    if (!is.null(phylo)) {
-        if (!is.matrix(phylo)) {
-            phylo <- as.matrix(phylo)
-            message("'phylo' was converted to a matrix")
         }
     }
 
