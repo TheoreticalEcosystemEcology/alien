@@ -55,13 +55,17 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     # Test idObs structure
     if(!is.data.frame(idObs) && !is.matrix(idObs) && ncol(idObs) != 4){
       stop("idObs has to be a matrix/dataframe with 4 columns")
-      colnames(idObs) <- c("idSite","idTime","idSp","idInd")
-      print("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
     }
 
     if(is.matrix(idObs)){
       idObs <- as.data.frame(idObs)
       print("'idObs' converted as data.frame")
+    }
+
+    # Rename columns
+    if(ncol(idObs)==4) {
+      colnames(idObs) <- c("idSite","idTime","idSp","idInd")
+      print("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
     }
 
     # Check for duplicates rows
@@ -80,10 +84,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Check for number of columns
         if (!is.data.frame(interactPair) && !is.matrix(interactPair) && ncol(interactPair) != 3) {
             stop("'interactPair' has to be a matrix/dataframe with 3 columns")
-            colnames(interactPair) <- c("idTo","idFrom","strength")
-            print("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
         }
-
 
         ### Check class
 
@@ -92,9 +93,16 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
             interactPair <- as.data.frame(interactPair)
         }
 
-        ### Make sure the first, second, and fourth column are factor
-        if (!all(sapply(interactPair, class)[1:3] == "factor")) {
-            interactPair <- as.data.frame(lapply(interactPair, as.factor))
+        # Rename columns
+        if(ncol(interactPair)==3) {
+          colnames(interactPair) <- c("idTo","idFrom","strength")
+          print("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
+        }
+
+        ### Make sure the first and second columns are factor
+        if (!all(sapply(interactPair, class)[1:2] == "factor")) {
+            interactPair$idFrom <- as.factor(interactPair$idFrom)
+            interactPair$idTo <- as.factor(interactPair$idTo)
         }
 
         ### Make sure the third column is numeric
@@ -121,11 +129,11 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if(any(c(levels(interactPair$idFrom),levels(interactPair$idTo)) %in% levels(idObs$idSp))){
 
           if(!all(levels(interactPair$idFrom) %in% levels(idObs$idSp))){
-            stop(cat("Some species ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]
+            stop(cat("Some species ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]))
           }
 
           if(!all(levels(interactPair$idTo) %in% levels(idObs$idSp))){
-            stop(cat("Some species ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]
+            stop(cat("Some species ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idSp))]))
           }
 
         }
@@ -135,15 +143,33 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if(any(c(levels(interactPair$idFrom),levels(interactPair$idTo)) %in% levels(idObs$idInd))){
 
           if(!all(levels(interactPair$idFrom) %in% levels(idObs$idInd))){
-            stop(cat("Some individus ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]
+            stop(cat("Some individus ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]))
           }
 
           if(!all(levels(interactPair$idTo) %in% levels(idObs$idInd))){
-            stop(cat("Some individus ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]
+            stop(cat("Some individus ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[!which(levels(interactPair$idFrom) %in% levels(idObs$idInd))]))
           }
 
         }
 
+        # Check if rows are not duplicated
+        if(nrow(interactPair[duplicated(interactPair[,c('idFrom','idTo')]),]) != 0){
+          stop(cat("Some 'idFrom' and 'idTo' are duplicated:\n",
+          interactPair[duplicated(interactPair[,c('idFrom','idTo')]),]))
+        }
+
+    }
+
+    # ========== Turn interactPair into interac MATRIX ==========
+
+    nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+    interac <- matrix(NA, nrow = nsp, ncol = nsp)
+    colnames(interac) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+    rownames(interac) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+
+
+    for (i in 1:nrow(interactPair)) {
+        interac[interactPair[i, 'idFrom'], interactPair[i, 'idTo']] <- interactPair[i, 'strength']
     }
 
     # ============================== Individual traits long data
@@ -153,15 +179,11 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if (ncol(traitInd) <= 2) {
             stop("'traitInd' needs to have at least two columns")
         }
-        ### Check for row names
-        if (is.null(rownames(traitInd))) {
-            rownames(traitInd) <- paste("Ind", 1:ncol(traitInd), sep = "")
-            print("row names names were added to 'traitInd'")
-        }
+
 
         ### Check for column names
         if (is.null(column(traitInd))) {
-            colnames(traitInd)[1] <- "sp"
+            colnames(traitInd)[1] <- "idInd"
             colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) -
                 1), sep = "")
             print("column names were added to 'traitInd'")
@@ -180,16 +202,6 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
     }
 
-    # ========== Convert ==========
-    nsp <- nlevels(interactPair[, 1]) + nlevels(interactPair[, 2])
-    coAbund <- matrix(NA, nrow = nsp, ncol = nsp)
-    colnames(coAbund) <- c(levels(interactPair[, 1]), levels(interactPair[, 2]))
-    rownames(coAbund) <- c(levels(interactPair[, 1]), levels(interactPair[, 2]))
-
-    for (i in 1:nrow(interactPair)) {
-        coAbund[interactPair[i, 1], interactPair[i, 2]] <- interactPair[i, 3]
-        coAbund[interactPair[i, 2], interactPair[i, 1]] <- interactPair[i, 3]
-    }
 
     # =============================== Check all other matrix types
 
