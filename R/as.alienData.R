@@ -22,7 +22,7 @@
 #' @return
 #'
 #' An object of the class \code{alienData} is returned by \code{as.alienData}.
-#' TODO: Declare more accurately the structure of object returned by the function.
+#' TODO: Declare more accurately the structure of object returned by the function. What has been generated from the function.
 #'
 #' @author F. Guillaume Blanchet & Steve Vissault
 #'
@@ -59,13 +59,13 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     if(is.matrix(idObs)){
       idObs <- as.data.frame(idObs)
-      print("'idObs' converted as data.frame")
+      message("'idObs' converted as data.frame")
     }
 
     # Rename columns
     if(ncol(idObs)==4) {
       colnames(idObs) <- c("idSite","idTime","idSp","idInd")
-      print("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
+      message("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
     }
 
     # Check for duplicates rows
@@ -88,15 +88,16 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
         ### Check class
 
-        ### Make sure indSp is a data.frame
-        if (!is.data.frame(interactPair)) {
-            interactPair <- as.data.frame(interactPair)
+        ### Make sure interactPair is a data.frame
+        if(is.matrix(interactPair)){
+          interactPair <- as.data.frame(interactPair)
+          message("'interactPair' converted as data.frame")
         }
 
         # Rename columns
         if(ncol(interactPair)==3) {
           colnames(interactPair) <- c("idTo","idFrom","strength")
-          print("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
+          message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
         }
 
         ### Make sure the first and second columns are factor
@@ -224,61 +225,77 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     # OBJECT: traitInd ================================================
 
     if (!is.null(traitInd)) {
-        ### Check for number of columns
-        if (ncol(traitInd) <= 2) {
-            stop("'traitInd' needs to have at least two columns")
-        }
-
-
-        ### Check for column names
-        if (is.null(column(traitInd))) {
-            colnames(traitInd)[1] <- "idInd"
-            colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) -
-                1), sep = "")
-            print("column names were added to 'traitInd'")
-        }
 
         ### Check class
 
-        ### Make sure traitInd is a data.frame
-        if (!is.data.frame(traitInd)) {
-            traitInd <- as.data.frame(traitInd)
+        ### Check for number of columns
+        if (!is.data.frame(traitInd) && !is.matrix(traitInd) && ncol(traitInd) <= 2 ) {
+            stop("'traitInd' has to be a matrix/dataframe with 3 columns")
+        }
+
+
+        ### Make sure interactPair is a data.frame
+        if(is.matrix(traitInd)){
+          traitInd <- as.data.frame(traitInd)
+          message("'traitInd' converted as data.frame")
+        }
+
+        # Rename columns
+        if(ncol(interactPair) <= 2) {
+          colnames(traitInd)[1] <- "idInd"
+          colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) -
+              1), sep = "")
+          message("columns in 'traitInd' have been rename to: 'idInd', 'trait1', ...,'traitn' ")
         }
 
         ### Make sure the first column is a factor (all other columns are free form)
-        if (!is.factor(traitInd[, 1])) {
-            traitInd[, 1] <- as.factor(traitInd[, 1])
+        if (!is.factor(traitInd$idInd)) {
+            traitInd$idInd <- as.factor(traitInd$idInd)
         }
+
+        ### Make sure 'idInd' levels are referenced into idObs
+        if (!all(levels(traitInd$idInd) %in% levels(idObs$idInd))){
+            stop(cat("Some individu ids are not referenced in 'idObs': \n", levels(traitInd$idInd)[!which(levels(traitInd$idInd) %in% levels(idObs$idInd))]))
+        }
+
     }
 
     # OBJECT: traitSp ================================================
 
     if (!is.null(traitSp)) {
-        ### Check for number of columns
-        if (ncol(traitSp) <= 2) {
-            stop("'traitSp' needs to have at least two columns")
-        }
-
-
-        ### Check for column names
-        if (is.null(column(traitSp))) {
-            colnames(traitSp)[1] <- "idInd"
-            colnames(traitSp)[2:ncol(traitSp)] <- paste("trait", 1:(ncol(traitSp) -
-                1), sep = "")
-            print("column names were added to 'traitSp'")
-        }
 
         ### Check class
 
-        ### Make sure traitSp is a data.frame
-        if (!is.data.frame(traitSp)) {
-            traitSp <- as.data.frame(traitSp)
+        ### Check for number of columns
+        if (!is.data.frame(traitSp) && !is.matrix(traitSp) && ncol(traitSp) <= 2 ) {
+            stop("'traitSp' has to be a matrix/dataframe with 3 columns")
+        }
+
+
+        ### Make sure interactPair is a data.frame
+        if(is.matrix(traitSp)){
+          traitSp <- as.data.frame(traitSp)
+          message("'traitSp' converted as data.frame")
+        }
+
+        # Rename columns
+        if(ncol(interactPair) <= 2) {
+          colnames(traitSp)[1] <- "idSp"
+          colnames(traitSp)[2:ncol(traitSp)] <- paste("trait", 1:(ncol(traitSp) -
+              1), sep = "")
+          message("columns in 'traitSp' have been rename to: 'idSp', 'trait1', ...,'traitn' ")
         }
 
         ### Make sure the first column is a factor (all other columns are free form)
-        if (!is.factor(traitSp[, 1])) {
-            traitSp[, 1] <- as.factor(traitSp[, 1])
+        if (!is.factor(traitSp$idSp)) {
+            traitSp$idSp <- as.factor(traitSp$idSp)
         }
+
+        ### Make sure 'idSp' levels are referenced into idObs
+        if (!all(levels(traitSp$idSp) %in% levels(idObs$idSp))){
+            stop(cat("Some species ids are not referenced in 'idObs': \n", levels(traitSp$idSp)[!which(levels(traitSp$idSp) %in% levels(idObs$idSp))]))
+        }
+
     }
 
 
@@ -355,76 +372,76 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     if (!is.null(coOcc)) {
         if (is.null(colnames(coOcc))) {
             colnames(coOcc) <- paste("sp", 1:ncol(coOcc), sep = "")
-            print("column names were added to 'coOcc'")
+            message("column names were added to 'coOcc'")
         }
     }
 
     if (!is.null(coAbund)) {
         if (is.null(colnames(coAbund))) {
             colnames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
-            print("column names were added to 'coAbund'")
+            message("column names were added to 'coAbund'")
         }
     }
 
     if (!is.null(siteEnv)) {
         if (is.null(colnames(siteEnv))) {
             colnames(siteEnv) <- paste("env", 1:ncol(siteEnv), sep = "")
-            print("column names were added to 'siteEnv'")
+            message("column names were added to 'siteEnv'")
         }
     }
 
     if (!is.null(traitSp)) {
         if (is.null(colnames(traitSp))) {
             colnames(traitSp) <- paste("traitSp", 1:ncol(traitSp), sep = "")
-            print("column names were added to 'traitSp'")
+            message("column names were added to 'traitSp'")
         }
     }
 
     if (!is.null(phylo)) {
         if (is.null(colnames(phylo))) {
             colnames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
-            print("column names were added to 'phylo'")
+            message("column names were added to 'phylo'")
         }
     }
 
     if (!is.null(colnames(location))) {
         colnames(location) <- paste("location", 1:ncol(location), sep = "")
-        print("column names were added to 'location'")
+        message("column names were added to 'location'")
     }
 
     #### Check row names
     if (!is.null(coOcc)) {
         if (is.null(rownames(coOcc))) {
             rownames(coOcc) <- paste("sp", 1:ncol(coOcc), sep = "")
-            print("row names were added to 'coOcc'")
+            message("row names were added to 'coOcc'")
         }
     }
 
     if (!is.null(coAbund)) {
         if (is.null(rownames(coAbund))) {
             rownames(coAbund) <- paste("sp", 1:ncol(coAbund), sep = "")
-            print("row names were added to 'coAbund'")
+            message("row names were added to 'coAbund'")
         }
     }
 
     if (!is.null(siteEnv)) {
         if (is.null(rownames(siteEnv))) {
             rownames(siteEnv) <- paste("site", 1:nrow(siteEnv), sep = "")
-            print("row names were added to 'siteEnv'")
+            message("row names were added to 'siteEnv'")
         }
     }
 
     if (!is.null(traitSp)) {
         if (is.null(rownames(traitSp))) {
             rownames(traitSp) <- paste("sp", 1:nrow(traitSp), sep = "")
-            print("row names were added to 'traitSp'")
+            message("row names were added to 'traitSp'")
         }
     }
 
     if (!is.null(phylo)) {
         if (is.null(rownames(phylo))) {
             rownames(phylo) <- paste("sp", 1:ncol(phylo), sep = "")
-            print("row names were added to 'phylo'")
+            message("row names were added to 'phylo'")
         }
     }
 
@@ -502,35 +519,35 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     if (!is.null(coOcc)) {
         if (!is.matrix(coOcc)) {
             coOcc <- as.matrix(coOcc)
-            print("'coOcc' was converted to a matrix")
+            message("'coOcc' was converted to a matrix")
         }
     }
 
     if (!is.null(coAbund)) {
         if (!is.matrix(coAbund)) {
             coAbund <- as.matrix(coAbund)
-            print("'coAbund' was converted to a matrix")
+            message("'coAbund' was converted to a matrix")
         }
     }
 
     if (!is.null(siteEnv)) {
         if (!is.matrix(siteEnv)) {
             siteEnv <- as.matrix(siteEnv)
-            print("'siteEnv' was converted to a matrix")
+            message("'siteEnv' was converted to a matrix")
         }
     }
 
     if (!is.null(traitSp)) {
         if (!is.matrix(traitSp)) {
             traitSp <- as.matrix(traitSp)
-            print("'traitSp' was converted to a matrix")
+            message("'traitSp' was converted to a matrix")
         }
     }
 
     if (!is.null(phylo)) {
         if (!is.matrix(phylo)) {
             phylo <- as.matrix(phylo)
-            print("'phylo' was converted to a matrix")
+            message("'phylo' was converted to a matrix")
         }
     }
 
