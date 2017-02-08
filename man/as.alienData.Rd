@@ -4,34 +4,27 @@
 \alias{as.alienData}
 \title{Format data for the \code{alien} class}
 \usage{
-as.alienData(interactPair = NULL, coOcc = NULL, coAbund = NULL,
-  interact = NULL, siteSp = NULL, siteEnv = NULL, traitSp = NULL,
-  traitInd = NULL, phylo = NULL, resCon = NULL, location = NULL,
-  scaleSiteEnv = TRUE, scaleTrait = TRUE, interceptSiteEnv = TRUE,
-  interceptTrait = TRUE)
+as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
+  coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
+  phylo = NULL, scaleSiteEnv = TRUE, scaleTrait = TRUE,
+  interceptSiteEnv = TRUE, interceptTrait = TRUE)
 }
 \arguments{
-\item{interactPair}{A data.frame with species name in the two first columns (two interacting species), the strength of the interaction in the third column (see details) and location (in space or time) where the species was found in the following columns where species were found (see details).}
+\item{idObs}{A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpcies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).}
 
-\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species.}
+\item{interactPair}{A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).}
 
-\item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species.}
+\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the interactSp matrix (see return section).}
 
-\item{interact}{A square non-symmetric matrix that presents the interaction includes any types of values.}
+\item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
 
-\item{siteSp}{A matrix or a data.frame where each column is a species.}
+\item{siteEnv}{A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times.}
 
-\item{siteEnv}{A matrix or a data.frame where each column is a descriptor of the sites.}
+\item{traitSp}{A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.}
 
-\item{traitSp}{A matrix or a data.frame where each column is a trait characterizing all species.}
+\item{traitInd}{A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
 
-\item{traitInd}{A matric or a data.frame where each column is a trait characterizing an individual.}
-
-\item{phylo}{A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details).}
-
-\item{resCon}{A matrix or data.frame where rows are resources and columns are consumers.}
-
-\item{location}{A factor defining a sample location (in space or through time) or a data.frame characterizing multiple locations.}
+\item{phylo}{A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.}
 
 \item{scaleSiteEnv}{Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.}
 
@@ -42,20 +35,20 @@ as.alienData(interactPair = NULL, coOcc = NULL, coAbund = NULL,
 \item{interceptTrait}{Logical. Whether a row of 1s should be added to Tr. Default is TRUE.}
 }
 \value{
-An object of the class \code{alienData} is returned by \code{as.Netdata}.
+An object of the class \code{alienData} is returned by \code{as.alienData}.
+TODO: Declare more accurately the structure of object returned by the function. What has been generated from the function.
 }
 \description{
 This functions is used to format the data
 }
 \details{
-The strength of the interactions defined in the third column of \code{interactPair} can be an NA or any numerical value.
-In addition, species location (sites), will be converted to a factor. Note that there can be multiple sets of locations that can be considered, each one defined by a different factor.
+The strength of the interactions defined in the third column of \code{interactPair} can be a 0 if no direct interaction has been observed (defined as true absence of interaction) or any numerical value. Undocumented interactions among species or individus will be assumed as NA by default.
 }
 \examples{
 
 }
 \author{
-F. Guillaume Blanchet
+F. Guillaume Blanchet & Steve Vissault
 }
 \keyword{classes}
 \keyword{manip}
