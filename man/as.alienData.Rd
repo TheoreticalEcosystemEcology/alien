@@ -18,7 +18,7 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 
 \item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
 
-\item{siteEnv}{A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times.}
+\item{siteEnv}{A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
 
 \item{traitSp}{A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.}
 

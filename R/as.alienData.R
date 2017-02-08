@@ -6,7 +6,7 @@
 #' @param interactPair A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).
 #' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the interactSp matrix (see return section).
 #' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.
-#' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times.
+#' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.
 #' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.
 #' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
 #' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.
@@ -40,8 +40,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     # ===== Test which args exists
     
-    args <- c("idObs", "coOcc", "coAbund", "siteEnv", "traitSp", "traitInd", "phylo", 
-        "location")
+    args <- c("idObs", "interactPair", "coOcc", "coAbund", "siteEnv", "traitSp", 
+        "traitInd", "phylo")
     
     exist_args <- sapply(args, exists)
     exist_args <- names(exist_args[exist_args == TRUE])
@@ -241,9 +241,9 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Check class
         
         ### Check for number of columns
-        if (!is.data.frame(traitInd) && !is.matrix(traitInd) && ncol(traitInd) <= 
-            2) {
-            stop("'traitInd' has to be a matrix/dataframe with 3 columns")
+        if (!is.data.frame(traitInd) && !is.matrix(traitInd) && ncol(traitInd) != 
+            3) {
+            stop("'traitInd' has to be a matrix/dataframe with 3 columns: idInd, traitName, value")
         }
         
         
@@ -254,17 +254,24 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
         
         # Rename columns
-        if (ncol(interactPair) <= 2) {
+        if (ncol(interactPair) == 3) {
             colnames(traitInd)[1] <- "idInd"
-            colnames(traitInd)[2:ncol(traitInd)] <- paste("trait", 1:(ncol(traitInd) - 
-                1), sep = "")
-            message("columns in 'traitInd' have been rename to: 'idInd', 'trait1', ...,'traitn' ")
+            colnames(traitInd)[2] <- "traitName"
+            colnames(traitInd)[3] <- "value"
+            message("columns in 'traitInd' have been rename to: idInd, traitName, value ")
         }
         
-        ### Make sure the first column is a factor (all other columns are free form)
+        ### Make sure the first column idInd is a factor (all other columns are free form)
         if (!is.factor(traitInd$idInd)) {
             traitInd$idInd <- as.factor(traitInd$idInd)
         }
+        
+        ### Make sure the second column traitName is a factor
+        if (!is.factor(traitInd$traitName)) {
+            traitInd$traitName <- as.factor(traitInd$traitName)
+        }
+        
+        ## The third column is free form
         
         ### Make sure 'idInd' levels are referenced into idObs
         if (!all(levels(traitInd$idInd) %in% levels(idObs$idInd))) {
@@ -278,31 +285,34 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     if (!is.null(traitSp)) {
         
-        ### Check class
-        
-        ### Check for number of columns
-        if (!is.data.frame(traitSp) && !is.matrix(traitSp) && ncol(traitSp) <= 2) {
-            stop("'traitSp' has to be a matrix/dataframe with 3 columns")
+        ### Check class Check for number of columns
+        if (!is.data.frame(traitSp) && !is.matrix(traitSp) && ncol(traitSp) != 3) {
+            stop("'traitSp' has to be a matrix/dataframe with 3 columns: idSp, traitName, value")
         }
         
         
-        ### Make sure traitSp is a data.frame
+        ### Make sure interactPair is a data.frame
         if (is.matrix(traitSp)) {
             traitSp <- as.data.frame(traitSp)
             message("'traitSp' converted as data.frame")
         }
         
         # Rename columns
-        if (ncol(interactPair) <= 2) {
+        if (ncol(interactPair) == 3) {
             colnames(traitSp)[1] <- "idSp"
-            colnames(traitSp)[2:ncol(traitSp)] <- paste("trait", 1:(ncol(traitSp) - 
-                1), sep = "")
-            message("columns in 'traitSp' have been rename to: 'idSp', 'trait1', ...,'traitn' ")
+            colnames(traitSp)[2] <- "traitName"
+            colnames(traitSp)[3] <- "value"
+            message("columns in 'traitSp' have been rename to: idSp, traitName, value ")
         }
         
-        ### Make sure the first column is a factor (all other columns are free form)
+        ### Make sure the first column idSp is a factor (all other columns are free form)
         if (!is.factor(traitSp$idSp)) {
             traitSp$idSp <- as.factor(traitSp$idSp)
+        }
+        
+        ### Make sure the second column traitName is a factor
+        if (!is.factor(traitSp$traitName)) {
+            traitSp$traitName <- as.factor(traitSp$traitName)
         }
         
         ### Make sure 'idSp' levels are referenced into idObs
@@ -346,8 +356,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         
         
     } else {
-        # Generate coOcc If coAbund is available, coOcc has to be built from it, else
-        # buid coOcc from interactSp.
+        # Generate coOcc If coAbund is available, coOcc has to be build from it, else
+        # build coOcc based on interactSp.
         if (!is.null(coAbund)) {
             coOccFrom <- "coAbund"
             coOcc <- ifelse(coAbund > 0, 1, 0)
@@ -488,11 +498,17 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     # ================== Return results ==================
     
+    # ===== Test which obj has to be returned
+    
+    res_objs <- c("idObs", "interactSp", "interactInd", "coOcc", "coAbund", "siteEnv", 
+        "traitSp", "traitInd", "phylo")
+    
+    exist_objs <- sapply(res_objs, exists)
+    exist_objs <- names(exist_objs[exist_objs == TRUE])
     
     ## Create res list with NULL
     res <- list(idObs = idObs, interactSp = NULL, interactInd = NULL, coOcc = NULL, 
         coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL)
-    
     
     attr(res, "coOccFrom") <- coOccFrom
     attr(res, "scaleSiteEnv") <- scaleSiteEnv
@@ -501,7 +517,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     attr(res, "interceptTrait") <- interceptTrait
     
     ## Fill the list with existing object
-    for (obj in exist_args) res[obj] <- get(obj)
+    for (obj in exist_objs) res[obj] <- get(obj)
     
     class(res) <- "alienData"
     return(res)
