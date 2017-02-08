@@ -216,7 +216,6 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
                 "strength"]
         }
 
-
     } else if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idSp))) {
 
         # if interactPair at species level
@@ -514,26 +513,16 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
 
     # ================== Return results ==================
 
-    # ===== Test which obj has to be returned
-
-    res_objs <- c("idObs", "interactSp", "interactInd", "coOcc", "coAbund", "siteEnv",
-        "traitSp", "traitInd", "phylo")
-
-    exist_objs <- sapply(res_objs, exists)
-    exist_objs <- names(exist_objs[exist_objs == TRUE])
 
     ## Create res list with NULL
-    res <- list(idObs = idObs, interactSp = NULL, interactInd = NULL, coOcc = NULL,
-        coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL)
+    res <- list(idObs = idObs, interactSp = interactSp, interactInd = interactInd, coOcc = coOcc,
+        coAbund = coAbund, siteEnv = siteEnv, traitSp = traitSp, traitInd = traitInd, phylo = phylo)
 
     attr(res, "coOccSource") <- coOccFrom
     attr(res, "scaleSiteEnv") <- scaleSiteEnv
     attr(res, "scaleTrait") <- scaleTrait
     attr(res, "interceptSiteEnv") <- interceptSiteEnv
     attr(res, "interceptTrait") <- interceptTrait
-
-    ## Fill the list with existing object
-    for (obj in exist_objs) res[[obj]] <- get(obj)
 
     class(res) <- "alienData"
     return(res)
