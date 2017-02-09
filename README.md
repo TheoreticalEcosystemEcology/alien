@@ -17,7 +17,7 @@ Incoming content
     -   binomial
     -   poisson
     -   RF
--   Indirect matching centrality (latent \~ traits) (DG)
+-   Indirect matching centrality (latent ~ traits) (DG)
 -   Niche binary (DG)
 -   Niche probabilistic (DG)
 -   iEat recommend (DB)
@@ -28,6 +28,9 @@ Incoming content
 -   4th corner (GB)
 -   Ben's magic (BW)
 -   Ives' phylo (GB)
+-   Permutation methods (GB)
+    -   C-scores
+    -   V-ratio
 
 **Deadline:** Package ready by Christmas
 
@@ -89,7 +92,7 @@ Contribute to this package
 -   `git fetch` / `git pull` before you do anything else
 -   new branches must be made from `master` -- if not, you are responsible for rebasing
 -   good commit messages are 72 chars on the first line and explain what has been done in the imperative tone. A good rule of thumb is that if you say "If merged, this commit will" before the commit message, it should be a sentence. A good commit message is: `add informations about development practices`. A bad commit message is `CONTRIBUTING changes`
--   if the branching complexity of your function is \> 3 (number of nested for / if / while), rewrite
+-   if the branching complexity of your function is &gt; 3 (number of nested for / if / while), rewrite
 
 ### Styleguide
 
@@ -100,9 +103,9 @@ Contribute to this package
 -   all `roxygen2` flags (e.g. @param etc.) are to be set up.
 -   R extension file has to be written in capital letter (e.g `fitBayesReg.R`)
 
-Have a look at [<http://adv-r.had.co.nz/Style.html>](http://adv-r.had.co.nz/Style.html)
+Have a look at <http://adv-r.had.co.nz/Style.html>
 
-For further details on namespaces: [<http://r-pkgs.had.co.nz/namespace.html>](http://r-pkgs.had.co.nz/namespace.html)
+For further details on namespaces: <http://r-pkgs.had.co.nz/namespace.html>
 
 License
 -------
