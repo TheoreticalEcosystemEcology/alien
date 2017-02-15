@@ -18,7 +18,6 @@
 #' @author
 #' Dominique Gravel and Ignasi Bartomeus
 #'
-#'
 #' @export
 predNicheProb <- function(pars, Tlevel1, Tlevel2, replicates = 100) {
     out <- list()
