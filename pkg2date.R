@@ -30,11 +30,11 @@ if (!as.numeric(args[1])) {
   decor()
   ## load the package
   cat("##-- loading ........\n")
-  devtools::load_all(".")
+  devtools::load_all()
   decor()
   ## document the package
   cat("##-- documenting ....\n")
-  devtools::document(".")
+  devtools::document()
   decor()
   ## testing the code
   cat("##-- testing ........\n")

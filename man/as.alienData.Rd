@@ -7,7 +7,7 @@
 as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
   coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
   phylo = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
-  interceptSiteEnv = FALSE, interceptTrait = FALSE)
+  interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{idObs}{A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpcies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).}

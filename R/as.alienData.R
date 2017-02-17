@@ -39,19 +39,11 @@
 
 as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbund = NULL, 
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL, scaleSiteEnv = FALSE, 
-    scaleTrait = FALSE, interceptSiteEnv = FALSE, interceptTrait = FALSE) {
-    
-    # ===== Test which args exists
-    
-    args <- c("idObs", "interactPair", "coOcc", "coAbund", "siteEnv", "traitSp", 
-        "traitInd", "phylo")
-    
-    exist_args <- sapply(args, exists)
-    exist_args <- names(exist_args[exist_args == TRUE])
+    scaleTrait = FALSE, interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE) {
     
     # OBJECT: idObs ================================================
     
-    if (!("idObs" %in% exist_args)) {
+    if (is.null(idObs)) {
         stop("idObs argument cannot be NULL")
     }
     
@@ -62,13 +54,15 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     if (is.matrix(idObs)) {
         idObs <- as.data.frame(idObs)
-        message("'idObs' converted as data.frame")
+        if (verbose) 
+            message("'idObs' converted as data.frame")
     }
     
     # Rename columns
     if (ncol(idObs) == 4) {
         colnames(idObs) <- c("idSite", "idTime", "idSp", "idInd")
-        message("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
+        if (verbose) 
+            message("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
     }
     
     # Check for duplicates rows
@@ -96,13 +90,15 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Make sure interactPair is a data.frame
         if (is.matrix(interactPair)) {
             interactPair <- as.data.frame(interactPair)
-            message("'interactPair' converted as data.frame")
+            if (verbose) 
+                message("'interactPair' converted as data.frame")
         }
         
         # Rename columns
         if (ncol(interactPair) == 3) {
             colnames(interactPair) <- c("idTo", "idFrom", "strength")
-            message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
+            if (verbose) 
+                message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
         }
         
         ### Make sure the first and second columns are factor
@@ -251,7 +247,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Make sure interactPair is a data.frame
         if (is.matrix(traitInd)) {
             traitInd <- as.data.frame(traitInd)
-            message("'traitInd' converted as data.frame")
+            if (verbose) 
+                message("'traitInd' converted as data.frame")
         }
         
         # Rename columns
@@ -259,7 +256,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
             colnames(traitInd)[1] <- "idInd"
             colnames(traitInd)[2] <- "traitName"
             colnames(traitInd)[3] <- "value"
-            message("'traitInd' columns have been rename to: idInd, traitName, value ")
+            if (verbose) 
+                message("'traitInd' columns have been rename to: idInd, traitName, value ")
         }
         
         ### Make sure the first column idInd is a factor (all other columns are free form)
@@ -295,7 +293,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Make sure interactPair is a data.frame
         if (is.matrix(traitSp)) {
             traitSp <- as.data.frame(traitSp)
-            message("'traitSp' converted as data.frame")
+            if (verbose) 
+                message("'traitSp' converted as data.frame")
         }
         
         # Rename columns
@@ -303,7 +302,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
             colnames(traitSp)[1] <- "idSp"
             colnames(traitSp)[2] <- "traitName"
             colnames(traitSp)[3] <- "value"
-            message("'traitSp' columns have been rename to: idSp, traitName, value ")
+            if (verbose) 
+                message("'traitSp' columns have been rename to: idSp, traitName, value ")
         }
         
         ### Make sure the first column idSp is a factor (all other columns are free form)
@@ -380,7 +380,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ### Make sure traitSp is a data.frame
         if (is.matrix(siteEnv)) {
             siteEnv <- as.data.frame(siteEnv)
-            message("'siteEnv' converted as data.frame")
+            if (verbose) 
+                message("'siteEnv' converted as data.frame")
         }
         
         # Rename columns
@@ -388,7 +389,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
             colnames(siteEnv)[1] <- "idSite"
             colnames(siteEnv)[2] <- "envName"
             colnames(siteEnv)[3] <- "value"
-            message("'siteEnv' columns have been rename to: 'idSite', 'envName', 'value'")
+            if (verbose) 
+                message("'siteEnv' columns have been rename to: 'idSite', 'envName', 'value'")
         }
         
         ### Make sure the first column is a factor (all other columns are free form)
@@ -486,28 +488,32 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     if (!is.null(interactSp)) {
         if (!is.matrix(interactSp)) {
             interactSp <- as.matrix(interactSp)
-            message("'interactSp' was converted to a matrix")
+            if (verbose) 
+                message("'interactSp' was converted to a matrix")
         }
     }
     
     if (!is.null(interactInd)) {
         if (!is.matrix(interactInd)) {
             interactInd <- as.matrix(interactInd)
-            message("'interactInd' was converted to a matrix")
+            if (verbose) 
+                message("'interactInd' was converted to a matrix")
         }
     }
     
     if (!is.null(coOcc)) {
         if (!is.matrix(coOcc)) {
             coOcc <- as.matrix(coOcc)
-            message("'coOcc' was converted to a matrix")
+            if (verbose) 
+                message("'coOcc' was converted to a matrix")
         }
     }
     
     if (!is.null(coAbund)) {
         if (!is.matrix(coAbund)) {
             coAbund <- as.matrix(coAbund)
-            message("'coAbund' was converted to a matrix")
+            if (verbose) 
+                message("'coAbund' was converted to a matrix")
         }
     }
     
