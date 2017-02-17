@@ -14,8 +14,7 @@
 #' @docType data
 #' @keywords datasets
 #' @author Ignasi Bartomeus
-#' @name Bartomeus
-#' @usage data(Bartomeus)
+#' @name bartomeus
+#' @usage data(bartomeus)
 #' @format A data frame with X variables
-#' @export
-# 'Bartomeus'
+"bartomeus"
