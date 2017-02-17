@@ -6,16 +6,16 @@ output: html_document
 ---
 
 #Aim
-A short tutorial explaining the different options for fitting hierarchical bayesian models for species interactions using the package alienR
+A short tutorial explaining the different options for fitting hierarchical bayesian models for species interactions using the package alien
 
 ```{r}
-library(alienR)
+library(alien)
 library(ggplot2)
 library(knitr)
 opts_chunk$set(warning=F,message=F)
 
 #source scripts because I can't seem to understand how roxygen generates functions to the package! To delete once we understand how paths are handled in package creation
-s<-sapply(list.files("C:/Users/Ben/Documents/alienR/R",pattern=".R",full.names = T),source)
+s<-sapply(list.files("C:/Users/Ben/Documents/alien/R",pattern=".R",full.names = T),source)
 ```
 
 # Simulate data
@@ -68,7 +68,7 @@ ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_c
 If we want the distributions, instead of a summary we can plot the posterior predictions directly. For the sake of plotting, lets look at just one node.
 
 ```{r}
-justB<-predframe %>% filter(I=="b") 
+justB<-predframe %>% filter(I=="b")
 ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
@@ -107,7 +107,7 @@ ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_c
 Create the same boxplot as in the intercept model
 
 ```{r}
-justB<-predframe2 %>% filter(I=="b") 
+justB<-predframe2 %>% filter(I=="b")
 ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot(fill="black") + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
