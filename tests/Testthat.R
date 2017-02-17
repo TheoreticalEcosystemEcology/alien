@@ -1,2 +1,2 @@
 library(testthat)
-test_check("alienR")
+test_check("alien")
