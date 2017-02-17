@@ -28,6 +28,7 @@ Imports:
     randomForest,
     R2jags,
     stats,
+    reshape2,
 SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
 NeedsCompilation: no
 License: MIT

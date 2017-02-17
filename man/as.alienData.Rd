@@ -14,7 +14,7 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 
 \item{interactPair}{A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).}
 
-\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the interactSp matrix (see return section).}
+\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the idObs dataframe (see return section).}
 
 \item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
 
