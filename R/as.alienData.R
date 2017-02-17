@@ -77,90 +77,93 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     # OBJECT: interactPair ================================================
     
-    if (!is.null(interactPair)) {
-        ### Check for number of columns
-        if (!is.data.frame(interactPair) & !is.matrix(interactPair) & ncol(interactPair) != 
-            3) {
-            stop("'interactPair' has to be a matrix/dataframe with 3 columns")
+    if (is.null(interactPair)) {
+        stop("interactPair argument cannot be NULL")
+    }
+    
+    ### Check for number of columns
+    if (!is.data.frame(interactPair) & !is.matrix(interactPair) & ncol(interactPair) != 
+        3) {
+        stop("'interactPair' has to be a matrix/dataframe with 3 columns")
+    }
+    
+    ### Check class
+    
+    ### Make sure interactPair is a data.frame
+    if (is.matrix(interactPair)) {
+        interactPair <- as.data.frame(interactPair)
+        if (verbose) 
+            message("'interactPair' converted as data.frame")
+    }
+    
+    # Rename columns
+    if (ncol(interactPair) == 3) {
+        colnames(interactPair) <- c("idTo", "idFrom", "strength")
+        if (verbose) 
+            message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
+    }
+    
+    ### Make sure the first and second columns are factor
+    if (!all(sapply(interactPair, class)[1:2] == "factor")) {
+        interactPair$idFrom <- as.factor(interactPair$idFrom)
+        interactPair$idTo <- as.factor(interactPair$idTo)
+    }
+    
+    ### Make sure the third column is numeric
+    if (!is.numeric(interactPair$strength)) {
+        interactPair$strength <- as.numeric(interactPair$strength)
+    }
+    
+    ## Check data consistency
+    
+    ## Check if idFrom and idTo are in levels(idSp) or levels(idInd) and not both
+    ## interactPair are observations at species level OR at individual level but not
+    ## both
+    
+    
+    if (any(levels(interactPair$idFrom) %in% levels(idObs$idSp)) & any(levels(interactPair$idFrom) %in% 
+        levels(idObs$idInd))) {
+        stop("'idFrom' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
+    }
+    
+    if (any(levels(interactPair$idTo) %in% levels(idObs$idSp)) & any(levels(interactPair$idTo) %in% 
+        levels(idObs$idInd))) {
+        stop("'idTo' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
+    }
+    
+    ## WHERE interactPair are Species Check if all ids exists in idObs
+    if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idSp))) {
+        
+        if (!all(levels(interactPair$idFrom) %in% levels(idObs$idSp))) {
+            stop("Some species ids in 'idFrom' are not in 'idObs'")
         }
         
-        ### Check class
-        
-        ### Make sure interactPair is a data.frame
-        if (is.matrix(interactPair)) {
-            interactPair <- as.data.frame(interactPair)
-            if (verbose) 
-                message("'interactPair' converted as data.frame")
-        }
-        
-        # Rename columns
-        if (ncol(interactPair) == 3) {
-            colnames(interactPair) <- c("idTo", "idFrom", "strength")
-            if (verbose) 
-                message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
-        }
-        
-        ### Make sure the first and second columns are factor
-        if (!all(sapply(interactPair, class)[1:2] == "factor")) {
-            interactPair$idFrom <- as.factor(interactPair$idFrom)
-            interactPair$idTo <- as.factor(interactPair$idTo)
-        }
-        
-        ### Make sure the third column is numeric
-        if (!is.numeric(interactPair$strength)) {
-            interactPair$strength <- as.numeric(interactPair$strength)
-        }
-        
-        ## Check data consistency
-        
-        ## Check if idFrom and idTo are in levels(idSp) or levels(idInd) and not both
-        ## interactPair are observations at species level OR at individual level but not
-        ## both
-        
-        
-        if (any(levels(interactPair$idFrom) %in% levels(idObs$idSp)) & any(levels(interactPair$idFrom) %in% 
-            levels(idObs$idInd))) {
-            stop("'idFrom' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
-        }
-        
-        if (any(levels(interactPair$idTo) %in% levels(idObs$idSp)) & any(levels(interactPair$idTo) %in% 
-            levels(idObs$idInd))) {
-            stop("'idTo' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
-        }
-        
-        ## WHERE interactPair are Species Check if all ids exists in idObs
-        if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idSp))) {
-            
-            if (!all(levels(interactPair$idFrom) %in% levels(idObs$idSp))) {
-                stop("Some species ids in 'idFrom' are not in 'idObs'")
-            }
-            
-            if (!all(levels(interactPair$idTo) %in% levels(idObs$idSp))) {
-                stop("Some species ids in 'idTo' are not in 'idObs'")
-            }
-            
-        }
-        
-        ## WHERE interactPair are individu Check if all ids exists in idObs
-        if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idInd))) {
-            
-            if (!all(levels(interactPair$idFrom) %in% levels(idObs$idInd))) {
-                stop("Some individus ids in 'idFrom' are not in 'idObs'")
-            }
-            
-            if (!all(levels(interactPair$idTo) %in% levels(idObs$idInd))) {
-                stop("Some individus ids in 'idTo' are not in 'idObs'")
-            }
-            
-        }
-        
-        # Check if rows are not duplicated
-        if (nrow(interactPair[duplicated(interactPair[, c("idFrom", "idTo")]), ]) != 
-            0) {
-            stop("Some 'idFrom' and 'idTo' are duplicated")
+        if (!all(levels(interactPair$idTo) %in% levels(idObs$idSp))) {
+            stop("Some species ids in 'idTo' are not in 'idObs'")
         }
         
     }
+    
+    ## WHERE interactPair are individu Check if all ids exists in idObs
+    if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idInd))) {
+        
+        if (!all(levels(interactPair$idFrom) %in% levels(idObs$idInd))) {
+            stop("Some individus ids in 'idFrom' are not in 'idObs'")
+        }
+        
+        if (!all(levels(interactPair$idTo) %in% levels(idObs$idInd))) {
+            stop("Some individus ids in 'idTo' are not in 'idObs'")
+        }
+        
+    }
+    
+    # Check if rows are not duplicated
+    if (nrow(interactPair[duplicated(interactPair[, c("idFrom", "idTo")]), ]) != 
+        0) {
+        stop("Some 'idFrom' and 'idTo' are duplicated")
+    }
+    
+    
     
     # OBJECT: interactSp and interactInd
     # ================================================ Turn interactPair into
