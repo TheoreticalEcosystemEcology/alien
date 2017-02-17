@@ -67,8 +67,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     
     # Check for duplicates rows
     if (nrow(idObs[duplicated(idObs), ]) != 0) {
-        stop(cat("some idObs entries are duplicated: \n", idObs[duplicated(idObs), 
-            ]))
+        stop("some idObs entries are duplicated")
     }
     
     # Cast all columns has factors
@@ -117,6 +116,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ## Check if idFrom and idTo are in levels(idSp) or levels(idInd) and not both
         ## interactPair are observations at species level OR at individual level but not
         ## both
+        
+        
         if (any(levels(interactPair$idFrom) %in% levels(idObs$idSp)) & any(levels(interactPair$idFrom) %in% 
             levels(idObs$idInd))) {
             stop("'idFrom' values belongs to 'idSp' and 'idInd' in 'idObs'. Interaction can't be at the species AND individual levels")
@@ -131,13 +132,11 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idSp))) {
             
             if (!all(levels(interactPair$idFrom) %in% levels(idObs$idSp))) {
-                stop(cat("Some species ids in 'idFrom' are not in 'idObs': \n", levels(interactPair$idFrom)[which(!levels(interactPair$idFrom) %in% 
-                  levels(idObs$idSp))]))
+                stop("Some species ids in 'idFrom' are not in 'idObs'")
             }
             
             if (!all(levels(interactPair$idTo) %in% levels(idObs$idSp))) {
-                stop(cat("Some species ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[which(!levels(interactPair$idFrom) %in% 
-                  levels(idObs$idSp))]))
+                stop("Some species ids in 'idTo' are not in 'idObs'")
             }
             
         }
@@ -146,14 +145,11 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         if (any(c(levels(interactPair$idFrom), levels(interactPair$idTo)) %in% levels(idObs$idInd))) {
             
             if (!all(levels(interactPair$idFrom) %in% levels(idObs$idInd))) {
-                stop(cat("Some individus ids in 'idFrom' are not in 'idObs': \n", 
-                  levels(interactPair$idFrom)[which(!levels(interactPair$idFrom) %in% 
-                    levels(idObs$idInd))]))
+                stop("Some individus ids in 'idFrom' are not in 'idObs'")
             }
             
             if (!all(levels(interactPair$idTo) %in% levels(idObs$idInd))) {
-                stop(cat("Some individus ids in 'idTo' are not in 'idObs': \n", levels(interactPair$idFrom)[which(!levels(interactPair$idFrom) %in% 
-                  levels(idObs$idInd))]))
+                stop("Some individus ids in 'idTo' are not in 'idObs'")
             }
             
         }
@@ -161,8 +157,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         # Check if rows are not duplicated
         if (nrow(interactPair[duplicated(interactPair[, c("idFrom", "idTo")]), ]) != 
             0) {
-            stop(cat("Some 'idFrom' and 'idTo' are duplicated:\n", interactPair[duplicated(interactPair[, 
-                c("idFrom", "idTo")]), ]))
+            stop("Some 'idFrom' and 'idTo' are duplicated")
         }
         
     }
