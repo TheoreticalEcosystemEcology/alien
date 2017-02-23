@@ -3,7 +3,8 @@ Status
 
 **Early development** **Version**: 0.0.1
 
-[![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien) [![Build status](https://ci.appveyor.com/api/projects/status/sk3sbvusvcyy0at0?svg=true)](https://ci.appveyor.com/project/TheoreticalEcosystemEcology/alienR/build/1.0.7) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
+[![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien)
+[![Build status](https://ci.appveyor.com/api/projects/status/al10lmlky7se4wa6/branch/master?svg=true)](https://ci.appveyor.com/project/SteveViss/alien/branch/master) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
 
 ALIEN: The aim of the package is to predict All Links In Ecological Networks
 ----------------------------------------------------------------------------
