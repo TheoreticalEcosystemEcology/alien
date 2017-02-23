@@ -21,7 +21,7 @@ vignettes/*.pdf
 /cache/
 *.Rproj
 
-# Rcpp files 
+# Rcpp files
 /src/*.o
 /src/*.o-*
 /src/*.d
@@ -39,3 +39,4 @@ vignettes/*.pdf
 ## for the makefiles
 record_updates.txt
 .Rproj.user
+inst/doc

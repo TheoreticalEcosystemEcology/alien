@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{traitsBasedJointCooc}
 \alias{traitsBasedJointCooc}
-\title{Traits-based joint co-occurrence.}
+\title{Generate traits-based joint co-occurrence.}
 \arguments{
 \item{env}{a numerical vector including the environmental values.}
 
@@ -23,7 +23,7 @@ interacting species associated to the environmental values.
 }
 \description{
 This function generates occurrence probabilities of a set of interacting
-given for a given set of environnmental values.
+species given for a given set of environnmental values.
 }
 \author{
 Kevin Cazelles

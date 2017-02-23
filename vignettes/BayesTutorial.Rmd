@@ -1,8 +1,12 @@
 ---
 title: "Bayesian Models in Species Interactions"
 author: "Ben Weinstein"
-date: "December 2, 2016"
-output: html_document
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bayesian Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
 ---
 
 #Aim
@@ -13,7 +17,7 @@ library(alienR)
 library(ggplot2)
 library(knitr)
 library(dplyr)
-opts_chunk$set(warning=F,message=F,include=T)
+knitr::opts_chunk$set(warning=F,message=F,include=T)
 ```
 
 # Simulate data
@@ -21,7 +25,7 @@ opts_chunk$set(warning=F,message=F,include=T)
 For this example, let's similiar some interaction data on trait-matching among species
 
 ```{r}
-dat<-simTraitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
+dat<-simTraitMatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
 ```
 
 We can view the trait-matching in this simulated dataset
@@ -66,7 +70,7 @@ ggplot(sumframe,aes(x=as.factor(I),y=J,fill=lower)) + geom_tile() + scale_fill_c
 If we want the distributions, instead of a summary we can plot the posterior predictions directly. For the sake of plotting, lets look at just one node.
 
 ```{r}
-justB<-predframe %>% filter(I=="b") 
+justB<-predframe %>% filter(I=="b")
 ggplot(data=justB,aes(x=J,y=value)) + geom_boxplot() + labs(y="Probability of interaction") + ggtitle("For Species B in the higher level") + theme_bw()
 ```
 
@@ -87,12 +91,12 @@ predframe2<-predictBayesreg(binomial)
 sumframe2<-predframe2 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 
 #Just b
-justB2<-predframe2 %>% filter(I=="b") 
+justB2<-predframe2 %>% filter(I=="b")
 ```
 
 # Multinomial Model
 
-Several different papers have been interested in assigning probability to each pair of interactions based on a multinomial or direchlet distribution. 
+Several different papers have been interested in assigning probability to each pair of interactions based on a multinomial or direchlet distribution.
 
 ```{r}
 multinomial<-fitBayesreg(dat,algorithm = "Multinomial")
@@ -105,11 +109,11 @@ Plot multinomial probabilities. Let's extract the model output directly.
 predframe3<-predictBayesreg(multinomial)
 
 #calculate summary
-sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95)) 
-justB3<-predframe3 %>% filter(I=="b") 
+sumframe3<-predframe3 %>% group_by(I,J) %>%  summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95))
+justB3<-predframe3 %>% filter(I=="b")
 ```
 
-Remember that a multinomial draw is similiar to our intercept model, each pairwise interaction gets a seperate probability. 
+Remember that a multinomial draw is similiar to our intercept model, each pairwise interaction gets a seperate probability.
 
 # Adding complexity using occupancy models
 
@@ -126,7 +130,7 @@ predframe4<-predictBayesreg(occupancy)
 sumframe4<-predframe4 %>% group_by(I,J) %>% summarize(mean=mean(value),lower=quantile(value,0.05),upper=quantile(value,0.95),Traitmatch=unique(Traitmatch))
 
 #just one species
-justB4<-predframe4 %>% filter(I=="b") 
+justB4<-predframe4 %>% filter(I=="b")
 ```
 
 # Compare model results
@@ -163,12 +167,12 @@ ggplot(sumframe2,aes(x=Traitmatch,y=mean,ymin=lower,ymax=upper)) + geom_line() +
 One of the virtues of having a posterior distribution of interaction probabilities is that we can attach uncertainty to our predicted networks. By taking a binomial draw for each of our predicted interactions, we generate a binary network. From that binary network we can calculate our desired network statistics.
 
 ```{r}
-intercept_stats<-network.bayesreg(predframe,indices=c("nestedness","connectance"))
+intercept_stats<-networkBayesReg(predframe,indices=c("nestedness","connectance"))
 intercept_stats$Model<-"Intercept"
-binomial_stats<-network.bayesreg(predframe2,indices=c("nestedness","connectance"))
+binomial_stats<-networkBayesReg(predframe2,indices=c("nestedness","connectance"))
 binomial_stats$Model<-"Binomial"
 
-allstats<-rbind_all(list(intercept_stats,binomial_stats))
+allstats<-bind_rows(list(intercept_stats,binomial_stats))
 
 #plot distribution fo variables
 ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_wrap(~Metric,scales='free',nrow=1) + theme_bw()  + labs(x="value")
@@ -176,8 +180,9 @@ ggplot(allstats,aes(x=nstat)) + geom_density(alpha=0.6,aes(fill=Model)) + facet_
 
 Same data, different model, different network statistics! Models matter. My point here is not that one model performed 'better', since the data was simulated in a similiar way. More that the models are not interchangable, and must be validated on quantitative and philosophical grounds.
 
+
 # Quantitative Data
 
 ```{r}
-dat<-simTraitmatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
+dat<-simTraitMatch(size_x = 8,size_y = 9,traits_x = rpois(8,7),traits_y = rpois(9,10),alpha_sigma = 3,replicates=5)
 ```

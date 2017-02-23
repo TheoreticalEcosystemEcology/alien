@@ -7,7 +7,7 @@
 \alias{interceptToJags}
 \alias{multinomialToJags}
 \alias{poissonToJags}
-\title{Write one of the available model into a \\code{.jags} file.}
+\title{Write models as JAGS file.}
 \usage{
 binomialToJags(filename)
 
@@ -25,10 +25,10 @@ NmixtureToJags(filename)
 \item{filename}{A connection, or a character string naming the file to print to.}
 }
 \value{
-A \\code{.jags} file including the desired model.
+A \code{.jags} file including the desired model.
 }
 \description{
-Write one of the available model into a \\code{.jags} file.
+Write one of the available model into a \code{.jags} file.
 }
 \section{Functions}{
 \itemize{

@@ -3,11 +3,11 @@ using namespace Rcpp;
 
 //' @name traitsBasedJointCooc
 //'
-//' @title Traits-based joint co-occurrence.
+//' @title Generate traits-based joint co-occurrence.
 //'
 //' @description
 //' This function generates occurrence probabilities of a set of interacting
-//' given for a given set of environnmental values.
+//' species given for a given set of environnmental values.
 //'
 //' @author
 //' Kevin Cazelles

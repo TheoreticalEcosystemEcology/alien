@@ -31,7 +31,7 @@ For any couple of species (i,j) the probability that i interact with
 The length of all trait vectors must equal the number of species otherwise
 an error is returned.
 This apporach has been used with feeding traits in a version revisited of
-niche model implemented (see \lik[pkg:alienR]{webFromNicheModel}) by Williams
+niche model implemented (see \link[pkg:alienR]{webFromNicheModel}) by Williams
 \emph{et al.} (2010) where \code{trait4} is common to all species.
 }
 \author{
@@ -40,6 +40,6 @@ Kevin Cazelles
 \references{
 Williams, R. J., Anandanadesan, A. & Purves, D. (2010) The probabilistic
 niche model reveals the niche structure and role of body size in a complex
-food web. PLoS One 5.
+food web. \emph{PLoS One 5}.
 }
 
