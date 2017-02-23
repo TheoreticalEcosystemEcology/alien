@@ -366,8 +366,8 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         
         occSite <- idObs
         occSite$idSiteTime <- as.factor(paste(occSite$idSite, occSite$idTime, sep = "-"))
-        occSite <- reshape2::dcast(idSiteTime ~ idSp, data = occSite)
-        occSite <- apply(occSite[, -1], 2, as.numeric)
+        occSite <- reshape2::dcast(idSiteTime ~ idSp, data = occSite, value.var = "idSiteTime", fun.aggregate = length)
+        occSite <- as.matrix(occSite[, -1])
         
         coOcc <- crossprod(occSite)
         coOcc <- ifelse(coOcc > 0, 1, 0)
