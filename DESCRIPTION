@@ -18,17 +18,7 @@ Description: Comparative analysis of interaction inference methods
 Suggests:
     testthat (>= 0.8.0)
 Imports:
-    boot,
-    dplyr,
-    GenSA,
-    graphics,
-    grDevices,
-    quantreg,
-    magrittr,
-    randomForest,
-    R2jags,
-    stats,
-    reshape2,
+    reshape2
 SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
 NeedsCompilation: no
 License: MIT
