@@ -1,14 +1,18 @@
 rfun := $(wildcard R/*.R)
 rman := $(wildcard man/)
+rcpp := $(wildcard src/*.cpp)
 rtes := $(wildcard tests/testthat/*.R)
 chk = record_updates.txt
 rscr = pkg2date.R
 
 
-all: $(chk)
+all: $(md) $(chk)
 
-$(chk): $(rfun) $(rtes) $(rman)
-	Rscript --no-site-file  --no-init-file $(rscr) 1
+$(chk): $(rfun) $(rtes) $(rman) $(rcpp)
+	Rscript --no-site-file --no-init-file $(rscr) 1
+
+vignette:
+	Rscript --no-site-file --no-init-file $(rscr) 2
 
 clean:
-	rm -rf man/* NAMESPACE
+	rm -rf man/* src/*.o src/*.so R/RcppExports.R src/RcppExports.cpp

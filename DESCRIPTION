@@ -17,12 +17,16 @@ Description: Comparative analysis of interaction inference methods
       Use four spaces when indenting paragraphs within the Description.
 Suggests:
     testthat (>= 0.8.0)
-Imports:
+LinkingTo: Rcpp
+Imports: Rcpp (>= 0.12.9),
+    magrittr,
     reshape2
-SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
+SystemRequirements: none
 NeedsCompilation: no
-License: MIT
+License: MIT + file LICENSE
 BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
 Encoding: UTF-8
 LazyData: true
+VignetteBuilder: rmarkdown,
+    knitr
 RoxygenNote: 5.0.1
