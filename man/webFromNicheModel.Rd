@@ -48,6 +48,6 @@ Kevin Cazelles
 }
 \references{
 Williams, R.J. and Martinez, N.D. (2000) Simple rules yield complex food webs.
-\emph{Nature}, 404, 180–183.
+\emph{Nature}, 404:180–183.
 }
 
