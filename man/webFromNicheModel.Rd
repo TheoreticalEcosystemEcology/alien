@@ -8,23 +8,23 @@ webFromNicheModel(nbsp, connec, connect_all = FALSE, unbias = FALSE,
   niche = NULL)
 }
 \arguments{
-\item{nbsp}{an integer giving the number of species considered.}
+\item{nbsp}{An integer giving the number of species considered.}
 
-\item{connec}{a real positive between 0 and .5 indicating the connectance
+\item{connec}{A real positive between 0 and .5 indicating the connectance
 of the network to be generated.}
 
-\item{unbias}{logical. If TRUE, then the first species may not be a basal species.}
+\item{unbias}{Logical. If TRUE, then the first species may not be a basal species.}
 
-\item{niche}{a vector real positive between 0 and 1 standing for the niche axis.
+\item{niche}{A vector real positive between 0 and 1 standing for the niche axis.
 Default is set to \code{NULL}, in such case the niche axis is automatically generated.}
 
-\item{connec_all}{logical. If TRUE, then all species in the network have a
+\item{connec_all}{Logical. If TRUE, then all species in the network have a
 least one prey (but the niche with the lowest niche value).}
 }
 \value{
 A logical matrix describing pairwise interactions. A given line
-describe the diet of a given species while a column decribes the set of
-predator accociated to a particular species.
+describes the diet of a given species while a column decribes the set of
+predator associated to a particular species.
 }
 \description{
 This function is an implementation of the niche model which generates
@@ -41,7 +41,7 @@ tends to be more connected than expected.
 Third, if one uses its own customed niche axis, values should be between 0 and
 and 1 and the expected connectance (\code{connec}) can vary significantly if the
 distribution of niche values differ from the uniform distribution used in
-Williams and Martinez (2000)
+Williams and Martinez (2000).
 }
 \author{
 Kevin Cazelles
