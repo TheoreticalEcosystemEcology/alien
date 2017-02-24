@@ -27,6 +27,4 @@ License: MIT + file LICENSE
 BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
 Encoding: UTF-8
 LazyData: true
-VignetteBuilder: rmarkdown,
-    knitr
 RoxygenNote: 5.0.1
