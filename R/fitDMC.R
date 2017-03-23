@@ -20,8 +20,8 @@
 #' TODO: Add ref Rohr
 #'
 #' @export
-fitDirectCentrality <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", 
-    level = "species", traits = NULL, step = FALSE, ...) {
+fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", level = "species", 
+    traits = NULL, step = FALSE, ...) {
     
     if (class(data) != "alienData") {
         stop("`data` arg has to be alienData class")
@@ -110,7 +110,7 @@ fitDirectCentrality <- function(data, class = NULL, family = NULL, formula = "I 
     
     
     attr(model, "level") <- level
-    class(model) <- "fitDirectCentrality"
+    class(model) <- "fitDMC"
     
     return(model)
 }

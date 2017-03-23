@@ -19,7 +19,6 @@ Suggests:
     testthat (>= 0.8.0)
 Imports:
     reshape2
-SystemRequirements: none, one or more of JAGS (>= 4.0.0; (http://mcmc-jags.sourceforge.net))
 NeedsCompilation: no
 License: MIT
 BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
