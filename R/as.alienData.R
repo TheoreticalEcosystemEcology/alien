@@ -14,6 +14,7 @@
 #' @param scaleTrait Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.
 #' @param interceptSiteEnv Logical. Whether a column of 1s should be added to X. Default is TRUE.
 #' @param interceptTrait Logical. Whether a row of 1s should be added to Tr. Default is TRUE.
+#' @param verbose Logical. warning and help messages are printed. Default is FALSE.
 #'
 #' @details
 #'
@@ -33,9 +34,6 @@
 #' @keywords classes
 #' @export
 
-# source('../../alienR/R/as.alienData.R') load('./aliendata/argsAlienData.RData')
-# alienBartomeusData <-
-# as.alienData(idObs=idObs,interactPair=interactPair,traitInd=traitInd,traitSp=traitSp)
 
 as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbund = NULL, 
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL, scaleSiteEnv = FALSE, 

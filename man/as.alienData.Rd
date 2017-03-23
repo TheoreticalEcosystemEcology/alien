@@ -33,6 +33,8 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 \item{interceptSiteEnv}{Logical. Whether a column of 1s should be added to X. Default is TRUE.}
 
 \item{interceptTrait}{Logical. Whether a row of 1s should be added to Tr. Default is TRUE.}
+
+\item{verbose}{Logical. warning and help messages are printed. Default is FALSE.}
 }
 \value{
 An object of the class \code{alienData} is returned by \code{as.alienData}.

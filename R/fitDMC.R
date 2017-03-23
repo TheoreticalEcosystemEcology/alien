@@ -12,9 +12,13 @@
 #' @param traits vector of traits to include in the algorithm
 #' @param step logical, specify if variables are selected by stepAIC. Only availabe for glm class. FALSE by default
 #' @param ... other params passed to the glm, step or randomForest functions.
-#' @examples fitDirectCentrality(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
+#' @examples fitDMC(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
 #' @author
 #' Dominique Gravel & Steve Vissault
+#'
+#' @importFrom stats aggregate as.formula
+#' @importFrom utils type.convert
+#' @importFrom randomForest randomForest
 #'
 #' @references
 #' TODO: Add ref Rohr

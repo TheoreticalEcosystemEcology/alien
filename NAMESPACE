@@ -2,4 +2,8 @@
 
 export(as.alienData)
 export(fitDMC)
+importFrom(randomForest,randomForest)
+importFrom(stats,aggregate)
+importFrom(stats,as.formula)
 importFrom(stats,sd)
+importFrom(utils,type.convert)

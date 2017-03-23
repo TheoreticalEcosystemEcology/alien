@@ -29,7 +29,7 @@ fitDMC(data, class = NULL, family = NULL, formula = "I ~ . * .",
 Fit direct matching centrality models among species or individus
 }
 \examples{
-fitDirectCentrality(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
+fitDMC(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
 }
 \author{
 Dominique Gravel & Steve Vissault
