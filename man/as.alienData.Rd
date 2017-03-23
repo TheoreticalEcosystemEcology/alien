@@ -41,7 +41,7 @@ An object of the class \code{alienData} is returned by \code{as.alienData}.
 TODO: Declare more accurately the structure of object returned by the function. What has been generated from the function.
 }
 \description{
-This functions is used to format the data
+This function formats the data and returns an object of class alienData.
 }
 \details{
 The strength of the interactions defined in the third column of \code{interactPair} can be a 0 if no direct interaction has been observed (defined as true absence of interaction) or any numerical value. Undocumented interactions among species or individus will be assumed as NA by default.

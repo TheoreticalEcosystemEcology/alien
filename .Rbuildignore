@@ -8,3 +8,4 @@
 ^pkg2date\.R
 ^README\.rmd
 ^record*
+^inst/
