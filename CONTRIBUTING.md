@@ -1,4 +1,4 @@
-### Development practices
+### Development pratices
 
 - the `master` branch is protected -- code can only arrive in it after a pull request, that has to be reviewed and approved by Steve
 - everyone work on branches in this repo
@@ -7,7 +7,7 @@
 - good commit messages are 72 chars on the first line and explain what has been done in the imperative tone. A good rule of thumb is that if you say "If merged, this commit will" before the commit message, it should be a sentence. A good commit message is: `add informations about development practices`. A bad commit message is `CONTRIBUTING changes`
 - if the branching complexity of your function is > 3 (number of nested for / if / while), rewrite
 
-### Style Guide
+### Styleguide
 
 - function names are explicit and with `CamelCased` verbs, *e.g.* `SimulatesNicheModel`.
 - objects are declared with lowercase, underscores and small caps, *e.g.* `trophic_level`

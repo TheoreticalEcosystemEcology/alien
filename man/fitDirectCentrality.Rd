@@ -4,19 +4,25 @@
 \alias{fitDirectCentrality}
 \title{Fit Direct matching centrality among species or individus}
 \usage{
-fitDirectCentrality(data, family = "binomial", level = "species",
-  formula = "I ~ . * .", ...)
+fitDirectCentrality(data, class = NULL, family = NULL, level = "species",
+  formula = "I ~ . * .", traits = NULL, step = FALSE, ...)
 }
 \arguments{
-\item{data}{a dataframe with a first column named I (the interaction) and extra columns with covariates (can be named at will)}
+\item{...}{other params passed to the glm, stepAIC or randomForest algorithm}
 
-\item{...}{other params passed to the glm or randomForest algorithm}
+\item{an}{object of the class alienData, see as.alienData function.}
 
-\item{specify}{the algorithm: one of the `stats` family or the classification algorithm `randomForest`. Default is binomial.}
+\item{method}{to be applied on the data which can be 'rf' for randomForest or 'glm'.}
+
+\item{glm}{family, one family of the `stats` package (e.g. binomial(), Gamma(), gaussian() etc.)}
+
+\item{set}{the formula passed to the algorithm (see `family`).}
 
 \item{specify}{the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.}
 
-\item{set}{the formula passed to the algorithm (see `family`)}
+\item{vector}{of traits to include in the algorithm}
+
+\item{logical, }{specify if variables are selected by stepAIC. Only for glm}
 }
 \description{
 Fit direct matching centrality models among species or individus
@@ -28,6 +34,6 @@ fitDirectCentrality(bartomeus,family='poisson',level='species')
 Dominique Gravel & Steve Vissault
 }
 \references{
-Poisot T., Cirtwill A. R., Cazelles A. R., Cazelles K., Gravel D., Fortin M.-J. and Stouffer D.B. (2015). The structure of probabilistic networks. \emph{bioRxiv 016485}; doi: https://doi.org/10.1101/016485.
+Rohr
 }
 
