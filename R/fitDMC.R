@@ -18,7 +18,7 @@
 #'
 #' @importFrom stats aggregate as.formula
 #' @importFrom utils type.convert
-#' @importFrom randomForest randomForest
+#' @import randomForest
 #'
 #' @references
 #' TODO: Add ref Rohr

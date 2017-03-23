@@ -18,7 +18,10 @@ Description: Comparative analysis of interaction inference methods
 Suggests:
     testthat (>= 0.8.0)
 Imports:
-    reshape2
+    reshape2,
+    randomForest,
+    utils,
+    stats
 NeedsCompilation: no
 License: MIT
 BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
