@@ -20,7 +20,10 @@ Suggests:
 LinkingTo: Rcpp
 Imports: Rcpp (>= 0.12.9),
     magrittr,
-    reshape2
+    reshape2,
+    randomForest,
+    utils,
+    stats
 SystemRequirements: none
 NeedsCompilation: no
 License: MIT + file LICENSE
