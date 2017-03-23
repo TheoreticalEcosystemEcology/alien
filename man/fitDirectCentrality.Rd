@@ -2,38 +2,39 @@
 % Please edit documentation in R/fitDirectCentrality.R
 \name{fitDirectCentrality}
 \alias{fitDirectCentrality}
-\title{Fit Direct matching centrality among species or individus}
+\title{Fit direct matching centrality among species or individus}
 \usage{
-fitDirectCentrality(data, class = NULL, family = NULL, level = "species",
-  formula = "I ~ . * .", traits = NULL, step = FALSE, ...)
+fitDirectCentrality(data, class = NULL, family = NULL,
+  formula = "I ~ . * .", level = "species", traits = NULL, step = FALSE,
+  ...)
 }
 \arguments{
-\item{...}{other params passed to the glm, stepAIC or randomForest algorithm}
+\item{data}{an object of the class alienData, see as.alienData function.}
 
-\item{an}{object of the class alienData, see as.alienData function.}
+\item{class}{method to be applied on the data which can be 'rf' for randomForest or 'glm'.}
 
-\item{method}{to be applied on the data which can be 'rf' for randomForest or 'glm'.}
+\item{family}{one family of the `stats` package (e.g. binomial(), Gamma(), gaussian() etc.)}
 
-\item{glm}{family, one family of the `stats` package (e.g. binomial(), Gamma(), gaussian() etc.)}
+\item{formula}{set the formula passed to the algorithm (see `family`).}
 
-\item{set}{the formula passed to the algorithm (see `family`).}
+\item{level}{specify the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.}
 
-\item{specify}{the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.}
+\item{traits}{vector of traits to include in the algorithm}
 
-\item{vector}{of traits to include in the algorithm}
+\item{step}{logical, specify if variables are selected by stepAIC. Only availabe for glm class. FALSE by default}
 
-\item{logical, }{specify if variables are selected by stepAIC. Only for glm}
+\item{...}{other params passed to the glm, step or randomForest functions.}
 }
 \description{
 Fit direct matching centrality models among species or individus
 }
 \examples{
-fitDirectCentrality(bartomeus,family='poisson',level='species')
+fitDirectCentrality(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
 }
 \author{
 Dominique Gravel & Steve Vissault
 }
 \references{
-Rohr
+TODO: Add ref Rohr
 }
 
