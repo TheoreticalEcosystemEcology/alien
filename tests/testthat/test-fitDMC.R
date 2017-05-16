@@ -25,13 +25,13 @@ test_that("check output", {
   # for species
   # test glm output
   model <- fitDMC(bartomeus,class='glm',family=gaussian(),level='species')
-  expect_that(model, is_a("fitDMC"))
+  expect_that(model, is_a("glm"))
   expect_equal(model$method,"glm.fit")
   expect_equal(attr(model,"level"), "species")
 
   # test rf output
   model <- fitDMC(bartomeus,class='rf',level='species')
-  expect_that(model, is_a("fitDMC"))
+  expect_that(model, is_a("randomForest"))
   expect_true(!is.null(model$forest))
   expect_equal(attr(model,"level"), "species")
 
@@ -39,13 +39,13 @@ test_that("check output", {
   # for individus
   # test glm output
   model <- fitDMC(bartomeus,class='glm',family=gaussian(),level='individus')
-  expect_that(model, is_a("fitDMC"))
+  expect_that(model, is_a("glm"))
   expect_equal(model$method,"glm.fit")
   expect_equal(attr(model,"level"), "individus")
 
   # test rf output
   model <- fitDMC(bartomeus,class='rf',level='individus')
-  expect_that(model, is_a("fitDMC"))
+  expect_that(model, is_a("randomForest"))
   expect_true(!is.null(model$forest))
   expect_equal(attr(model,"level"), "individus")
 

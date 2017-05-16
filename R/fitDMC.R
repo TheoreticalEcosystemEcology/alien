@@ -1,4 +1,4 @@
-#' @name fitDirectCentrality
+#' @name fitDMC
 #'
 #' @title Fit direct matching centrality among species or individus
 #'
@@ -80,6 +80,8 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     
     # remove columns containing all NA (no species match to the traits)
     df_interact <- df_interact[, colSums(is.na(df_interact)) < nrow(df_interact)]  # TODO: Check
+    # remove rows with all trait NA
+    df_interact <- df_interact[rowSums(is.na(df_interact[, -1])) == 0, ]
     
     # subset df to get only I and covariates (traits)
     df_interact <- df_interact[, -c(1:2)]
@@ -88,8 +90,6 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     df_interact <- data.frame(I = df_interact[, 1], as.data.frame(sapply(df_interact[, 
         -c(1)], type.convert)))
     
-    # remove rows with all trait NA
-    df_interact <- df_interact[rowSums(is.na(df_interact[, -1])) == 0, ]
     
     if (all(!is.null(class) && class == "rf")) {
         
@@ -115,7 +115,6 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     
     
     attr(model, "level") <- level
-    class(model) <- "fitDMC"
     
     return(model)
 }
