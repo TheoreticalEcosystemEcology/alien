@@ -20,7 +20,6 @@ res4 <- round(mean(tmp4)/100, 2)
 res34 <- mean(tmp3)/100 < mean(tmp4)/10
 
 
-
 test_that("Output format", {
   test_dim <- all(dim(res0) == c(nsp, nsp))
   expect_equal(test_dim, TRUE)

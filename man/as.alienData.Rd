@@ -6,7 +6,7 @@
 \usage{
 as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
   coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
-  phylo = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
+  phy = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
   interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE)
 }
 \arguments{
@@ -24,7 +24,7 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 
 \item{traitInd}{A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
 
-\item{phylo}{A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.}
+\item{phy}{An object of class 'phylo' describing the phylogenetic relationships across species (see details).}
 
 \item{scaleSiteEnv}{Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.}
 
