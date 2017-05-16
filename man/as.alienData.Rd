@@ -6,7 +6,7 @@
 \usage{
 as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
   coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
-  phylo = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
+  phy = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
   interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE)
 }
 \arguments{
@@ -24,6 +24,8 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 
 \item{traitInd}{A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
 
+\item{phy}{An object of class 'phylo' describing the phylogenetic relationships across species (see details).}
+
 \item{scaleSiteEnv}{Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.}
 
 \item{scaleTrait}{Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.}
@@ -33,8 +35,6 @@ as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
 \item{interceptTrait}{Logical. Whether a row of 1s should be added to Tr. Default is TRUE.}
 
 \item{verbose}{Logical. warning and help messages are printed. Default is FALSE.}
-
-\item{phy}{An object of class 'phylo' describing the phylogenetic relationships across species (see details).}
 }
 \value{
 An object of the class \code{alienData} is returned by \code{as.alienData}.
