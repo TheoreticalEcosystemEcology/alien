@@ -23,7 +23,8 @@ Imports: Rcpp (>= 0.12.9),
     reshape2,
     randomForest,
     utils,
-    stats
+    stats,
+    ape
 SystemRequirements: none
 NeedsCompilation: no
 License: MIT + file LICENSE

@@ -20,9 +20,6 @@
 #' @importFrom utils type.convert
 #' @import randomForest
 #'
-#' @references
-#' TODO: Add ref Rohr
-#'
 #' @export
 fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", level = "species", 
     traits = NULL, step = FALSE, ...) {
