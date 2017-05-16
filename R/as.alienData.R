@@ -9,7 +9,7 @@
 #' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.
 #' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.
 #' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
-#' @param phylo A square symmetric matrix describing the phylogenetic relationships between pairs of all species (see details). TODO: Not implemented yet.
+#' @param phy An object of class 'phylo' describing the phylogenetic relationships across species (see details).
 #' @param scaleSiteEnv Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.
 #' @param scaleTrait Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.
 #' @param interceptSiteEnv Logical. Whether a column of 1s should be added to X. Default is TRUE.
@@ -28,6 +28,7 @@
 #' @author F. Guillaume Blanchet & Steve Vissault
 #'
 #' @importFrom stats sd
+#' @import ape
 #' @examples
 #'
 #' @keywords manip
@@ -36,7 +37,7 @@
 
 
 as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbund = NULL, 
-    siteEnv = NULL, traitSp = NULL, traitInd = NULL, phylo = NULL, scaleSiteEnv = FALSE, 
+    siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, scaleSiteEnv = FALSE, 
     scaleTrait = FALSE, interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE) {
     
     # OBJECT: idObs ================================================
@@ -413,6 +414,30 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         }
         
     }
+    # OBJECT: phy ================================================
+    
+    if (!is.null(phy)) {
+        
+        ### Check that phy is of class phylo
+        if (!inherits(phy, "phylo")) 
+            stop("'", deparse(substitute(phy)), "' not of class 'phylo'")
+        
+        ### Check that phy is rooted
+        if (!is.rooted(phy)) 
+            stop("'", deparse(substitute(phy)), "' the tree is not rooted")
+        
+        ### Check that there are no duplicated tips
+        if (any(duplicated(phy$tip.label))) 
+            stop("Duplicate tip labels present in phylogeny")
+        
+        ### Warn if the number of species in the phylogeny differs from num species in the
+        ### interaction matrix I'm masking this out as it would need to be checked first -
+        ### which other dependencies provide the number of species? if (!is.null(traitSp))
+        ### nsps<-length(unique(traitSp$idSp))
+        
+        # if (warn) {nsps=99 if (abs(length(phy$tip.label)-nsps) > 0 ) warning('The
+        # phylogeny and other data differ in the number of species')
+    }
     
     # TRANSFORM: SCALE AND INTERCEPT OPTIONS
     # ================================================
@@ -529,7 +554,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     ## Create res list with NULL
     res <- list(idObs = idObs, interactPair = interactPair, interactSp = interactSp, 
         interactInd = interactInd, coOcc = coOcc, coAbund = coAbund, siteEnv = siteEnv, 
-        traitSp = traitSp, traitInd = traitInd, phylo = phylo)
+        traitSp = traitSp, traitInd = traitInd, phy = phy)
     
     attr(res, "coOccSource") <- coOccFrom
     attr(res, "scaleSiteEnv") <- scaleSiteEnv

@@ -34,7 +34,4 @@ fitDMC(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
 \author{
 Dominique Gravel & Steve Vissault
 }
-\references{
-TODO: Add ref Rohr
-}
 
