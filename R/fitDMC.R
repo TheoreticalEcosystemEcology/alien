@@ -27,13 +27,14 @@
 fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", level = "species", 
     traits = NULL, step = FALSE, ...) {
     
+    
     if (class(data) != "alienData") {
         stop("`data` arg has to be alienData class")
     }
     
     if (level == "species") {
         if (all(is.null(data$traitSp), is.null(data$interactSp))) {
-            stop("traitSp and interactSp are absent from data. Both are to be provided to fit the algorithm at the individu level")
+            stop("traitSp and interactSp are absent from data. Both have to be provided to fit the algorithm at the species level")
         }
         
         df_trait <- data$traitSp
@@ -44,7 +45,7 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     if (level == "individus") {
         # check if traitInd and interactInd are provided by the function as.alienData()
         if (all(is.null(data$traitInd), is.null(data$interactInd))) {
-            stop("traitInd and interactInd are absent from data. Both are to be provided to fit the algorithm at the individu level")
+            stop("traitInd and interactInd are absent from data. Both have to be provided to fit the algorithm at the individu level")
         }
         
         df_trait <- data$traitInd
@@ -83,7 +84,6 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     # remove columns containing all NA (no species match to the traits)
     df_interact <- df_interact[, colSums(is.na(df_interact)) < nrow(df_interact)]  # TODO: Check
     
-    
     # subset df to get only I and covariates (traits)
     df_interact <- df_interact[, -c(1:2)]
     
@@ -91,7 +91,11 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     df_interact <- data.frame(I = df_interact[, 1], as.data.frame(sapply(df_interact[, 
         -c(1)], type.convert)))
     
+    # remove rows with all trait NA
+    df_interact <- df_interact[rowSums(is.na(df_interact[, -1])) == 0, ]
+    
     if (all(!is.null(class) && class == "rf")) {
+        
         model <- randomForest::randomForest(as.formula(formula), data = df_interact)
         
     } else if (all(!is.null(class) && class == "glm")) {

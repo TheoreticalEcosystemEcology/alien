@@ -44,9 +44,9 @@ test_that("check output", {
   expect_equal(attr(model,"level"), "individus")
 
   # test rf output
-  # model <- fitDirectCentrality(bartomeus,class='rf',level='individus')
-  # expect_that(model, is_a("fitDirectCentrality"))
-  # expect_true(!is.null(model$forest))
-  # expect_equal(attr(model,"level"), "individus")
+  model <- fitDMC(bartomeus,class='rf',level='individus')
+  expect_that(model, is_a("fitDMC"))
+  expect_true(!is.null(model$forest))
+  expect_equal(attr(model,"level"), "individus")
 
 })
