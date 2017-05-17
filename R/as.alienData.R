@@ -227,10 +227,10 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     } else if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idSp))) {
 
         # if interactPair at species level
-        nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+        nsp <- length(unique(c(nlevels(interactPair$idTo),nlevels(interactPair$idFrom))))
         interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
-        colnames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-        rownames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+        colnames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
+        rownames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
 
 
         for (i in 1:nrow(interactPair)) {
