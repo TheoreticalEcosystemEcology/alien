@@ -12,7 +12,7 @@ as.alienData(idObs, interactPair = NULL, coOcc = NULL, coAbund = NULL,
 \arguments{
 \item{idObs}{A data frame of a least two colomuns. A given row describes one
 observation. The site indentifier (\code{idSite}, must be unique) is provided in the first
-and the species identifier (\code{idSp}) on the second. There are two
+and the species identifier (\code{idSp}) in the second. There are two
 optional columns: \code{idTime} to add a time stamp to the observations and
 \code{idInd} to add a identifier to individuals. Note that if these columns
 are emoty, \code{NA} will be added. Columns must be correctly ordered.}
