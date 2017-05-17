@@ -1,7 +1,7 @@
 Status
 ------
 
-**Early development** **Version**: 0.0.1
+**Version**: 0.1
 
 [![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien)
 [![Build status](https://ci.appveyor.com/api/projects/status/al10lmlky7se4wa6/branch/master?svg=true)](https://ci.appveyor.com/project/SteveViss/alien/branch/master) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
@@ -38,7 +38,6 @@ Incoming content
 Generate package metadata
 -------------------------
 
-All enhancements to the README has to be written in the Readme.Rmd file.
 
 To build the metadata files (i.e. README, NAMESPACE, DESCRIPTION):
 
@@ -54,7 +53,7 @@ ipak <- function(pkg){
 pkgs = c('devtools','roxygen2','testthat','formatR','rmarkdown')
 ipak(pkgs)
 
-## Make sure you're working directory is set up at path/to/alien/folder
+## Make sure you're working directory is set at path/to/alien/folder
 getwd()
 
 ## Create README file
