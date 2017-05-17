@@ -60,6 +60,7 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     if (is.matrix(idObs)) {
         idObs <- as.data.frame(idObs)
         if (verbose) 
+
             message("'idObs' coerced as data.frame")
     }
     
@@ -76,6 +77,7 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         }
         if (verbose) 
             message("'idObs' columns' names are 'idSite','idSp','idTime','idInd'")
+
     }
     
     # Check for duplicates rows
@@ -88,8 +90,9 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         idObs <- as.data.frame(lapply(idObs, as.factor))
     }
     
+
     # OBJECT: interactPair =====================================================
-    
+
     if (is.null(interactPair)) {
         stop("interactPair argument cannot be NULL")
     }
@@ -229,8 +232,10 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         # if interactPair at species level
         nsp <- length(unique(c(nlevels(interactPair$idTo), nlevels(interactPair$idFrom))))
         interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+      
         colnames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
         rownames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
+
         
         
         for (i in 1:nrow(interactPair)) {
