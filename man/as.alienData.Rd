@@ -4,25 +4,34 @@
 \alias{as.alienData}
 \title{Format data for the \code{alien} class}
 \usage{
-as.alienData(idObs = NULL, interactPair = NULL, coOcc = NULL,
-  coAbund = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
-  phy = NULL, scaleSiteEnv = FALSE, scaleTrait = FALSE,
-  interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE)
+as.alienData(idObs, interactPair = NULL, coOcc = NULL, coAbund = NULL,
+  siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL,
+  scaleSiteEnv = FALSE, scaleTrait = FALSE, interceptSiteEnv = FALSE,
+  interceptTrait = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{idObs}{A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpcies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).}
+\item{idObs}{A data frame of a least two colomuns. A given row describes one
+observation. The site indentifiers (\code{idSite}, must be unique) has to come first
+and the species identifier (\code{idSp}) in second. Two
+extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
+\code{idInd}, an identifier of individus. If these two extra columns
+are not supplied , \code{NA} will be added. Columns must be correctly ordered.}
 
-\item{interactPair}{A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).}
+\item{interactPair}{A data frame which contains interaction at the finest level
+(individus or species). The first two columns are \code{idFrom} and \code{idTo} and
+determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
+of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
+column is the strength of the interaction (Please see details).}
 
-\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the idObs dataframe (see return section).}
+\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).}
 
 \item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
 
-\item{siteEnv}{A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
+\item{siteEnv}{A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
 
-\item{traitSp}{A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.}
+\item{traitSp}{A matrix or a data frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in \code{idObs} data.frame.}
 
-\item{traitInd}{A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
+\item{traitInd}{A matrix or a data frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
 
 \item{phy}{An object of class 'phylo' describing the phylogenetic relationships across species (see details).}
 
@@ -44,7 +53,15 @@ TODO: Declare more accurately the structure of object returned by the function. 
 This function formats the data and returns an object of class alienData.
 }
 \details{
-The strength of the interactions defined in the third column of \code{interactPair} can be a 0 if no direct interaction has been observed (defined as true absence of interaction) or any numerical value. Undocumented interactions among species or individus will be assumed as NA by default.
+\code{idObs} is used to check consistency and prevent errors among unique
+identifiers of each alienData arguments.
+
+The strength of the interactions defined in the third column of
+\code{interactPair} can be a 0 if no direct interaction has been observed
+(defined as true absence of interaction) or any numerical value.
+WARNING: interactSp is aggregating the information at the species level using the sum function by default.
+Undocumented interactions among species or individus will be assumed as NA
+by default.
 }
 \examples{
 

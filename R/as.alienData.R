@@ -2,13 +2,22 @@
 #'
 #' @description This function formats the data and returns an object of class alienData.
 #'
-#' @param idObs A data.frame which is mandatory and will help to check consistency and prevent errors among unique identifiers of each alienData arguments. The first column (idSite) contains unique identifier of where the observation was made. The second column (idTime) is not mandatory and contains temporal information: an unique identifier at the time the sample has been taken (needed for timeseries analysis). The third column (idSpcies) is an unique identifier of the species sampled at time (idTime) and location (idSite). The fourth column is an unique identifier of individu of species (idSp) observed at time (idTime) and location (idSite).
-#' @param interactPair A data.frame which contains interaction at the finest level (individus or species). The first two columns are idFrom and idTo and determine the sens of the interaction. idFrom and idTo are unique identifier of species or individu documented in the idObs data.frame. Finaly, the thrid column is the strength of the interaction (Please see details).
-#' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the idObs dataframe (see return section).
+#' @param idObs A data frame of a least two colomuns. A given row describes one
+#' observation. The site indentifiers (\code{idSite}, must be unique) has to come first
+#' and the species identifier (\code{idSp}) in second. Two
+#' extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
+#' \code{idInd}, an identifier of individus. If these two extra columns
+#' are not supplied , \code{NA} will be added. Columns must be correctly ordered.
+#' @param interactPair A data frame which contains interaction at the finest level
+#' (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
+#' determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
+#' of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
+#' column is the strength of the interaction (Please see details).
+#' @param coOcc A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).
 #' @param coAbund A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.
-#' @param siteEnv A matrix or a data.frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.
-#' @param traitSp A matrix or a data.frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in idObs data.frame.
-#' @param traitInd A matrix or a data.frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
+#' @param siteEnv A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.
+#' @param traitSp A matrix or a data frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in \code{idObs} data.frame.
+#' @param traitInd A matrix or a data frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.
 #' @param phy An object of class 'phylo' describing the phylogenetic relationships across species (see details).
 #' @param scaleSiteEnv Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.
 #' @param scaleTrait Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.
@@ -17,11 +26,18 @@
 #' @param verbose Logical. warning and help messages are printed. Default is FALSE.
 #'
 #' @details
+
+#' \code{idObs} is used to check consistency and prevent errors among unique
+#' identifiers of each alienData arguments.
 #'
-#' The strength of the interactions defined in the third column of \code{interactPair} can be a 0 if no direct interaction has been observed (defined as true absence of interaction) or any numerical value. Undocumented interactions among species or individus will be assumed as NA by default.
+#' The strength of the interactions defined in the third column of
+#' \code{interactPair} can be a 0 if no direct interaction has been observed
+#' (defined as true absence of interaction) or any numerical value.
+#' WARNING: interactSp is aggregating the information at the species level using the sum function by default.
+#' Undocumented interactions among species or individus will be assumed as NA
+#' by default.
 #'
 #' @return
-#'
 #' An object of the class \code{alienData} is returned by \code{as.alienData}.
 #' TODO: Declare more accurately the structure of object returned by the function. What has been generated from the function.
 #'
@@ -36,32 +52,32 @@
 #' @export
 
 
-as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbund = NULL, 
+as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NULL, 
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, scaleSiteEnv = FALSE, 
     scaleTrait = FALSE, interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE) {
     
-    # OBJECT: idObs ================================================
-    
-    if (is.null(idObs)) {
-        stop("idObs argument cannot be NULL")
-    }
-    
-    # Test idObs structure
-    if (!is.data.frame(idObs) & !is.matrix(idObs) & ncol(idObs) != 4) {
-        stop("idObs has to be a matrix/dataframe with 4 columns")
-    }
     
     if (is.matrix(idObs)) {
         idObs <- as.data.frame(idObs)
         if (verbose) 
-            message("'idObs' converted as data.frame")
+
+            message("'idObs' coerced as data.frame")
     }
     
-    # Rename columns
-    if (ncol(idObs) == 4) {
-        colnames(idObs) <- c("idSite", "idTime", "idSp", "idInd")
+    # Test idObs structure
+    if (ncol(idObs) < 2) {
+        stop("idObs must be a matrix/dataframe with at least 2 columns")
+    } else {
+        # Rename columns / name matching
+        colnames(idObs)[1:2] <- c("idSite", "idSp")
+        if (ncol(idObs) == 4) {
+            colnames(idObs)[3:4] <- c("idTime", "idInd")
+        } else {
+            idObs$idInd <- NA_character
+        }
         if (verbose) 
-            message("'idObs' columns have been rename to 'idSite','idTime','idSp','idInd'")
+            message("'idObs' columns' names are 'idSite','idSp','idTime','idInd'")
+
     }
     
     # Check for duplicates rows
@@ -74,8 +90,9 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         idObs <- as.data.frame(lapply(idObs, as.factor))
     }
     
-    # OBJECT: interactPair ================================================
-    
+
+    # OBJECT: interactPair =====================================================
+
     if (is.null(interactPair)) {
         stop("interactPair argument cannot be NULL")
     }
@@ -200,6 +217,7 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
         ## built interactSp
         nsp <- length(unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))))
         interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+        
         colnames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
         rownames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
         
@@ -212,10 +230,12 @@ as.alienData <- function(idObs = NULL, interactPair = NULL, coOcc = NULL, coAbun
     } else if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idSp))) {
         
         # if interactPair at species level
-        nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+        nsp <- length(unique(c(nlevels(interactPair$idTo), nlevels(interactPair$idFrom))))
         interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
-        colnames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-        rownames(interactSp) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+      
+        colnames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
+        rownames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
+
         
         
         for (i in 1:nrow(interactPair)) {

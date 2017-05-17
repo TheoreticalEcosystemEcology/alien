@@ -35,6 +35,9 @@ if (!as.numeric(args[1])) {
     cat("##-- testing ........\n")
     devtools::test()
     decor()
+    ## check
+    cat("##-- checking ....\n")
+    devtools::check(".")
   } else{
     ## building the vgnettes
     if (dir.exists("vignettes")){
