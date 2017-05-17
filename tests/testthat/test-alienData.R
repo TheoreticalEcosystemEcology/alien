@@ -3,11 +3,12 @@ context("alienData function")
 test_that("check data structure", {
 
   load('test_idObs.rda')
-  out <- as.alienData(idObs=idObs,interactPair=interactPair,verbose=FALSE)
+  out <- as.alienData(idObs=idObs, interactPair=interactPair, verbose=FALSE)
 
   expect_is(out, "alienData")
   # Even if items from the list are NULL, all items have to be returned
-  expect_equal(names(out),c("idObs","interactPair","interactSp","interactInd","coOcc","coAbund","siteEnv","traitSp","traitInd","phy"))
+  expect_equal(names(out), c("idObs", "interactPair", "interactSp",
+    "interactInd", "coOcc", "coAbund", "siteEnv", "traitSp", "traitInd", "phy"))
 })
 
 test_that("check data integrity", {
