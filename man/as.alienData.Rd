@@ -10,15 +10,15 @@ as.alienData(idObs, interactPair = NULL, coOcc = NULL, coAbund = NULL,
   interceptTrait = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{idObs}{A data frame of a least two colomuns. A given row describes one
+\item{idObs}{A data frame with a least two colomuns. A given row describes one
 observation. The site indentifiers (\code{idSite}, must be unique) has to come first
 and the species identifier (\code{idSp}) in second. Two
 extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
 \code{idInd}, an identifier of individus. If these two extra columns
 are not supplied, \code{NA} will be added. Columns must be correctly ordered.}
 
-\item{interactPair}{A data frame of two columns which contains interaction at the finest level
-(individus or species). The first columns are \code{idFrom} and \code{idTo} and
+\item{interactPair}{A data frame with three columns which contains interaction at the finest level
+(individus or species). The first two columns are \code{idFrom} and \code{idTo} and
 determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
 column is the strength of the interaction (Please see details).}
@@ -62,9 +62,6 @@ The strength of the interactions defined in the third column of
 WARNING: interactSp is aggregating the information at the species level using the sum function by default.
 Undocumented interactions among species or individus will be assumed as NA
 by default.
-}
-\examples{
-
 }
 \author{
 F. Guillaume Blanchet & Steve Vissault

@@ -2,14 +2,14 @@
 #'
 #' @description This function formats the data and returns an object of class alienData.
 #'
-#' @param idObs A data frame of a least two colomuns. A given row describes one
+#' @param idObs A data frame with a least two colomuns. A given row describes one
 #' observation. The site indentifiers (\code{idSite}, must be unique) has to come first
 #' and the species identifier (\code{idSp}) in second. Two
 #' extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
 #' \code{idInd}, an identifier of individus. If these two extra columns
 #' are not supplied, \code{NA} will be added. Columns must be correctly ordered.
-#' @param interactPair A data frame of two columns which contains interaction at the finest level
-#' (individus or species). The first columns are \code{idFrom} and \code{idTo} and
+#' @param interactPair A data frame with three columns which contains interaction at the finest level
+#' (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
 #' determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 #' of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
 #' column is the strength of the interaction (Please see details).
@@ -45,7 +45,6 @@
 #'
 #' @importFrom stats sd
 #' @import ape
-#' @examples
 #'
 #' @keywords manip
 #' @keywords classes
@@ -92,32 +91,25 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     
     
     # OBJECT: interactPair =====================================================
+    message("\ninteractPair ================================================\n")
     
     if (is.null(interactPair)) {
         stop("interactPair argument cannot be NULL")
     }
     
+    interactPair <- as.data.frame(interactPair)
+    if (verbose) 
+        message("'interactPair' converted as data.frame")
+    
     ### Check for number of columns
-    if (!is.data.frame(interactPair) & !is.matrix(interactPair) & ncol(interactPair) != 
-        3) {
-        stop("'interactPair' has to be a matrix/dataframe with 3 columns")
-    }
-    
-    ### Check class
-    
-    ### Make sure interactPair is a data.frame
-    if (is.matrix(interactPair)) {
-        interactPair <- as.data.frame(interactPair)
-        if (verbose) 
-            message("'interactPair' converted as data.frame")
-    }
+    stopifnot(ncol(interactPair) == 3)
+    # if (ncol(interactPair) != 3) { # stop(''interactPair' has to be a
+    # matrix/dataframe of 3 columns') }
     
     # Rename columns
-    if (ncol(interactPair) == 3) {
-        colnames(interactPair) <- c("idTo", "idFrom", "strength")
-        if (verbose) 
-            message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
-    }
+    colnames(interactPair) <- c("idTo", "idFrom", "strength")
+    if (verbose) 
+        message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
     
     ### Make sure the first and second columns are factor
     if (!all(sapply(interactPair, class)[1:2] == "factor")) {
@@ -183,82 +175,81 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     # OBJECT: interactSp and interactInd
     # ================================================ Turn interactPair into
     # interactSp and interactInd MATRICES
-    
+    if (verbose) 
+        message("\ninteractSp and interactInd MATRICES ===========================\n")
     # if interactPair at individus level
-    if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idInd))) {
-        
-        ## built interactInd
-        nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
-        interactInd <- matrix(NA, nrow = nsp, ncol = nsp)
-        colnames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-        rownames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
-        
-        
-        for (i in 1:nrow(interactPair)) {
-            interactInd[interactPair[i, "idFrom"], interactPair[i, "idTo"]] <- interactPair[i, 
-                "strength"]
-        }
-        
-        ## Retrieve Sp ids from idObs
-        idFromSp <- merge(interactPair, idObs, by.x = "idFrom", by.y = "idInd")[, 
-            "idSp"]
-        idToSp <- merge(interactPair, idObs, by.x = "idTo", by.y = "idInd")[, "idSp"]
-        
-        # Create interactPair with idSp
-        interactPairSp <- interactPair
-        interactPairSp$idFrom <- idFromSp
-        interactPairSp$idTo <- idToSp
-        
-        ## Aggregate TODO: WARNING - If the strength is not a count. The sum might not be
-        ## appropriate.
-        interactPairSp <- aggregate(strength ~ idFrom + idTo, interactPairSp, FUN = sum)
-        
-        ## built interactSp
-        nsp <- length(unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))))
-        interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
-        
-        colnames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
-        rownames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
-        
-        
-        for (i in 1:nrow(interactPairSp)) {
-            interactSp[interactPairSp[i, "idFrom"], interactPairSp[i, "idTo"]] <- interactPairSp[i, 
-                "strength"]
+    if (length(levels(idObs$idInd))) {
+        if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idInd))) {
+            ## built interactInd
+            nsp <- nlevels(interactPair$idTo) + nlevels(interactPair$idFrom)
+            interactInd <- matrix(NA, nrow = nsp, ncol = nsp)
+            colnames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+            rownames(interactInd) <- c(levels(interactPair$idTo), levels(interactPair$idFrom))
+            ## 
+            for (i in 1:nrow(interactPair)) {
+                interactInd[interactPair[i, "idFrom"], interactPair[i, "idTo"]] <- interactPair[i, 
+                  "strength"]
+            }
+            
+            ## Retrieve Sp ids from idObs
+            idFromSp <- merge(interactPair, idObs, by.x = "idFrom", by.y = "idInd")[, 
+                "idSp"]
+            idToSp <- merge(interactPair, idObs, by.x = "idTo", by.y = "idInd")[, 
+                "idSp"]
+            
+            # Create interactPair with idSp
+            interactPairSp <- interactPair
+            interactPairSp$idFrom <- idFromSp
+            interactPairSp$idTo <- idToSp
+            
+            ## Aggregate TODO: WARNING - If the strength is not a count. The sum might not be
+            ## appropriate.
+            interactPairSp <- aggregate(strength ~ idFrom + idTo, interactPairSp, 
+                FUN = sum)
+            
+            ## built interactSp
+            nsp <- length(unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom))))
+            interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+            
+            colnames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
+            rownames(interactSp) <- unique(c(levels(interactPairSp$idTo), levels(interactPairSp$idFrom)))
+            
+            for (i in 1:nrow(interactPairSp)) {
+                interactSp[interactPairSp[i, "idFrom"], interactPairSp[i, "idTo"]] <- interactPairSp[i, 
+                  "strength"]
+            }
         }
         
     } else if (all(c(levels(interactPair$idTo), levels(interactPair$idFrom)) %in% levels(idObs$idSp))) {
         
         # if interactPair at species level
-        nsp <- length(unique(c(nlevels(interactPair$idTo), nlevels(interactPair$idFrom))))
-        interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
+        nsp <- length(unique(c(levels(interactPair$idTo), levels(interactPair$idFrom))))
+        interactSp <- as.data.frame(matrix(NA, nrow = nsp, ncol = nsp))
         
         colnames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
         rownames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
         
-        
-        
         for (i in 1:nrow(interactPair)) {
-            interactSp[interactPair[i, "idFrom"], interactPair[i, "idTo"]] <- interactPair[i, 
-                "strength"]
+            interactSp[as.numeric(interactPair$idFrom[i]), as.numeric(interactPair$idTo[i])] <- interactPair$strength[i]
         }
         
         # let interactInd null
         interactInd <- NULL
-        
     }
     
     
     # OBJECT: traitInd ================================================
+    if (verbose) 
+        message("\ntraitInd ===================================================\n")
     
     if (!is.null(traitInd)) {
         
         ### Check class
-        
+        traitInd <- as.data.frame(traitInd)
         ### Check for number of columns
         if (!is.data.frame(traitInd) & !is.matrix(traitInd) & ncol(traitInd) != 3) {
             stop("'traitInd' has to be a matrix/dataframe with 3 columns: idInd, traitName, value")
         }
-        
         
         ### Make sure interactPair is a data.frame
         if (is.matrix(traitInd)) {
@@ -297,6 +288,8 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     }
     
     # OBJECT: traitSp ================================================
+    if (verbose) 
+        message("\ntraitSp =====================================================\n")
     
     if (!is.null(traitSp)) {
         

@@ -13,13 +13,13 @@ webFromNicheModel(nbsp, connec, connect_all = FALSE, unbias = FALSE,
 \item{connec}{A real positive between 0 and .5 indicating the connectance
 of the network to be generated.}
 
+\item{connect_all}{Logical. If TRUE, then all species in the network have a
+least one prey (but the niche with the lowest niche value).}
+
 \item{unbias}{Logical. If TRUE, then the first species may not be a basal species.}
 
 \item{niche}{A vector real positive between 0 and 1 standing for the niche axis.
 Default is set to \code{NULL}, in such case the niche axis is automatically generated.}
-
-\item{connec_all}{Logical. If TRUE, then all species in the network have a
-least one prey (but the niche with the lowest niche value).}
 }
 \value{
 A logical matrix describing pairwise interactions. A given line
