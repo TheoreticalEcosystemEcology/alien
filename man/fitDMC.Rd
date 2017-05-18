@@ -33,4 +33,3 @@ fitDMC(bartomeus,class='glm',family=gaussian(),level='species',step=TRUE)
 \author{
 Dominique Gravel & Steve Vissault
 }
-

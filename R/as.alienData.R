@@ -7,9 +7,9 @@
 #' and the species identifier (\code{idSp}) in second. Two
 #' extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
 #' \code{idInd}, an identifier of individus. If these two extra columns
-#' are not supplied , \code{NA} will be added. Columns must be correctly ordered.
-#' @param interactPair A data frame which contains interaction at the finest level
-#' (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
+#' are not supplied, \code{NA} will be added. Columns must be correctly ordered.
+#' @param interactPair A data frame of two columns which contains interaction at the finest level
+#' (individus or species). The first columns are \code{idFrom} and \code{idTo} and
 #' determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 #' of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
 #' column is the strength of the interaction (Please see details).
@@ -56,11 +56,9 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, scaleSiteEnv = FALSE, 
     scaleTrait = FALSE, interceptSiteEnv = FALSE, interceptTrait = FALSE, verbose = TRUE) {
     
-    
     if (is.matrix(idObs)) {
         idObs <- as.data.frame(idObs)
         if (verbose) 
-
             message("'idObs' coerced as data.frame")
     }
     
@@ -70,14 +68,16 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     } else {
         # Rename columns / name matching
         colnames(idObs)[1:2] <- c("idSite", "idSp")
-        if (ncol(idObs) == 4) {
-            colnames(idObs)[3:4] <- c("idTime", "idInd")
+        if (ncol(idObs) > 2) {
+            colnames(idObs)[3] <- c("idTime")
+            if (ncol(idObs) > 3) {
+                colnames(idObs)[4] <- c("idInd")
+            } else idObs$idInd <- NA_character_
         } else {
-            idObs$idInd <- NA_character
+            idObs$idInd <- idObs$idTime <- NA_character_
         }
         if (verbose) 
             message("'idObs' columns' names are 'idSite','idSp','idTime','idInd'")
-
     }
     
     # Check for duplicates rows
@@ -90,9 +90,9 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         idObs <- as.data.frame(lapply(idObs, as.factor))
     }
     
-
+    
     # OBJECT: interactPair =====================================================
-
+    
     if (is.null(interactPair)) {
         stop("interactPair argument cannot be NULL")
     }
@@ -180,7 +180,6 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
     }
     
     
-    
     # OBJECT: interactSp and interactInd
     # ================================================ Turn interactPair into
     # interactSp and interactInd MATRICES
@@ -232,10 +231,10 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         # if interactPair at species level
         nsp <- length(unique(c(nlevels(interactPair$idTo), nlevels(interactPair$idFrom))))
         interactSp <- matrix(NA, nrow = nsp, ncol = nsp)
-      
+        
         colnames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
         rownames(interactSp) <- unique(c(levels(interactPair$idTo), levels(interactPair$idFrom)))
-
+        
         
         
         for (i in 1:nrow(interactPair)) {

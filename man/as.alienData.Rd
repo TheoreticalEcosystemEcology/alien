@@ -15,10 +15,10 @@ observation. The site indentifiers (\code{idSite}, must be unique) has to come f
 and the species identifier (\code{idSp}) in second. Two
 extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
 \code{idInd}, an identifier of individus. If these two extra columns
-are not supplied , \code{NA} will be added. Columns must be correctly ordered.}
+are not supplied, \code{NA} will be added. Columns must be correctly ordered.}
 
-\item{interactPair}{A data frame which contains interaction at the finest level
-(individus or species). The first two columns are \code{idFrom} and \code{idTo} and
+\item{interactPair}{A data frame of two columns which contains interaction at the finest level
+(individus or species). The first columns are \code{idFrom} and \code{idTo} and
 determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
 column is the strength of the interaction (Please see details).}
@@ -71,4 +71,3 @@ F. Guillaume Blanchet & Steve Vissault
 }
 \keyword{classes}
 \keyword{manip}
-
