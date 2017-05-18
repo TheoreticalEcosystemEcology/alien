@@ -4,7 +4,7 @@
 \name{bartomeus}
 \alias{bartomeus}
 \title{Plant and pollinator example network}
-\format{A data frame with X variables}
+\format{An alienData object}
 \usage{
 data(bartomeus)
 }

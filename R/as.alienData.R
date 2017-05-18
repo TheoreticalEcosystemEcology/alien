@@ -84,9 +84,10 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         stop("some idObs entries are duplicated")
     }
     
-    # Cast all columns has factors
-    if (!all(sapply(idObs, class)[1:4] == "factor")) {
-        idObs <- as.data.frame(lapply(idObs, as.factor))
+    # All columns as factors
+    for (i in 1:4) {
+        if (!is.factor(idObs[, i])) 
+            idObs[, i] <- as.factor(idObs[, i])
     }
     
     
@@ -112,10 +113,11 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
         message("'interactPair' columns have been rename to 'idTo','idFrom','strength' ")
     
     ### Make sure the first and second columns are factor
-    if (!all(sapply(interactPair, class)[1:2] == "factor")) {
+    if (!is.factor(interactPair$idFrom)) 
         interactPair$idFrom <- as.factor(interactPair$idFrom)
+    if (!is.factor(interactPair$idTo)) 
         interactPair$idTo <- as.factor(interactPair$idTo)
-    }
+    
     
     ### Make sure the third column is numeric
     if (!is.numeric(interactPair$strength)) {
@@ -201,6 +203,7 @@ as.alienData <- function(idObs, interactPair = NULL, coOcc = NULL, coAbund = NUL
             interactPairSp <- interactPair
             interactPairSp$idFrom <- idFromSp
             interactPairSp$idTo <- idToSp
+            message("OK")
             
             ## Aggregate TODO: WARNING - If the strength is not a count. The sum might not be
             ## appropriate.
