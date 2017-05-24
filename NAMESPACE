@@ -2,6 +2,7 @@
 
 export(as.alienData)
 export(fitDMC)
+export(predictDMC)
 export(webFromNicheModel)
 import(ape)
 import(randomForest)
