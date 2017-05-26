@@ -83,9 +83,8 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     df_interact <- df_interact[, -c(1:2)]
 
     # guess and cast each columns in the right data types
-    df_interact <- data.frame(I = df_interact[, 1], as.data.frame(sapply(df_interact[,
-        -c(1)], type.convert)))
-
+    for (i in 2:ncol(df_interact)) df_interact[, i] <- type.convert(df_interact[,
+        i])
 
     if (all(!is.null(class) && class == "rf")) {
 

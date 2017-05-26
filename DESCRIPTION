@@ -16,7 +16,10 @@ Maintainer: Steve Vissault <steve.vissault@usherbrooke.ca>
 Description: Comparative analysis of interaction inference methods
     Use four spaces when indenting paragraphs within the Description.
 Suggests:
-    testthat (>= 0.8.0)
+    testthat (>= 0.8.0),
+    igraph,
+    knitr,
+    rmarkdown
 LinkingTo: Rcpp
 Imports:
     Rcpp (>= 0.12.9),
@@ -33,3 +36,4 @@ BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

@@ -18,4 +18,4 @@
 
 Have a look at [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
 
-For further detaisls on namespaces: [http://r-pkgs.had.co.nz/namespace.html](http://r-pkgs.had.co.nz/namespace.html)
+For further details about namespaces: [http://r-pkgs.had.co.nz/namespace.html](http://r-pkgs.had.co.nz/namespace.html)

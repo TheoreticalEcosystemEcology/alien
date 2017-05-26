@@ -6,10 +6,16 @@
 \usage{
 predictDMC(model, data = NULL, type = "response")
 }
+\arguments{
+\item{model}{a model applied on a alienData object.}
+
+\item{type}{kinf od response desired.}
+
+\item{newdata}{the data used for predictions.}
+}
 \description{
 predict species interaction based on the direct matching centrality model
 }
 \author{
 Dominique Gravel & Steve Vissault
 }
-

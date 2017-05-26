@@ -27,15 +27,11 @@ vignettes/*.pdf
 /src/*.d
 /src/*.so
 *.dll
-
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
-
-
 ## MacOs store files
 .DS_Store
-
 ## for the makefiles
 record_updates.txt
 .Rproj.user
