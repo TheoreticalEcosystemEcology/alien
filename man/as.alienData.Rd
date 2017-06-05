@@ -4,46 +4,39 @@
 \alias{as.alienData}
 \title{Format data for the \code{alien} class}
 \usage{
-as.alienData(idObs, interactPair = NULL, coOcc = NULL, coAbund = NULL,
-  siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL,
-  scaleSiteEnv = FALSE, scaleTrait = FALSE, interceptSiteEnv = FALSE,
-  interceptTrait = FALSE, verbose = TRUE)
+as.alienData(dfSpecies, dfInteract, trait = NULL, phylo = NULL,
+  taxo = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
+  phy = NULL, dfSite = NULL, dfOcc = NULL, verbose = TRUE)
 }
 \arguments{
-\item{idObs}{A data frame with a least two colomuns. A given row describes one
-observation. The site indentifiers (\code{idSite}, must be unique) has to come first
+\item{dfSpecies}{A data frame with a least two colomuns. A given row describes one
+observation. The site indentifiers (\code{idSp}, must be unique) has to come first
 and the species identifier (\code{idSp}) in second. Two
 extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
 \code{idInd}, an identifier of individus. If these two extra columns
 are not supplied, \code{NA} will be added. Columns must be correctly ordered.}
 
-\item{interactPair}{A data frame with three columns which contains interaction at the finest level
+\item{dfInteract}{A data frame with three columns which contains interaction at the finest level
 (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
 determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
 column is the strength of the interaction (Please see details).}
 
-\item{coOcc}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).}
+\item{trait}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).}
 
-\item{coAbund}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
+\item{phylo}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
 
-\item{siteEnv}{A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
+\item{taxo}{A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
 
-\item{traitSp}{A matrix or a data frame where each column is a trait characterizing all species. The first column is a unique identifier of the species documented in \code{idObs} data.frame.}
+\item{dfSite}{Logical}
 
-\item{traitInd}{A matrix or a data frame where each column is a trait characterizing an individual. The first column is a unique identifier of the individu documented in idObs data.frame.}
+\item{dfOcc}{Logical}
 
-\item{phy}{An object of class 'phylo' describing the phylogenetic relationships across species (see details).}
+\item{verbose}{Logical}
 
-\item{scaleSiteEnv}{Logical. Whether the columns of X should be centred and divided by the standard deviation. Default is TRUE.}
+\item{binary}{Logical}
 
-\item{scaleTrait}{Logical. Whether the rows of Tr should be centred and divided by the standard deviation. Default is TRUE.}
-
-\item{interceptSiteEnv}{Logical. Whether a column of 1s should be added to X. Default is TRUE.}
-
-\item{interceptTrait}{Logical. Whether a row of 1s should be added to Tr. Default is TRUE.}
-
-\item{verbose}{Logical. warning and help messages are printed. Default is FALSE.}
+\item{directed}{Logical}
 }
 \value{
 An object of the class \code{alienData} is returned by \code{as.alienData}.
@@ -64,7 +57,7 @@ Undocumented interactions among species or individus will be assumed as NA
 by default.
 }
 \author{
-F. Guillaume Blanchet & Steve Vissault
+Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 }
 \keyword{classes}
 \keyword{manip}
