@@ -2,13 +2,13 @@
 #'
 #' @description This function formats the data and returns an object of class alienData.
 #'
-#' @param dfSpecies A data frame with a least two colomuns. A given row describes one
-#' observation. The site indentifiers (\code{idSp}, must be unique) has to come first
-#' and the species identifier (\code{idSp}) in second. Two
-#' extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
-#' \code{idInd}, an identifier of individus. If these two extra columns
-#' are not supplied, \code{NA} will be added. Columns must be correctly ordered.
-#' @param dfInteract A data frame with three columns which contains interaction at the finest level
+#' @param dfSpecies A data frame with at least one column named \code{idSp} providing
+#' unique identifiers for each species identified within the dataset. Optionnaly,
+#' a \code{idSp} column could be specied and will be detected as information on
+#' individuals. The remainig columns could be either traits or phylogenetic or taxonomic
+#' data that must be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
+#' parameter described below.
+#' @param dfInteract A data frame with at least two columns: \code{idFrom}  which contains interaction at the finest level
 #' (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
 #' determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 #' of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
@@ -16,16 +16,19 @@
 #' @param trait A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).
 #' @param phylo A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.
 #' @param taxo A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.
-#' @param binary Logical
-#' @param directed Logical
-#' @param dfSite Logical
+#' @param binary Logical. Should the
+#' @param directed Logical. (see \code{Details}).
+#' @param dfSite A data frame with at least two columns named \code{idFrom}
 #' @param dfOcc Logical
 #' @param verbose Logical
 #'
 #' @details
-#' \code{idObs} is used to check consistency and prevent errors among unique
-#' identifiers of each alienData arguments.
 #'
+#' The user is required to provide specific column names to prevent from generating errors.
+#'
+#' trait/phylo/taxo non exlusive a column be three or both. There are associated and help distinguishing methods.
+#'
+#' character of factors => as.charcater
 #' The strength of the interactions defined in the third column of
 #' \code{interactPair} can be a 0 if no direct interaction has been observed
 #' (defined as true absence of interaction) or any numerical value.
@@ -41,7 +44,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#' @import ape
 #'
 #' @keywords manip
 #' @keywords classes
@@ -50,19 +52,26 @@
 
 as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo = NULL, 
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, dfSite = NULL, dfOcc = NULL, 
-    verbose = TRUE) {
+    binary = FALSE, directed = FALSE, verbose = TRUE) {
     
     ############################## dfSpecies
-    dfSpecies %<>% as.data.frame(stringsAsFactors = F)
-    dfInteract %<>% as.data.frame(stringsAsFactors = F)
+    dfSpecies %<>% as.data.frame(stringsAsFactors = FALSE)
+    dfInteract %<>% as.data.frame(stringsAsFactors = FALSE)
+    ## 
     stopifnot("idSp" %in% names(dfSpecies))
-    stopifnot("idFrom" %in% names(dfInteract) & "idTo" %in% names(dfInteract))
+    stopifnot("idFrom" %in% names(dfInteract))
+    stopifnot("idTo" %in% names(dfInteract))
+    ## 
+    dfSpecies$idSp %<>% as.character
+    dfInteract$idFrom %<>% as.character
+    dfInteract$idTo %<>% as.character
     ## 
     dfMethAvail <- data.frame(methods = c("Direct Matching Centrality", "Co-occurence", 
         "iEat"), available = FALSE, stringsAsFactors = FALSE)
     ## 
     if ("idInd" %in% names(dfSpecies)) {
         indiv <- TRUE
+        # dfInteract$idInd %<>% as.character()
         stopifnot(!any(table(dfSpecies$idInd) > 1))
         stopifnot(!any(dfSpecies$idInd %in% dfSpecies$idSp))
         nbIndividuals <- nrow(dfSpecies)
@@ -137,11 +146,19 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
         if (verbose) 
             message("==> Interactions described at the species level")
     }
+    ## 
+    if (!"value" %in% names(dfInteract)) 
+        dfInteract$value <- 1
+    if (binary) {
+        dfInteract$value <- dfInteract$value > 0
+    }
+    ## 
     if (indint) {
         interLevel <- "individuals"
     } else interLevel <- "species"
-    ## 
+    ### 
     nbInteractions <- nrow(dfInteract)
+    
     
     
     ############################## dfSite
@@ -151,12 +168,13 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
         nbSites <- NULL
     } else {
         stopifnot("idSite" %in% names(dfSite))
-        stopifnot(unique(dfSite$idSite) == dfSite$idSite)
+        stopifnot(all(table(dfSite$idSite) == 1))
+        dfSite$idSite %<>% as.character
         nmSite <- names(dfSite)
         if (verbose) 
             message(paste("==> Site information detected:", nmSite, sep = " "))
         if ("idSite" %in% names(dfInteract)) {
-            stopifnot(all(dfInteract$idSite %in% dfSite$idSite))
+            stopifnot(all(dfSite$idSite %in% dfInteract$idSite))
         }
         nbSites <- nrow(dfSite)
     }
@@ -165,7 +183,7 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
     
     ############################## dfOcc
     occ <- FALSE
-    if (is.null(dfSite)) {
+    if (is.null(dfOcc)) {
         if ("idSite" %in% names(dfInteract)) {
             stopifnot(all(dfInteract$idSite %in% dfSite$idSite))
             if (verbose) 
@@ -174,12 +192,20 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
             dfOcc <- data.frame(id = c(dfInteract$idTo, dfInteract$idForom), idSite = rep(dfInteract$idSite, 
                 2), stringsAsFactors = FALSE) %>% unique
             ## 
-            if (indint) 
-                names(dfOcc)[1L] <- "idInd" else names(dfOcc)[1L] <- "idSp"
+            if (indint) {
+                names(dfOcc)[1L] <- "idInd"
+                dfSite$idInd %<>% as.character
+            } else {
+                names(dfOcc)[1L] <- "idSp"
+                dfSite$idSp %<>% as.character
+            }
             occ <- TRUE
             if (verbose) 
                 message("==> Occurrence information detected")
         } else {
+            if (nrow(dfSite)) {
+                warning("Site information provided without any occurrence")
+            }
             if (verbose) 
                 message("==> No occurrence information")
         }
@@ -187,12 +213,24 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
             message("==> No occurrence information")
     } else {
         stopifnot("idSite" %in% names(dfOcc))
+        stopifnot(all(dfOcc$idSite %in% dfSite$idSite))
         if (indint) {
-            stopifnot("idInd" %in% names(dfSite))
-            stopifnot(all(dfSite$idInd %in% names(dfSite)))
+            stopifnot("idInd" %in% names(dfOcc))
+            stopifnot(all(dfOcc$idInd %in% dfSpecies$idInd))
+            if (!all(dfOcc$idInd %in% dfSpecies$idInd)) {
+                warning("Individuals without any occurrence record.")
+            }
+            dfSite$idInd %<>% as.character
             occ <- TRUE
             if (verbose) 
                 message("==> Occurrence information detected")
+        } else {
+            stopifnot("idSp" %in% names(dfOcc))
+            stopifnot(all(dfOcc$idSp %in% dfSpecies$idSp))
+            if (!all(dfOcc$idInd %in% dfSpecies$idInd)) {
+                warning("Species without any occurrence record.")
+            }
+            dfSite$idSp %<>% as.character
         }
     }
     ## 
@@ -203,8 +241,9 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
     
     ############################## Return results
     res <- list(nbSpecies = nbSpecies, nbIndividuals = nbIndividuals, nbInteractions = nbInteractions, 
-        interLevel = interLevel, nbSites = nbSites, nbOcc = nbOcc, dfSpecies = dfSpecies, 
-        dfInteract = dfInteract, dfSite = dfSite, dfOcc = dfOcc, dfMethAvail = dfMethAvail)
+        interLevel = interLevel, directed = directed, nbSites = nbSites, nbOcc = nbOcc, 
+        dfSpecies = dfSpecies, dfInteract = dfInteract, dfSite = dfSite, dfOcc = dfOcc, 
+        dfMethAvail = dfMethAvail)
     
     class(res) <- "alienData"
     return(res)

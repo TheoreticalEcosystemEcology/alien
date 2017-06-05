@@ -6,17 +6,18 @@
 \usage{
 as.alienData(dfSpecies, dfInteract, trait = NULL, phylo = NULL,
   taxo = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
-  phy = NULL, dfSite = NULL, dfOcc = NULL, verbose = TRUE)
+  phy = NULL, dfSite = NULL, dfOcc = NULL, binary = FALSE,
+  directed = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{dfSpecies}{A data frame with a least two colomuns. A given row describes one
-observation. The site indentifiers (\code{idSp}, must be unique) has to come first
-and the species identifier (\code{idSp}) in second. Two
-extra columns could be provided by the user: \code{idTime} adding a timestamp to the observations and
-\code{idInd}, an identifier of individus. If these two extra columns
-are not supplied, \code{NA} will be added. Columns must be correctly ordered.}
+\item{dfSpecies}{A data frame with at least one column named \code{idSp} providing
+unique identifiers for each species identified within the dataset. Optionnaly,
+a \code{idSp} column could be specied and will be detected as information on
+individuals. The remainig columns could be either traits or phylogenetic or taxonomic
+data that must be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
+parameter described below.}
 
-\item{dfInteract}{A data frame with three columns which contains interaction at the finest level
+\item{dfInteract}{A data frame with at least two columns: \code{idFrom}  which contains interaction at the finest level
 (individus or species). The first two columns are \code{idFrom} and \code{idTo} and
 determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
 of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
@@ -28,15 +29,15 @@ column is the strength of the interaction (Please see details).}
 
 \item{taxo}{A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
 
-\item{dfSite}{Logical}
+\item{dfSite}{A data frame with at least two columns named \code{idFrom}}
 
 \item{dfOcc}{Logical}
 
+\item{binary}{Logical. Should the}
+
+\item{directed}{Logical. (see \code{Details}).}
+
 \item{verbose}{Logical}
-
-\item{binary}{Logical}
-
-\item{directed}{Logical}
 }
 \value{
 An object of the class \code{alienData} is returned by \code{as.alienData}.
@@ -46,9 +47,11 @@ TODO: Declare more accurately the structure of object returned by the function. 
 This function formats the data and returns an object of class alienData.
 }
 \details{
-\code{idObs} is used to check consistency and prevent errors among unique
-identifiers of each alienData arguments.
+The user is required to provide specific column names to prevent from generating errors.
 
+trait/phylo/taxo non exlusive a column be three or both. There are associated and help distinguishing methods.
+
+character of factors => as.charcater
 The strength of the interactions defined in the third column of
 \code{interactPair} can be a 0 if no direct interaction has been observed
 (defined as true absence of interaction) or any numerical value.

@@ -3,7 +3,6 @@
 export(as.alienData)
 export(fitDMC)
 export(webFromNicheModel)
-import(ape)
 import(randomForest)
 importFrom(magrittr,"%<>%")
 importFrom(magrittr,"%>%")
