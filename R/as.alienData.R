@@ -52,8 +52,11 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, dfSite = NULL, dfOcc = NULL, 
     verbose = TRUE) {
     
-    #### checks
+    ############################## dfSpecies
+    dfSpecies %<>% as.data.frame(stringsAsFactors = F)
+    dfInteract %<>% as.data.frame(stringsAsFactors = F)
     stopifnot("idSp" %in% names(dfSpecies))
+    stopifnot("idFrom" %in% names(dfInteract) & "idTo" %in% names(dfInteract))
     ## 
     dfMethAvail <- data.frame(methods = c("Direct Matching Centrality", "Co-occurence", 
         "iEat"), available = FALSE, stringsAsFactors = FALSE)
@@ -62,14 +65,17 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
         indiv <- TRUE
         stopifnot(!any(table(dfSpecies$idInd) > 1))
         stopifnot(!any(dfSpecies$idInd %in% dfSpecies$idSp))
+        nbIndividuals <- nrow(dfSpecies)
         if (verbose) 
             message("==> Information at the individual level detected")
     } else {
         if (verbose) {
+            nbIndividuals <- NULL
             message("==> Information at the species level detected")
             stopifnot(!any(table(dfSpecies$idSp) > 1))
         }
     }
+    nbSpecies <- dfSpecies$idSp %>% unique %>% length
     
     #### 
     tra <- phy <- tax <- TRUE
@@ -104,24 +110,101 @@ as.alienData <- function(dfSpecies, dfInteract, trait = NULL, phylo = NULL, taxo
             message(paste("==> Taxonomy detected: ", nmTaxo, sep = " "))
     }
     ## 
-    if (any(c(tra, phy, tax))) 
-        dfMethAvail$available[which(dfMethAvail$methods == "iEat")] <- TRUE
-    
-    #### dfInteract
-    
-    #### Dfsite
+    if (any(c(tra, phy, tax))) {
+        dfMethAvail$available[dfMethAvail$methods == "iEat"] <- TRUE
+        dfMethAvail$available[dfMethAvail$methods == "Direct Matching Centrality"] <- TRUE
+    }
     
     
-    # } } # ================== Return results ================== ## Create res list
-    # with NULL res <- list(idObs = idObs, interactPair = interactPair, interactSp =
-    # interactSp, interactInd = interactInd, coOcc = coOcc, coAbund = coAbund,
-    # siteEnv = siteEnv, traitSp = traitSp, traitInd = traitInd, phy = phy)
+    ############################## dfInteract
+    indint <- FALSE  # Interactions described at the individual level?
+    if (indiv) {
+        if (all(dfInteract$idFrom %in% dfSpecies$idInd)) {
+            stopifnot(all(dfInteract$idTo %in% dfSpecies$idInd))
+            indint <- TRUE
+            if (verbose) 
+                message("==> Interactions described at the individual level")
+            
+        } else {
+            stopifnot(all(dfInteract$idFrom %in% dfSpecies$idSp))
+            stopifnot(all(dfInteract$idTo %in% dfSpecies$idSp))
+            if (verbose) 
+                message("==> Interactions described at the species level")
+        }
+    } else {
+        stopifnot(all(dfInteract$idFrom %in% dfSpecies$idSp))
+        stopifnot(all(dfInteract$idTo %in% dfSpecies$idSp))
+        if (verbose) 
+            message("==> Interactions described at the species level")
+    }
+    if (indint) {
+        interLevel <- "individuals"
+    } else interLevel <- "species"
+    ## 
+    nbInteractions <- nrow(dfInteract)
     
-    # attr(res, 'coOccSource') <- coOccFrom attr(res, 'scaleSiteEnv') <- scaleSiteEnv
-    # attr(res, 'scaleTrait') <- scaleTrait attr(res, 'interceptSiteEnv') <-
-    # interceptSiteEnv attr(res, 'interceptTrait') <- interceptTrait
     
-    res <- list(nbSpecies = nrow(dfSpecies), dfMethAvail = dfMethAvail)
+    ############################## dfSite
+    if (is.null(dfSite)) {
+        if (verbose) 
+            message("==> No site information detected")
+        nbSites <- NULL
+    } else {
+        stopifnot("idSite" %in% names(dfSite))
+        stopifnot(unique(dfSite$idSite) == dfSite$idSite)
+        nmSite <- names(dfSite)
+        if (verbose) 
+            message(paste("==> Site information detected:", nmSite, sep = " "))
+        if ("idSite" %in% names(dfInteract)) {
+            stopifnot(all(dfInteract$idSite %in% dfSite$idSite))
+        }
+        nbSites <- nrow(dfSite)
+    }
+    
+    
+    
+    ############################## dfOcc
+    occ <- FALSE
+    if (is.null(dfSite)) {
+        if ("idSite" %in% names(dfInteract)) {
+            stopifnot(all(dfInteract$idSite %in% dfSite$idSite))
+            if (verbose) 
+                message("==> Trying to get occurrence information from 'dfInteract'...")
+            ## 
+            dfOcc <- data.frame(id = c(dfInteract$idTo, dfInteract$idForom), idSite = rep(dfInteract$idSite, 
+                2), stringsAsFactors = FALSE) %>% unique
+            ## 
+            if (indint) 
+                names(dfOcc)[1L] <- "idInd" else names(dfOcc)[1L] <- "idSp"
+            occ <- TRUE
+            if (verbose) 
+                message("==> Occurrence information detected")
+        } else {
+            if (verbose) 
+                message("==> No occurrence information")
+        }
+        if (verbose) 
+            message("==> No occurrence information")
+    } else {
+        stopifnot("idSite" %in% names(dfOcc))
+        if (indint) {
+            stopifnot("idInd" %in% names(dfSite))
+            stopifnot(all(dfSite$idInd %in% names(dfSite)))
+            occ <- TRUE
+            if (verbose) 
+                message("==> Occurrence information detected")
+        }
+    }
+    ## 
+    if (occ) {
+        nbOcc <- nrow(dfOcc)
+        dfMethAvail$available[dfMethAvail$methods == "Co-occurence"] <- TRUE
+    } else nbOcc <- NULL
+    
+    ############################## Return results
+    res <- list(nbSpecies = nbSpecies, nbIndividuals = nbIndividuals, nbInteractions = nbInteractions, 
+        interLevel = interLevel, nbSites = nbSites, nbOcc = nbOcc, dfSpecies = dfSpecies, 
+        dfInteract = dfInteract, dfSite = dfSite, dfOcc = dfOcc, dfMethAvail = dfMethAvail)
     
     class(res) <- "alienData"
     return(res)

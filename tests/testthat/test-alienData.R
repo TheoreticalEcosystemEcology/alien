@@ -1,28 +1,51 @@
 context("alienData function")
 
+####
 nind <- 10
-df_ex1 <- data.frame(
+df_ex0 <- data.frame(
   idInd = paste0("ind", sprintf("%02d", 1:10)),
   idSp = paste0("sp", sprintf("%02d", 1:10)),
   stringsAsFactors=FALSE)
-df_ex4 <- df_ex3 <- df_ex2 <- df_ex1
-df_ex2$idInd[nind] <- df_ex1$idInd[1L]
-df_ex3$idSp[nind] <- df_ex1$idSp[1L]
-df_ex4$idInd[nind] <- df_ex1$idSp[1L]
+df_ex3 <- df_ex2 <- df_ex1 <- df_ex0
+df_ex1$idInd[nind] <- df_ex1$idInd[1L]
+df_ex2$idSp[nind] <- df_ex1$idSp[1L]
+df_ex3$idInd[nind] <- df_ex1$idSp[1L]
+df_ex4 <- cbind(df_ex1, val1 = runif(nind))
 
 ##
 sp1 <- sample(1:10, 8, replace=T)
 sp2 <- sample(1:10, 8, replace=T)
 ##
-df_int <- cbind(idFrom = paste0("sp", sprintf("%02d", sp1)), idTo = paste0("sp", sprintf("%02d", sp2)))
+df_int0 <- cbind(idFrom = paste0("sp", sprintf("%02d", sp1)), idTo = paste0("sp", sprintf("%02d", sp2)))
+df_int3 <- df_int2 <- df_int1 <- df_ex0
 
+##
+res0 <- as.alienData(df_ex0, df_int0, verbose=F)
 
-test_that("check data structure", {
-  expect_error(as.alienData(df_ex2, df_int))
-  expect_error(as.alienData(df_ex3[,-1], df_int))
-  expect_error(as.alienData(df_ex4, df_int))
-  expect_equal(as.alienData(df_ex1)$nbSpecies, 10)
+test_that("check dfSpecies", {
+  expect_error(as.alienData(df_ex1, df_int0), "!any(table(dfSpecies$idInd) > 1) is not TRUE", fixed=TRUE)
+  expect_error(as.alienData(df_ex2[,-1], df_int0), '"idSp" %in% names(dfSpecies) is not TRUE', fixed=TRUE)
+  expect_error(as.alienData(df_ex3, df_int0), "!any(dfSpecies$idInd %in% dfSpecies$idSp) is not TRUE", fixed=TRUE)
+  expect_error(as.alienData(df_ex4, df_int0, trait=4))
+  expect_error(as.alienData(df_ex4, df_int0, phylo="val2"))
+  expect_error(as.alienData(df_ex4, df_int0, taxo=4))
 })
+
+# test_that("check dfInteract", {
+#   expect_error(as.alienData(df_ex0, df_int0))
+# })
+
+
+test_that("check values", {
+  expect_is(res0, "alienData")
+  expect_equal(res0$nbSpecies, 10)
+  expect_equal(res0$nbInteractions, 8)
+})
+
+
+
+
+
 #
 #   load('test_idObs.rda')
 #   out <- as.alienData(idObs=idObs, interactPair=interactPair, verbose=FALSE)
