@@ -4,40 +4,39 @@
 \alias{as.alienData}
 \title{Format data for the \code{alien} class}
 \usage{
-as.alienData(dfSpecies, dfInteract, trait = NULL, phylo = NULL,
-  taxo = NULL, siteEnv = NULL, traitSp = NULL, traitInd = NULL,
-  phy = NULL, dfSite = NULL, dfOcc = NULL, binary = FALSE,
-  directed = FALSE, verbose = TRUE)
+as.alienData(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
+  siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL,
+  dfSite = NULL, dfOcc = NULL, binary = FALSE, directed = FALSE,
+  verbose = TRUE)
 }
 \arguments{
-\item{dfSpecies}{A data frame with at least one column named \code{idSp} providing
-unique identifiers for each species identified within the dataset. Optionnaly,
-a \code{idSp} column could be specied and will be detected as information on
-individuals. The remainig columns could be either traits or phylogenetic or taxonomic
-data that must be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
+\item{dfNodes}{A data frame with at least one column named \code{idNodes} providing
+unique identifiers for each species identified within the dataset. The remainig
+columns could be either traits or phylogenetic or taxonomic data that must
+be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
 parameter described below.}
 
-\item{dfInteract}{A data frame with at least two columns: \code{idFrom}  which contains interaction at the finest level
-(individus or species). The first two columns are \code{idFrom} and \code{idTo} and
-determine the sens of the interaction. idFrom and \code{idTo} are unique identifier
-of species or individu documented in the \code{idObs} data frame. Finaly, the thrid
-column is the strength of the interaction (Please see details).}
+\item{dfEdges}{A data frame with at least two columns: \code{idFrom} and \code{idTo}
+descibring the set of edges. If \code{directed} is set to \code{TRUE} is also
+describes the direction of the interaction. Two additonnal columns are checked
+\code{value} \code{iDsite} which respectively stand for the value associated
+with the edge and where the interaction has been observed.}
 
-\item{trait}{A square symmetric matrix of 0s and 1s that define co-occurence patterns among pairs of species. If this matrix is not provided, the co-occurence matrix is derived from the coAbund matrix else the \code{idObs} dataframe (see return section).}
+\item{trait}{A vector indicating columns number (or names) of \code{dfNodes} containing traits data (see \code{Details}).}
 
-\item{phylo}{A square symmetric matrix that includes any types of values, defining co-abundance patterns among pairs of species. TODO: Not implemented yet.}
+\item{phylo}{A vector indicating colums number (or names) of \code{dfNodes} containing phylo data (see \code{Details}).}
 
-\item{taxo}{A matrix or a data frame where each column is a descriptor of the sites. TODO: siteEnv should cover the possibility that environmental variables could be taken at several times - link to idTime in idObs?.}
+\item{taxo}{A vector indicating columns number (or names) of \code{dfNodes} containing taxo data (see \code{Details}).}
 
 \item{dfSite}{A data frame with at least two columns named \code{idFrom}}
 
-\item{dfOcc}{Logical}
+\item{dfOcc}{A data frame with at least two columns}
 
-\item{binary}{Logical. Should the}
+\item{binary}{Logical. If `TRUE`, interactions are turned into a boolean variable (see \code{Details}).}
 
-\item{directed}{Logical. (see \code{Details}).}
+\item{directed}{Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).}
 
-\item{verbose}{Logical}
+\item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
 An object of the class \code{alienData} is returned by \code{as.alienData}.
@@ -47,17 +46,18 @@ TODO: Declare more accurately the structure of object returned by the function. 
 This function formats the data and returns an object of class alienData.
 }
 \details{
-The user is required to provide specific column names to prevent from generating errors.
+The user is required to provide specific column names to prevent from
+generating errors. Two primary keys \code{idNodes} and \code{idSite} if
+argument \code{dfSite} is not null.
 
 trait/phylo/taxo non exlusive a column be three or both. There are associated and help distinguishing methods.
 
 character of factors => as.charcater
 The strength of the interactions defined in the third column of
-\code{interactPair} can be a 0 if no direct interaction has been observed
-(defined as true absence of interaction) or any numerical value.
-WARNING: interactSp is aggregating the information at the species level using the sum function by default.
-Undocumented interactions among species or individus will be assumed as NA
-by default.
+
+If no values in \code{dfEdges} then values are set to 1 is used.
+\code{directed} => methods and => plots
+\code{binary} => methods and option
 }
 \author{
 Guillaume Blanchet, Kevin Cazelles & Steve Vissault
