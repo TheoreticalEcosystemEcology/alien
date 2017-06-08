@@ -5,22 +5,23 @@
 \title{Format data for the \code{alien} class}
 \usage{
 as.alienData(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
-  siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL,
-  dfSite = NULL, dfOcc = NULL, binary = FALSE, directed = FALSE,
-  verbose = TRUE)
+  siteEnv = NULL, dfSites = NULL, dfOcc = NULL, binary = FALSE,
+  directed = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{dfNodes}{A vector or a data frame with at least one column named \code{idNodes} providing
-unique identifiers for each species identified within the dataset. The remainig
+unique identifiers for each species (or individuals) of the dataset. The remainig
 columns could be either traits or phylogenetic or taxonomic data that must
 be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
-parameter described below.}
+parameter described below (otherwise they are ignored).}
 
 \item{dfEdges}{A data frame with at least two columns: \code{idFrom} and \code{idTo}
-descibring the set of edges. If \code{directed} is set to \code{TRUE} is also
-describes the direction of the interaction. Two additonnal columns are checked
-\code{value} \code{iDsite} which respectively stand for the value associated
-with the edge and where the interaction has been observed.}
+descibring the set of edges (links between nodes). If \code{directed} is set
+to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
+The presence of two additonnal columns are checked: \code{value} and \code{idSite}
+which respectively provide the values associated with edges (if absent, they are
+set to 1) and the identifier of the site where the interaction has been obsereved
+(see details).}
 
 \item{trait}{A vector indicating columns number (or names) of \code{dfNodes} containing traits data (see \code{Details}).}
 
@@ -28,36 +29,37 @@ with the edge and where the interaction has been observed.}
 
 \item{taxo}{A vector indicating columns number (or names) of \code{dfNodes} containing taxo data (see \code{Details}).}
 
-\item{dfSite}{A data frame with at least two columns named \code{idFrom}}
+\item{dfSites}{A data frame with at least two columns named \code{idSite}
+providing information about the site where the interactions have been observed.}
 
-\item{dfOcc}{A data frame with at least two columns}
-
-\item{binary}{Logical. If `TRUE`, interactions are turned into a boolean variable (see \code{Details}).}
+\item{dfOcc}{A data frame with at least two columns \code{idNodes} and \code{idSite}
+providing the occurrence of nodes.}
 
 \item{directed}{Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).}
 
 \item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
-An object of the class \code{alienData} is returned by \code{as.alienData}.
-TODO: Declare more accurately the structure of object returned by the function. What has been generated from the function.
+An object of the class \code{alienData} is returned.
 }
 \description{
 This function formats the data and returns an object of class alienData.
 }
 \details{
-The user is required to provide specific column names to prevent from
-generating errors. Two primary keys \code{idNodes} and \code{idSite} if
-argument \code{dfSite} is not null.
+The user is required to provide specific column names to prevent the function
+from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
+information are provided) are used to check the consistency of the data.
+First, all values taken by \code{idFrom} and \code{idTo} column in \code{dfEdges}
+must be found in \code{idNodes} column of \code{dfNodes} (otherwise an error
+is returned). Second if \code{dfSites} and occurrence information is provided too,
+\code{idSite} is used to ensure all the sites for which an occurrence event have
+are reported in \code{idSite}.
 
-trait/phylo/taxo non exlusive a column be three or both. There are associated and help distinguishing methods.
-
-character of factors => as.charcater
-The strength of the interactions defined in the third column of
-
-If no values in \code{dfEdges} then values are set to 1 is used.
-\code{directed} => methods and => plots
-\code{binary} => methods and option
+If \code{idSite} is found in \code{dfEdges} and \code{dfSites} is \code{NULL} then, this
+column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
+it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
+\code{dfEdges} means that theuser has spatial information about interactions
+which is more informative than providing occurrence and interaction  data separetly.
 }
 \author{
 Guillaume Blanchet, Kevin Cazelles & Steve Vissault

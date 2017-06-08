@@ -23,7 +23,7 @@
 #' Salix / Gallers / Parasitoids network
 #'
 #' This is an alienData object built from the data set described in Kopelke et al.
-#' (2017), i.e a single community type sampled across Europe: willow species
+#' (2017), i.e. a single community type sampled across Europe: willow species
 #' (Salix), willow-galling sawflies (Hymenoptera: Tenthredinidae: Nematinae:
 #' Euurina), and their natural enemies (hymenopteran parasitoids and coleopteran,
 #' lepidopteran, dipteran, and hymenopteran inquilines).
