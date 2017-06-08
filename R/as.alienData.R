@@ -2,7 +2,7 @@
 #'
 #' @description This function formats the data and returns an object of class alienData.
 #'
-#' @param dfNodes A data frame with at least one column named \code{idNodes} providing
+#' @param dfNodes A vector or a data frame with at least one column named \code{idNodes} providing
 #' unique identifiers for each species identified within the dataset. The remainig
 #' columns could be either traits or phylogenetic or taxonomic data that must
 #' be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
@@ -54,9 +54,18 @@ as.alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NU
     siteEnv = NULL, traitSp = NULL, traitInd = NULL, phy = NULL, dfSite = NULL, dfOcc = NULL, 
     binary = FALSE, directed = FALSE, verbose = TRUE) {
     
+    ##-- change stringsAsFactors option
+    osaf <- options()
+    options(stringsAsFactors = FALSE)
+    on.exit(options(osaf))
+    
     ############################## dfNodes
-    dfNodes %<>% as.data.frame(stringsAsFactors = FALSE)
-    dfEdges %<>% as.data.frame(stringsAsFactors = FALSE)
+    if (is.vector(dfNodes)) {
+        dfNodes <- data.frame(ID = as.character(dfNodes))
+    }
+    ## 
+    dfNodes %<>% as.data.frame
+    dfEdges %<>% as.data.frame
     ## 
     stopifnot("idNodes" %in% names(dfNodes))
     stopifnot("idFrom" %in% names(dfEdges))
@@ -67,11 +76,12 @@ as.alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NU
     dfEdges$idTo %<>% as.character
     ## 
     availableMeths <- data.frame(methods = c("Co-occurence", "Direct Matching Centrality", 
-        "iEat"), available = FALSE, stringsAsFactors = FALSE)
+        "iEat"), available = FALSE)
     
     ## 
     stopifnot(!any(table(dfNodes$idNodes) > 1))
-    message("==> Nodes information detected")
+    if (verbose) 
+        message("==> Nodes information detected")
     
     ## 
     sc <- 0
@@ -158,7 +168,7 @@ as.alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NU
             message("==> Getting occurrence information from 'dfEdges'...")
         ## 
         dfOcc <- data.frame(id = c(dfEdges$idTo, dfEdges$idFrom), idSite = rep(dfEdges$idSite, 
-            2), stringsAsFactors = FALSE) %>% unique
+            2)) %>% unique
         ## 
         names(dfOcc)[1L] <- "idNodes"
     }

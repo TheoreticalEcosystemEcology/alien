@@ -10,7 +10,7 @@ as.alienData(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
   verbose = TRUE)
 }
 \arguments{
-\item{dfNodes}{A data frame with at least one column named \code{idNodes} providing
+\item{dfNodes}{A vector or a data frame with at least one column named \code{idNodes} providing
 unique identifiers for each species identified within the dataset. The remainig
 columns could be either traits or phylogenetic or taxonomic data that must
 be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
