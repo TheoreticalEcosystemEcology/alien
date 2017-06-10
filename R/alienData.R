@@ -1,6 +1,7 @@
-#' @title Format data for the \code{alien} class
+#' @title  Formatting data and return an \code{alienData} object
 #'
-#' @description This function formats the data and returns an object of class alienData.
+#' @description \code{alienData} is used to check and format data, if correct
+#' it returns an object of class \code{alienData}.
 #'
 #' @param dfNodes A vector or a data frame with at least one column named \code{idNodes} providing
 #' unique identifiers for each species (or individuals) of the dataset. The remainig
@@ -39,10 +40,10 @@
 #' column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
 #' it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
 #' \code{dfEdges} means that theuser has spatial information about interactions
-#' which is more informative than providing occurrence and interaction  data separetly. 
+#' which is more informative than providing occurrence and interaction  data separetly.
 #'
 #' @return
-#' An object of the class \code{alienData} is returned.
+#' An object of the class \code{alienData} is returned .
 #'
 #' @author Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 #'
@@ -54,11 +55,11 @@
 #' @export
 
 
-as.alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL, 
+alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL, 
     siteEnv = NULL, dfSites = NULL, dfOcc = NULL, binary = FALSE, directed = FALSE, 
     verbose = TRUE) {
     
-    ##-- change stringsAsFactors option
+    ############################## 
     osaf <- options()
     options(stringsAsFactors = FALSE)
     on.exit(options(osaf))

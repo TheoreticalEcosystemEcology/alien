@@ -1,5 +1,6 @@
 context("alienData function")
 
+
 ##----
 nbnod <- 20
 nsit <- 10
@@ -54,44 +55,44 @@ df_sit2$idSite[5L] <- df_sit2$idSite[1L]
  df_occ4[1L,2L] <- "new"
 
 # ####
-res0 <- as.alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F)
-res1 <- as.alienData(df_nd0, df_int0, dfSites=df_sit0, dfOcc = df_occ0, verbose=F)
-res2 <- as.alienData(df_nd3, df_int0, dfSites=df_sit0, dfOcc = df_occ0, trait=2, phylo=2, taxo=3, verbose=F)
-res3 <- as.alienData(df_nd3, df_int7, verbose=F)
-
+res0 <- alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F)
+res1 <- alienData(df_nd0, df_int0, dfSites=df_sit0, dfOcc = df_occ0, verbose=F)
+res2 <- alienData(df_nd3, df_int0, dfSites=df_sit0, dfOcc = df_occ0, trait=2, phylo=2, taxo=3, verbose=F)
+res3 <- alienData(df_nd3, df_int7, verbose=F)
+sum2 <- summary(res2)
 
 ##
 test_that("check dfSpecies", {
-  expect_error(as.alienData(df_nd1, df_int0), '"idNodes" %in% names(dfNodes) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd2, df_int0), "!any(table(dfNodes$idNodes) > 1) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd1, df_int0), '"idNodes" %in% names(dfNodes) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd2, df_int0), "!any(table(dfNodes$idNodes) > 1) is not TRUE", fixed = TRUE)
 })
 
 ##
 test_that("check dfEdges", {
-  expect_error(as.alienData(df_nd0, df_int1), '"idFrom" %in% names(dfEdges) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int2), '"idTo" %in% names(dfEdges) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int3), "all(dfEdges$idFrom %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
-  expect_error(as.alienData(df_nd0, df_int4), "all(dfEdges$idTo %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
+  expect_error(alienData(df_nd0, df_int1), '"idFrom" %in% names(dfEdges) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int2), '"idTo" %in% names(dfEdges) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int3), "all(dfEdges$idFrom %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
+  expect_error(alienData(df_nd0, df_int4), "all(dfEdges$idTo %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
 })
 
 ##
 test_that("check dfSites", {
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit1), '"idSite" %in% names(dfSites) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit2), "all(table(dfSites$idSite) == 1) is not TRUE", fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfSites$idSite %in% dfEdges$idSite) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit1), '"idSite" %in% names(dfSites) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit2), "all(table(dfSites$idSite) == 1) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfSites$idSite %in% dfEdges$idSite) is not TRUE", fixed = TRUE)
 })
 
 ##
 test_that("check dfOcc", {
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ1), '"idSite" %in% names(dfOcc) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ2), '"idNodes" %in% names(dfOcc) is not TRUE', fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ3), "all(dfOcc$idSite %in% dfSites$idSite) is not TRUE", fixed = TRUE)
-  expect_error(as.alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ4), "all(dfOcc$idNodes %in% dfNodes$idNodes) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ1), '"idSite" %in% names(dfOcc) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ2), '"idNodes" %in% names(dfOcc) is not TRUE', fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ3), "all(dfOcc$idSite %in% dfSites$idSite) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int0, dfSites = df_sit0, dfOcc = df_occ4), "all(dfOcc$idNodes %in% dfNodes$idNodes) is not TRUE", fixed = TRUE)
 })
 
 ##
 test_that("check output values", {
-  expect_warning(as.alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F), "Site information provided without any occurrence")
+  expect_warning(alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F), "Site information provided without any occurrence")
   expect_is(res1, "alienData")
   expect_equal(res1$nbNodes, nbnod)
   expect_equal(res1$nbInteractions, nint)
@@ -104,4 +105,13 @@ test_that("check output values", {
   expect_true(all(res2$availableMeths$available))
   expect_equal(res3$nbSites, length(unique(idsit)))
   expect_true(!all(res3$dfEdges$value==1))
+  ##
+  expect_is(sum2, "summary.alienData")
+  expect_is(sum2$dfNodes, "table")
+  expect_is(sum2$Traits, "table")
+  expect_is(sum2$Phylos, "table")
+  expect_is(sum2$Taxos, "table")
+  expect_equal(sum2$nbNodes, nbnod)
+  expect_equal(sum2$nbInteractions, nint)
+  expect_equal(sum2$nbSite, nsit)
 })
