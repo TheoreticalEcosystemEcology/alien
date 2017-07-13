@@ -20,3 +20,13 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"alien_webFromNicheModel", (DL_FUNC) &alien_webFromNicheModel, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_alien(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

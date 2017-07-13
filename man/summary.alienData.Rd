@@ -4,12 +4,12 @@
 \alias{summary.alienData}
 \title{Format data for the \code{alien} class}
 \usage{
-\method{summary}{alienData}(object)
+\method{summary}{alienData}(object, ...)
 }
 \arguments{
 \item{object}{An object of class \code{alienData}.}
 
-\item{x}{An object of class \code{summaryAlienData}.}
+\item{...}{Further arguments to be passed from or to other methods.}
 }
 \description{
 These functions are all \code{methods} for class \code{alienData}

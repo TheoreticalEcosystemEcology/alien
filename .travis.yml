@@ -6,6 +6,7 @@ notifications:
     recipients:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
+  slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
 
 r_packages:
   - covr

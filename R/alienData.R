@@ -21,6 +21,7 @@
 #' @param directed Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).
 #' @param dfSites A data frame with at least two columns named \code{idSite}
 #' providing information about the site where the interactions have been observed.
+#' @param siteEnv A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).
 #' @param dfOcc A data frame with at least two columns \code{idNodes} and \code{idSite}
 #' providing the occurrence of nodes.
 #' @param verbose Logical. Should extra information be reported on progress?
@@ -56,8 +57,7 @@
 
 
 alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL, 
-    siteEnv = NULL, dfSites = NULL, dfOcc = NULL, binary = FALSE, directed = FALSE, 
-    verbose = TRUE) {
+    dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE, verbose = TRUE) {
     
     ############################## 
     osaf <- options()
@@ -162,7 +162,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
             stopifnot(all(dfSites$idSite %in% dfEdges$idSite))
         nbSites <- nrow(dfSites)
     }
-    if (nbSites) {
+    if (!is.null(nbSites)) {
         nmSite <- names(dfSites)
         if (verbose) 
             message(paste0("==> Site info detected: ", paste(nmSite, collapse = ", ")))
@@ -200,7 +200,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         nbOcc <- nrow(dfOcc)
         availableMeths$available[availableMeths$methods == "Co-occurence"] <- TRUE
     } else {
-        if (nbSites > 0) 
+        if (!is.null(nbSites)) 
             warning("Site information provided without any occurrence")
         nbOcc <- NULL
     }
