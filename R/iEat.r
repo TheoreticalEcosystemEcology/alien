@@ -40,7 +40,15 @@
 #'
 #' @export
 
+# /TODO: Tanimoto: NAs or ""?
+
 iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+
+    sim_var = c('taxonomy','resources','consumers','phylogenetic','trait','co-occurrence','abundance')
+    sim_method = c('tanimoto','vegdist','dist')
+    sourceSim_is_targetSim = TRUE
+
+
     #Checkups for data structure
     if (sum(!S0[, 'taxon'] %in% rownames(sourceSim)) > 0 | sum(!S0[, 'taxon'] %in% rownames(targetSim)) > 0)
         stop('Taxa in S0 have to be included as rows in the similarity matrices.')
@@ -53,9 +61,61 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
     if (!is.numeric(sourceSim) | !is.numeric(targetSim))
         stop('Similarity matrices have to be numerical')
 
+
+
+reshape2::dcast
+
+    # Functions to extract data.frame of taxa similarity descriptors
+
+    # Taxonomy by species
+
+    # Resources by species
+
+    resourcesSp <- function(data) {
+
+        resources <- data.frame(source = character(nrow(data)),
+                                targets = character(nrow(data)))
+
+        sources <- unique(data[, 'idTo'])
+
+
+
+
+        return(resources)
+    }
+
+    # Consumers by species
+
+    # Traits by species
+
+    # Phylogeny?
+
+    # Co-occurrence by species
+
+    # Abundance by species
+
+
+# ------
+    # Functions for similarty measurements
+
+
+
     #Embedded functions
+    tanimoto <- function(taxon1, taxon2) {
+        # Tanimoto similarity measure, which compares two vectors x and y with n = |x| = |y| elements, and is defined as the size of the intersection (∩) of two sets divided by their union (∪):
+        # The order of vectors taxon1 or taxon2 has no importance, as long as elements in vectors are unique
+        if(length(taxon1) == 0 || length(taxon2) == 0) {   # If either length of taxon1 or taxon2 == 0, similarity == 0
+            return(0.0)
+        } else if(taxon1 == "" || taxon2 == "") { # "" or NAs, to verify
+            return(0.0)
+        } else {
+            inter <- length(taxon2[match(taxon1, taxon2, nomatch = 0)])
+            return(inter / ((length(taxon1) + length(taxon2)) - inter))
+        }#if
+    }#end tanimoto function
+
     KNN <- function(taxa, matSim, K, minSim) {
-        # K nearest neighbout (KNN) majority vote selection to identify most similar taxa
+        # K nearest neighbour (KNN) majority vote selection to identify most similar taxa
         similar <- matSim[taxa, ] %>%
                     .[!names(.) %in% i] %>% # removing i from most similar targetSim
                     .[order(., decreasing = TRUE)] %>%
@@ -64,7 +124,7 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
                             c(.[which(. > .[K])], .[sample(which(. == .[K]))])[1:K]
                             else .[1:K]
                     } %>%
-                    .[!. == 0 & . > minSim] # remove all similarities == 0 and similarities below minSim
+                    .[!. == 0 & . < minSim] # remove all similarities == 0 and similarities below minSim
         return(similar)
     }
 
