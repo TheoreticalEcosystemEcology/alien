@@ -1,4 +1,4 @@
-#' @name iEat_bin
+#' @name iEat
 #'
 #' @title Instance-based machine learning method to predict biotic interactions
 #'
@@ -42,7 +42,19 @@
 
 # /TODO: Tanimoto: NAs or ""?
 
-iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+# iEat <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+
+iEat <- function(data, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, minSim = 0.3, minWt = 1, predict = 'full algorithm') {
+
+    ############# Tests
+    if (class(data) != "alienData") {
+        stop("`data` arg has to be alienData class")
+    }
+
+
+
+    Simplest and one that will have the data for sure: ressource | consumer
+
 
     sim_var = c('taxonomy','resources','consumers','phylogenetic','trait','co-occurrence','abundance')
     sim_method = c('tanimoto','vegdist','dist')
@@ -63,26 +75,7 @@ iEat_bin <- function(S0, S1, S2 = S1, sourceSim, targetSim = sourceSim, K = 5, m
 
 
 
-reshape2::dcast
 
-    # Functions to extract data.frame of taxa similarity descriptors
-
-    # Taxonomy by species
-
-    # Resources by species
-
-    resourcesSp <- function(data) {
-
-        resources <- data.frame(source = character(nrow(data)),
-                                targets = character(nrow(data)))
-
-        sources <- unique(data[, 'idTo'])
-
-
-
-
-        return(resources)
-    }
 
     # Consumers by species
 
@@ -100,7 +93,7 @@ reshape2::dcast
 
 
 
-    #Embedded functions
+    ############# Embedded functions
     tanimoto <- function(taxon1, taxon2) {
         # Tanimoto similarity measure, which compares two vectors x and y with n = |x| = |y| elements, and is defined as the size of the intersection (∩) of two sets divided by their union (∪):
         # The order of vectors taxon1 or taxon2 has no importance, as long as elements in vectors are unique
@@ -140,7 +133,7 @@ reshape2::dcast
         return(candidates)
     }
 
-    # Algorithm
+    ############# Algorithm
     # Empty matrix created to store algorithm predictions
     predictions <- data.frame(source = S1,
                                 target_catalogue = character(length(S1)),
