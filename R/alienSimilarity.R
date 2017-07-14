@@ -42,7 +42,7 @@
 #' @export
 
 
-alienSimilarity <- function(data, similarityParam = NULL, similarityMethod = NULL, similarityWeight = NULL, taxaSubset = NULL, ) {
+alienSimilarity <- function(data, similarityParam = NULL, similarityMethod = NULL, similarityWeight = NULL, taxaSubset = NULL) {
 
     availableParam <- c('taxonomy','resource','consumer','phylo','trait','cooccurrence','abundance')
     availableMeths <- c('tanimoto','vegdist','dist')
@@ -124,20 +124,24 @@ alienSimilarity <- function(data, similarityParam = NULL, similarityMethod = NUL
     # Resource shared
         if ('resource' %in% similarityParam) {
             # Extract resources
-            resource <- data$dfEdges %>%
-                        tidyr::spread(idFrom, idFrom, fill = 0) %>%
-                        as.data.frame(row.names = .$idTo) %>%
-                        dplyr::select(-value, -idTo) %>%
-                        apply(1, function(x) paste(x[x > 0]))
+                resource <- data$dfEdges %>%
+                            tidyr::spread(idFrom, idFrom, fill = NA) %>%
+                            dplyr::select(-value)
+
+            # Resources as names list
+                resList <- resource %>%
+                            dplyr::select(-idTo) %>%
+                            split(seq(nrow(.))) %>%
+                            lapply(function(x) x <- x[!is.na(x)])
+                names(resList) <- resource$idTo
 
             # Evaluate similarity
-            Sim <- expand.grid(taxon1 = names(resource), taxon2 = names(resource), stringsAsFactors = F) %>%
-                     mutate(similarity = 0)
+                Sim <- expand.grid(taxon1 = names(resList), taxon2 = names(resList), stringsAsFactors = F) %>%
+                         mutate(similarity = 0)
+
             # Similarity for all combinations of taxa with data to allow similarity evaluation
-
             #/TODO: Change to apply function
-
-            for(i in 1:nrow(Sim)) Sim$similarity[i] <- similarityEval(similarityMethod[which(similarityParam == 'resource')], resource[[Sim$taxon1[i]]], resource[[Sim$taxon2[i]]])
+                for(i in 1:nrow(Sim)) Sim$similarity[i] <- similarityEval(similarityMethod[which(similarityParam == 'resource')], resList[[Sim$taxon1[i]]], resList[[Sim$taxon2[i]]])
 
             # Add to similarity data frame
             dfSim <- leftJoinNA(dfSim, Sim, c('taxon1','taxon2')) %>%
@@ -146,21 +150,25 @@ alienSimilarity <- function(data, similarityParam = NULL, similarityMethod = NUL
 
     # Consumer shared
         if ('consumer' %in% similarityParam) {
-            # Extract consumers
-            consumer <- data$dfEdges %>%
-                        tidyr::spread(idTo, idTo, fill = 0) %>%
-                        as.data.frame(row.names = .$idFrom) %>%
-                        dplyr::select(-value, -idFrom) %>%
-                        apply(1, function(x) paste(x[x > 0]))
+            # Extract consumer
+                consumer <- data$dfEdges %>%
+                            tidyr::spread(idTo, idTo, fill = NA) %>%
+                            dplyr::select(-value)
+
+            # Consumer as names list
+                consList <- consumer %>%
+                            dplyr::select(-idFrom) %>%
+                            split(seq(nrow(.))) %>%
+                            lapply(function(x) x <- x[!is.na(x)])
+                names(consList) <- consumer$idFrom
 
             # Evaluate similarity
-            Sim <- expand.grid(taxon1 = names(consumer), taxon2 = names(consumer), stringsAsFactors = F) %>%
-                     mutate(similarity = 0)
+                Sim <- expand.grid(taxon1 = names(consList), taxon2 = names(consList), stringsAsFactors = F) %>%
+                         mutate(similarity = 0)
+
             # Similarity for all combinations of taxa with data to allow similarity evaluation
-
             #/TODO: Change to apply function
-
-            for(i in 1:nrow(Sim)) Sim$similarity[i] <- similarityEval(similarityMethod[which(similarityParam == 'consumer')], consumer[[Sim$taxon1[i]]], consumer[[Sim$taxon2[i]]])
+                for(i in 1:nrow(Sim)) Sim$similarity[i] <- similarityEval(similarityMethod[which(similarityParam == 'consumer')], consList[[Sim$taxon1[i]]], consList[[Sim$taxon2[i]]])
 
             # Add to similarity data frame
             dfSim <- leftJoinNA(dfSim, Sim, c('taxon1','taxon2')) %>%
@@ -240,7 +248,7 @@ alienSimilarity <- function(data, similarityParam = NULL, similarityMethod = NUL
                                             similarityMethod = similarityMethod, # Method used for each parameters
                                             similarityWeight = similarityWeight, # Weight used for each parameters
                                             stringsAsFactors = F,
-                                            row.names = NULL), 
+                                            row.names = NULL),
                 nbParameters = nbParam) # number of ecological parameters used to compute similarity
 
     class(res) <- "alienSimilarity"
