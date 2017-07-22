@@ -1,4 +1,4 @@
-language: r
+language: c
 cache: packages
 warnings_are_errors: false
 notifications:
@@ -8,8 +8,9 @@ notifications:
       - kevin.cazelles@gmail.com
   slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
 
-install:
-  - ./run.sh install_aptget r-cran-rcpp r-cran-rcpparmadillo
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install r-cran-rcpp r-cran-rcpparmadillo
 
 r_packages:
   - covr
