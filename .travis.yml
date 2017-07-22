@@ -8,10 +8,11 @@ notifications:
       - kevin.cazelles@gmail.com
   slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
 
+install:
+  - ./run.sh install_aptget r-cran-rcpp r-cran-rcpparmadillo
+
 r_packages:
   - covr
-  - r-cran-rcpp
-  - r-cran-rcpparmadillo
 
 after_success:
   - Rscript -e 'covr::codecov()'
