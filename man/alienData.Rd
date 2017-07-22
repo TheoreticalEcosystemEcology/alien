@@ -18,6 +18,8 @@ parameter described below (otherwise they are ignored).}
 \item{dfEdges}{A data frame with at least two columns: \code{idFrom} and \code{idTo}
 descibring the set of edges (links between nodes). If \code{directed} is set
 to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
+Directed interactions for consumer/resource interactions correspond to a transfer
+of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
 The presence of two additonnal columns are checked: \code{value} and \code{idSite}
 which respectively provide the values associated with edges (if absent, they are
 set to 1) and the identifier of the site where the interaction has been obsereved

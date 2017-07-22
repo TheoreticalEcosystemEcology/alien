@@ -64,7 +64,7 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     
     # select df_trait
     if (!is.null(traits)) {
-        df_trait <- subset(df_trait, traitName %in% traits)
+        df_trait <- subset(df_trait, df_trait$traitName %in% traits)
     }
     
     # get covariates for idFrom

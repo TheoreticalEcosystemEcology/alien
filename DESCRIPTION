@@ -16,8 +16,9 @@ Maintainer: Steve Vissault <steve.vissault@usherbrooke.ca>
 Description: Comparative analysis of interaction inference methods
     Use four spaces when indenting paragraphs within the Description.
 Suggests:
-    testthat (>= 0.8.0)
-LinkingTo: Rcpp
+    testthat (>= 0.8.0),
+    knitr,
+    rmarkdown
 Imports:
     Rcpp (>= 0.12.9),
     magrittr,
@@ -25,7 +26,8 @@ Imports:
     randomForest,
     utils,
     stats,
-    ape
+    movMF
+LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: none
 NeedsCompilation: no
 License: MIT + file LICENSE
