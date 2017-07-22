@@ -10,7 +10,8 @@ notifications:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install r-cran-rcpp r-cran-rcpparmadillo
+  - sudo apt-get install r-cran-rcpp
+  - sudo apt-get install r-cran-rcpparmadillo
 
 r_packages:
   - covr
