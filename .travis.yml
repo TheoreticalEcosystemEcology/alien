@@ -10,6 +10,8 @@ notifications:
 
 r_packages:
   - covr
+  - r-cran-rcpp
+  - r-cran-rcpparmadillo
 
 after_success:
   - Rscript -e 'covr::codecov()'
