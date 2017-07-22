@@ -11,10 +11,10 @@ notifications:
 before_install:
   - sudo apt-get update
   - sudo apt-get install r-cran-rcpp
-  - sudo apt-get install r-cran-rcpparmadillo
 
 r_packages:
   - covr
+  - rcpparmadillo
 
 after_success:
   - Rscript -e 'covr::codecov()'
