@@ -16,7 +16,7 @@ before_install:
 
 r_packages:
   - covr
-  - rcpparmadillo
+  - RcppArmadillo
 
 after_success:
   - Rscript -e 'covr::codecov()'
