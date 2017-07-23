@@ -4,7 +4,7 @@
 #'
 #' @description Fit indirect matching centrality models among species or individus
 #'
-#' @param data an object of the class alienData, see alienData function.
+#' @param data an object of the class alienData, see \code{alienData} function.
 #'
 #' @author
 #' Kevin Cazelles
@@ -21,7 +21,7 @@
 #' @export
 
 
-fitIMC <- function(data) {
+fitIMC <- function(data, set1, set2) {
     out <- NULL
     out
 }
