@@ -1,6 +1,5 @@
+// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
-// it pulls Rcpp in
-
 //' @name sourceMC
 //' @title sourceMC
 //'
@@ -16,8 +15,6 @@
 //' transition matrix of the markov chain to be solved.
 //'
 //' @export
-//
-// [[Rcpp::depends(RcppArmadillo)]]
 //
 // [[Rcpp::export]]
 
