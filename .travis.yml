@@ -1,4 +1,4 @@
-language: c
+language: r
 cache: packages
 warnings_are_errors: false
 notifications:
@@ -7,6 +7,8 @@ notifications:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
   slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
+
+dist: trusty
 
 before_install:
   - sudo apt-get update
