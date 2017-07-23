@@ -6,7 +6,7 @@
 //' @author
 //' Kevin Cazelles
 //'
-//' @description few linear algebra operations needed for fitMC.
+//' @description Linear algebra operations needed for fitMC.
 //'
 //' @param nbsp1 Number of species belonging to the first set.
 //' @param nbsp2 Number of species belonging to the second set.
