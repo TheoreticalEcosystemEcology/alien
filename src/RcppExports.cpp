@@ -6,18 +6,6 @@
 
 using namespace Rcpp;
 
-// sourceMC
-Rcpp::List sourceMC(int nbsp1, int nbsp2);
-RcppExport SEXP alien_sourceMC(SEXP nbsp1SEXP, SEXP nbsp2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type nbsp1(nbsp1SEXP);
-    Rcpp::traits::input_parameter< int >::type nbsp2(nbsp2SEXP);
-    rcpp_result_gen = Rcpp::wrap(sourceMC(nbsp1, nbsp2));
-    return rcpp_result_gen;
-END_RCPP
-}
 // webFromNicheModel
 LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all, bool unbias, Nullable<NumericVector> niche);
 RcppExport SEXP alien_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP unbiasSEXP, SEXP nicheSEXP) {
@@ -35,7 +23,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"alien_sourceMC", (DL_FUNC) &alien_sourceMC, 2},
     {"alien_webFromNicheModel", (DL_FUNC) &alien_webFromNicheModel, 5},
     {NULL, NULL, 0}
 };

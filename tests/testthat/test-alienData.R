@@ -73,6 +73,7 @@ test_that("check dfEdges", {
   expect_error(alienData(df_nd0, df_int2), '"idTo" %in% names(dfEdges) is not TRUE', fixed = TRUE)
   expect_error(alienData(df_nd0, df_int3), "all(dfEdges$idFrom %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
   expect_error(alienData(df_nd0, df_int4), "all(dfEdges$idTo %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
+  expect_warning(alienData(df_nd0, df_int0[1,], verbose=F))
 })
 
 ##
