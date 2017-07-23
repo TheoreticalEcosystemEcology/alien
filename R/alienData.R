@@ -141,10 +141,10 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     
     if (!"value" %in% names(dfEdges)) {
         if (verbose) 
-            message("==> No values associated with edges, values are set to 1")
+            message("==> No Edges' value detected, values are set to 1")
         dfEdges$value <- 1
     } else if (verbose) 
-        message("==> Edges values detected")
+        message("==> Edges' values detected")
     
     
     ############################## dfSites
@@ -215,7 +215,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     
     
     ############################## Return results
-    res <- list(nbNodes = nrow(dfNodes), nbInteractions = nrow(dfEdges), directed = directed, 
+    res <- list(nbNodes = nrow(dfNodes), nbEdges = nrow(dfEdges), directed = directed, 
         nbSites = nbSites, nbOcc = nbOcc, dfNodes = dfNodes, dfEdges = dfEdges, dfSites = dfSites, 
         dfOcc = dfOcc, nmTrait = nmTrait, nmPhylo = nmPhylo, nmTaxo = nmTaxo, nmSite = nmSite, 
         availableMeths = availableMeths)
