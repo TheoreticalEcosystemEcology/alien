@@ -12,3 +12,4 @@
 ^inst/*.R
 ^CONTRIBUTING.md
 ^\.DS_Store
+^beforeInstall.sh

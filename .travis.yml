@@ -9,14 +9,34 @@ notifications:
       - kevin.cazelles@gmail.com
   slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
 
+
 dist: trusty
 
-# before_install:
-#   - sudo apt-get update
-#   - sudo apt-get install r-cran-rcpp
+before_install:
+  - source beforeInstall.sh
+
+addons:
+  apt:
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - clang
+
+r:
+  - oldrel
+  - release
+  - devel
+
+env:
+  - COMPILER=gcc-4.8
+  - COMPILER=gcc
+  - COMPILER=clang
+
+
 
 r_packages:
   - covr
 
 after_success:
   - Rscript -e 'covr::codecov()'
+  # - Rscript -e 'covr::coverall()'
