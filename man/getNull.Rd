@@ -39,7 +39,7 @@ basis of the unit vector is required.
 \item \code{prodNorm}: A repeated matrix produc in \code{fitMC} that requires
 to normalise one vector.
 }}
-
 \author{
 Kevin Cazelles
 }
+

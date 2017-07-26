@@ -18,3 +18,4 @@ or \code{summary.alienData}.
 \author{
 Kevin Cazelles
 }
+

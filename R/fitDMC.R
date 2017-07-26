@@ -68,14 +68,10 @@ fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", lev
     
     # get covariates for idFrom
     df_interact <- merge(df_interact, df_trait, all.x = TRUE, by.x = "idFrom", by.y = id)
-    colnames(df_interact)[4:ncol(df_interact)] <- paste("idFrom_", colnames(df_interact)[4:ncol(df_interact)], 
-        sep = "")
     
     # get covariates for idTo
-    nc <- ncol(df_interact)
     df_interact <- merge(df_interact, df_trait, all.x = TRUE, by.x = "idTo", by.y = id)
-    colnames(df_interact)[(nc + 1):ncol(df_interact)] <- paste("idTo_", colnames(df_interact)[(nc + 
-        1):ncol(df_interact)], sep = "")
+    
     
     # remove columns containing all NA (no species match to the traits)
     df_interact <- df_interact[, colSums(is.na(df_interact)) < nrow(df_interact)]  # TODO: Check
