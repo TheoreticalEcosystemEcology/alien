@@ -33,7 +33,7 @@ summary.alienData <- function(object, ...) {
     return(out)
 }
 
-#' @describeIn summary Method to print a summary.alienData object.
+#' @rdname summary.alienData
 # to disambiguate
 #' @method print summary.alienData
 #' @param x An object of class \code{summaryAlienData}.
