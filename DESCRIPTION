@@ -28,8 +28,7 @@ Imports:
     stats,
     GenSA
 LinkingTo: Rcpp, RcppArmadillo
-SystemRequirements: none
-NeedsCompilation: no
+NeedsCompilation: yes
 License: MIT + file LICENSE
 BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
 VignetteBuilder: knitr
