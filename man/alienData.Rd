@@ -5,8 +5,8 @@
 \title{Formatting data and return an \code{alienData} object}
 \usage{
 alienData(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
-  siteEnv = NULL, dfSites = NULL, dfOcc = NULL, binary = FALSE,
-  directed = FALSE, verbose = TRUE)
+  dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE,
+  verbose = TRUE)
 }
 \arguments{
 \item{dfNodes}{A vector or a data frame with at least one column named \code{idNodes} providing
@@ -18,6 +18,8 @@ parameter described below (otherwise they are ignored).}
 \item{dfEdges}{A data frame with at least two columns: \code{idFrom} and \code{idTo}
 descibring the set of edges (links between nodes). If \code{directed} is set
 to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
+Directed interactions for consumer/resource interactions correspond to a transfer
+of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
 The presence of two additonnal columns are checked: \code{value} and \code{idSite}
 which respectively provide the values associated with edges (if absent, they are
 set to 1) and the identifier of the site where the interaction has been obsereved
@@ -31,6 +33,8 @@ set to 1) and the identifier of the site where the interaction has been obsereve
 
 \item{dfSites}{A data frame with at least two columns named \code{idSite}
 providing information about the site where the interactions have been observed.}
+
+\item{siteEnv}{A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).}
 
 \item{dfOcc}{A data frame with at least two columns \code{idNodes} and \code{idSite}
 providing the occurrence of nodes.}

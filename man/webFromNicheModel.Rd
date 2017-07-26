@@ -33,11 +33,11 @@ comnectance.
 }
 \details{
 Three remarks. First, according to Williams and Martinez (2000),
-the species with the lowest niche value is considered as a basal and thus
-has no trait. This introduces a slight bias (\emph{e.g} the
+the species with the lowest niche value is considered as a basal species and
+therefore cannot feed upon another species. This introduces a slight bias (\emph{e.g} the
 expected connectance is lower than the expected values \code{connec}). Second,
-forcing all the species to be connected introduces another biais (connectance)
-tends to be more connected than expected.
+forcing all the species to be connected introduces another biais (on
+connectance values) as they tends to be more connected than expected.
 Third, if one uses its own customed niche axis, values should be between 0 and
 and 1 and the expected connectance (\code{connec}) can vary significantly if the
 distribution of niche values differ from the uniform distribution used in

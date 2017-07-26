@@ -5,8 +5,11 @@
 ^\.travis\.yml$
 ^\.gitignore
 ^Makefile
+^src/Makevars\.local$
 ^pkg2date\.R
 ^README\.rmd
 ^record*
-^inst/
+^inst/*.R
 ^CONTRIBUTING.md
+^\.DS_Store
+^beforeInstall.sh

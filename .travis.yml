@@ -1,14 +1,35 @@
 language: r
 cache: packages
+sudo: required
+warnings_are_errors: true
 warnings_are_errors: false
 notifications:
   email:
     recipients:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
+  slack: leti-r:We4RUIQpzZ8vcazD9FIRt3Me
+
 
 r_packages:
   - covr
 
+r_github_packages:
+  - jimhester/covr
+
+before_install:
+  - sudo apt-get update
+
+apt_packages:
+  - r-cran-matrix
+  - r-cran-rcpp
+  - r-cran-rcpparmadillo
+
 after_success:
   - Rscript -e 'covr::codecov()'
+  # - Rscript -e 'covr::coverall()'
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change

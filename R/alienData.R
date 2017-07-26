@@ -11,6 +11,8 @@
 #' @param dfEdges A data frame with at least two columns: \code{idFrom} and \code{idTo}
 #' descibring the set of edges (links between nodes). If \code{directed} is set
 #' to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
+#' Directed interactions for consumer/resource interactions correspond to a transfer
+#' of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
 #' The presence of two additonnal columns are checked: \code{value} and \code{idSite}
 #' which respectively provide the values associated with edges (if absent, they are
 #' set to 1) and the identifier of the site where the interaction has been obsereved
@@ -21,6 +23,7 @@
 #' @param directed Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).
 #' @param dfSites A data frame with at least one column named \code{idSite}
 #' providing information about the site where the interactions have been observed.
+#' @param siteEnv A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).
 #' @param dfOcc A data frame with at least two columns \code{idNodes} and \code{idSite}
 #' providing the occurrence of nodes.
 #' @param verbose Logical. Should extra information be reported on progress?
@@ -162,10 +165,12 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
             stopifnot(all(dfSites$idSite %in% dfEdges$idSite))
         nbSites <- nrow(dfSites)
     }
-    if (nbSites) {
+    if (!is.null(nbSites)) {
         nmSite <- names(dfSites)
         if (verbose)
             message(paste0("==> Site info detected: ", paste(nmSite, collapse = ", ")))
+    } else {
+        nmSite <- NULL
     }
 
     ############################## dfOcc
