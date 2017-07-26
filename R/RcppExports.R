@@ -35,7 +35,6 @@ getNullOne <- function(nbsp) {
 prodNorm <- function(nbsp, B, V) {
     .Call('alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
 }
->>>>>>> d3725ccb0880d138bed35a2003cd85417b472db3
 
 #' @name webFromNicheModel
 #'
