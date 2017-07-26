@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // getNull
 arma::mat getNull(arma::mat A);
-RcppExport SEXP alien_getNull(SEXP ASEXP) {
+RcppExport SEXP _alien_getNull(SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,7 @@ END_RCPP
 }
 // getNullOne
 arma::mat getNullOne(int nbsp);
-RcppExport SEXP alien_getNullOne(SEXP nbspSEXP) {
+RcppExport SEXP _alien_getNullOne(SEXP nbspSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,7 +30,7 @@ END_RCPP
 }
 // prodNorm
 arma::vec prodNorm(int nbsp, arma::mat B, arma::vec V);
-RcppExport SEXP alien_prodNorm(SEXP nbspSEXP, SEXP BSEXP, SEXP VSEXP) {
+RcppExport SEXP _alien_prodNorm(SEXP nbspSEXP, SEXP BSEXP, SEXP VSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,7 +43,7 @@ END_RCPP
 }
 // webFromNicheModel
 LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all, bool unbias, Nullable<NumericVector> niche);
-RcppExport SEXP alien_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP unbiasSEXP, SEXP nicheSEXP) {
+RcppExport SEXP _alien_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP unbiasSEXP, SEXP nicheSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -58,10 +58,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"alien_getNull", (DL_FUNC) &alien_getNull, 1},
-    {"alien_getNullOne", (DL_FUNC) &alien_getNullOne, 1},
-    {"alien_prodNorm", (DL_FUNC) &alien_prodNorm, 3},
-    {"alien_webFromNicheModel", (DL_FUNC) &alien_webFromNicheModel, 5},
+    {"_alien_getNull", (DL_FUNC) &_alien_getNull, 1},
+    {"_alien_getNullOne", (DL_FUNC) &_alien_getNullOne, 1},
+    {"_alien_prodNorm", (DL_FUNC) &_alien_prodNorm, 3},
+    {"_alien_webFromNicheModel", (DL_FUNC) &_alien_webFromNicheModel, 5},
     {NULL, NULL, 0}
 };
 

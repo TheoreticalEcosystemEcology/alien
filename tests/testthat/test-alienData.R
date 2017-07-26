@@ -1,18 +1,19 @@
 context("alienData function")
 
+source("minimalEx.R")
 
-##----
-nbnod <- 20
-nsit <- 10
-nint <- 15
-ind1 <- sample(1:nbnod, nint, replace=TRUE)
-ind2 <- sample(1:nbnod, nint, replace=TRUE)
-sit <- sample(1:nsit, nint, replace=TRUE)
-idsit <- paste0("site", sprintf("%02d", sit))
-##----
-df_nd0 <- data.frame(
-  idNodes = paste0("id", sprintf("%02d", 1:nbnod)),
-  stringsAsFactors=FALSE)
+# ##----
+# nbnod <- 20
+# nsit <- 10
+# nint <- 15
+# ind1 <- sample(1:nbnod, nint, replace=TRUE)
+# ind2 <- sample(1:nbnod, nint, replace=TRUE)
+# sit <- sample(1:nsit, nint, replace=TRUE)
+# idsit <- paste0("site", sprintf("%02d", sit))
+# ##----
+# df_nd0 <- data.frame(
+#   idNodes = paste0("id", sprintf("%02d", 1:nbnod)),
+#   stringsAsFactors=FALSE)
 df_nd3 <- df_nd2 <- df_nd1 <- df_nd0
 ##
 names(df_nd1) <- "val1"
@@ -20,11 +21,11 @@ df_nd2$idNodes[nbnod] <- df_nd0$idNodes[1L]
 df_nd3$var1 <- runif(nbnod)
 df_nd3$var2 <- runif(nbnod)
 
-##----
-df_int0 <- data.frame(
-  idFrom = paste0("id", sprintf("%02d", ind1)),
-  idTo = paste0("id", sprintf("%02d", ind2)),
-  stringsAsFactors = FALSE)
+# ##----
+# df_int0 <- data.frame(
+#   idFrom = paste0("id", sprintf("%02d", ind1)),
+#   idTo = paste0("id", sprintf("%02d", ind2)),
+#   stringsAsFactors = FALSE)
 df_int5 <- df_int4 <- df_int3 <- df_int2 <- df_int1 <- df_int0
 names(df_int1)[1L] <- "new"
 names(df_int2)[2L] <- "new"
@@ -36,18 +37,18 @@ df_int6$idSite[1L] <- "new"
 df_int7$value <- runif(nint)
 
 ##----
-df_sit0 <-  data.frame(
-  idSite = paste0("site", sprintf("%02d", 1:nsit)),
-  stringsAsFactors = FALSE)
+# df_sit0 <-  data.frame(
+#   idSite = paste0("site", sprintf("%02d", 1:nsit)),
+#   stringsAsFactors = FALSE)
 df_sit2 <- df_sit1 <- df_sit0
 names(df_sit1)[1L] <- "new"
 df_sit2$idSite[5L] <- df_sit2$idSite[1L]
 
 ##----
- df_occ0 <-  data.frame(
-   idSite = paste0("site", sprintf( "%02d", sample(1:nsit, 2*nbnod, replace=TRUE))),
-   idNodes = rep(df_nd0$idNodes, 2),
-   stringsAsFactors = FALSE)
+ # df_occ0 <-  data.frame(
+ #   idSite = paste0("site", sprintf( "%02d", sample(1:nsit, 2*nbnod, replace=TRUE))),
+ #   idNodes = rep(df_nd0$idNodes, 2),
+ #   stringsAsFactors = FALSE)
  df_occ4 <-df_occ3 <- df_occ2 <- df_occ1 <- df_occ0
  names(df_occ1)[1L] <- "new"
  names(df_occ2)[2L] <- "new"
@@ -73,7 +74,7 @@ test_that("check dfEdges", {
   expect_error(alienData(df_nd0, df_int2), '"idTo" %in% names(dfEdges) is not TRUE', fixed = TRUE)
   expect_error(alienData(df_nd0, df_int3), "all(dfEdges$idFrom %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
   expect_error(alienData(df_nd0, df_int4), "all(dfEdges$idTo %in% dfNodes$idNodes) is not TRUE", fixed=TRUE)
-  expect_warning(alienData(df_nd0, df_int0[1,], verbose=F))
+  expect_warning(alienData(df_nd0, df_int0[1L,], verbose=F))
 })
 
 ##
