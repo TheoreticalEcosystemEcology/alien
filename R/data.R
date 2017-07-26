@@ -14,10 +14,10 @@
 #' @docType data
 #' @keywords datasets
 #' @author Ignasi Bartomeus
-#' @name bartomeus
-#' @usage data(bartomeus)
+#' @name plantsPol
+#' @usage data(plantsPol)
 #' @format An alienData object
-"bartomeus"
+"plantsPol"
 
 
 #' Salix / Gallers / Parasitoids network
@@ -31,11 +31,11 @@
 #' @docType data
 #' @keywords datasets
 #' @author Ignasi Bartomeus
-#' @name kopelke
-#' @usage data(kopelke)
+#' @name salix
+#' @usage data(salix)
 #' @format An alienData object containing the data decribed in Kopelke et al. (2017)
 #' @references
 #' Kopelke, J.-P. et al. Food-web structure of willow-galling sawflies and
 #' their natural enemies across Europe. Ecology 38, 42–49 (2017).
 #'
-"kopelke"
+"salix"
