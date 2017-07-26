@@ -14,21 +14,21 @@
 
 summary.alienData <- function(object, ...) {
     out <- object
-    ###
+    ### 
     if (!is.null(out$nmTrait)) {
         out$Traits <- summary(out$dfNodes[, out$nmTrait, drop = F], ...)
     } else out$Traits <- NULL
-    ##
+    ## 
     if (!is.null(out$nmPhylo)) {
         out$Phylos <- summary(out$dfNodes[, out$nmPhylo, drop = F], ...)
     } else out$Phylos <- NULL
-    ##
+    ## 
     if (!is.null(out$nmTaxo)) {
         out$Taxos <- summary(out$dfNodes[, out$nmTaxo, drop = F], ...)
     } else out$Taxos <- NULL
-    ##
+    ## 
     out$dfNodes %<>% summary(...)
-
+    
     class(out) <- "summary.alienData"
     return(out)
 }
@@ -42,39 +42,39 @@ print.summary.alienData <- function(x, ...) {
     msep <- function() cat("---------------\n\n")
     txt <- "\nA alienData object including :\n"
     txt %<>% paste0(" ---> ", x$nbNodes, " nodes", "\n")
-    txt %<>% paste0(" ---> ", x$nbInteractions, " interactions ", ifelse(x$directed,
+    txt %<>% paste0(" ---> ", x$nbInteractions, " interactions ", ifelse(x$directed, 
         "directed", "undirected"), "\n")
-    if (!is.null(x$nbSite))
+    if (!is.null(x$nbSite)) 
         txt %<>% paste0(" ---> ", x$nbSite, " sites", "\n")
-    if (!is.null(x$nbOcc))
+    if (!is.null(x$nbOcc)) 
         txt %<>% paste0(" ---> ", x$nbOcc, " occurrences", "\n")
     cat(txt)
     msep()
-    ##
+    ## 
     cat("Nodes summary:\n")
     print(x$dfNodes, ...)
     msep()
-    ##
+    ## 
     if (!is.null(x$Traits)) {
         cat("Traits summary:\n")
         print(x$Traits)
         msep()
     }
-    ##
+    ## 
     if (!is.null(x$Phylos)) {
         cat("Phylos summary:\n")
         print(x$Phylos, ...)
         msep()
     }
-    ##
+    ## 
     if (!is.null(x$Taxos)) {
         cat("Taxos summary:\n")
         print(x$Taxos, ...)
         msep()
     }
-    ##
+    ## 
     cat("Available Methods:\n")
     print(x$availableMeths, ...)
-    ##
+    ## 
     invisible(x)
 }

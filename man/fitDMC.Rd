@@ -30,4 +30,3 @@ Fit direct matching centrality models among species or individus
 \author{
 Dominique Gravel & Steve Vissault
 }
-

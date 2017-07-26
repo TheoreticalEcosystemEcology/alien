@@ -71,4 +71,3 @@ Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 }
 \keyword{classes}
 \keyword{manip}
-

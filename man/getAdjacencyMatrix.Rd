@@ -39,4 +39,3 @@ Kevin Cazelles
 }
 \keyword{adjacency}
 \keyword{matrix}
-

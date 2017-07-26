@@ -15,12 +15,11 @@ This is an alienData object built from the data set described in Kopelke et al.
 Euurina), and their natural enemies (hymenopteran parasitoids and coleopteran,
 lepidopteran, dipteran, and hymenopteran inquilines).
 }
-\author{
-Ignasi Bartomeus
-}
 \references{
 Kopelke, J.-P. et al. Food-web structure of willow-galling sawflies and
 their natural enemies across Europe. Ecology 38, 42–49 (2017).
 }
+\author{
+Ignasi Bartomeus
+}
 \keyword{datasets}
-

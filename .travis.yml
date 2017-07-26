@@ -1,7 +1,7 @@
 language: r
+dist: trusty
 cache: packages
 sudo: required
-warnings_are_errors: true
 warnings_are_errors: false
 notifications:
   email:
@@ -20,16 +20,6 @@ r_github_packages:
 before_install:
   - sudo apt-get update
 
-apt_packages:
-  - r-cran-matrix
-  - r-cran-rcpp
-  - r-cran-rcpparmadillo
-
 after_success:
   - Rscript -e 'covr::codecov()'
   # - Rscript -e 'covr::coverall()'
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change

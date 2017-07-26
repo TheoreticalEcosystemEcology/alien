@@ -43,11 +43,10 @@ and 1 and the expected connectance (\code{connec}) can vary significantly if the
 distribution of niche values differ from the uniform distribution used in
 Williams and Martinez (2000).
 }
-\author{
-Kevin Cazelles
-}
 \references{
 Williams, R.J. and Martinez, N.D. (2000) Simple rules yield complex food webs.
 \emph{Nature}, 404:180–183.
 }
-
+\author{
+Kevin Cazelles
+}
