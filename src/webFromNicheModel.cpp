@@ -43,6 +43,8 @@ using namespace Rcpp;
 //' \emph{Nature}, 404:180–183.
 //'
 //' @export
+//
+//' @importFrom Rcpp evalCpp
 //'
 // [[Rcpp::export]]
 LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all = false,

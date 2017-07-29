@@ -3,10 +3,6 @@
 \name{webFromNicheModel}
 \alias{webFromNicheModel}
 \title{Generate a web using the niche model.}
-\usage{
-webFromNicheModel(nbsp, connec, connect_all = FALSE, unbias = FALSE,
-  niche = NULL)
-}
 \arguments{
 \item{nbsp}{An integer giving the number of species considered.}
 

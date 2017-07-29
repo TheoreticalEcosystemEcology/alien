@@ -20,6 +20,8 @@
 #'
 #' @return Returns the null basis.
 #'
+#' @importFrom Rcpp evalCpp
+#'
 getNull <- function(A) {
     .Call('_alien_getNull', PACKAGE = 'alien', A)
 }
@@ -78,6 +80,9 @@ prodNorm <- function(nbsp, B, V) {
 #' \emph{Nature}, 404:180–183.
 #'
 #' @export
+NULL
+
+#' @importFrom Rcpp evalCpp
 #'
 webFromNicheModel <- function(nbsp, connec, connect_all = FALSE, unbias = FALSE, niche = NULL) {
     .Call('_alien_webFromNicheModel', PACKAGE = 'alien', nbsp, connec, connect_all, unbias, niche)
