@@ -33,7 +33,7 @@
 
 getAdjacencyMatrix <- function(object, bipartite = FALSE, binary = FALSE) {
     stopifnot(class(object) == "alienData")
-    tmp <- object$dfEdges
+    tmp <- object$dfEdges[, c("idFrom", "idTo", "value")]
     if (!bipartite) {
         out <- matrix(0, object$nbNodes, object$nbNodes, dimnames = list(object$dfNodes$idNodes, 
             object$dfNodes$idNodes))
