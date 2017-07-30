@@ -9,7 +9,7 @@ rscr = pkg2date.R
 all: $(md) $(chk)
 
 $(chk): $(rfun) $(rtes) $(rman) $(rcpp)
-	Rscript --no-site-file --no-init-file $(rscr) 1
+	Rscript --no-init-file $(rscr) 1
 
 check:
 	Rscript --no-init-file -e "devtools::check('.')"

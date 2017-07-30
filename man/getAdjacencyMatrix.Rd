@@ -20,7 +20,7 @@ to \code{FALSE}.}
 An adjacency matrix of class \code{matrix}.
 }
 \description{
-\code{getAdjacencyMatrix} compute the adjacency matrix based on
+\code{getAdjacencyMatrix} computes the adjacency matrix based on
 the \code{dfEdges} element of an alienData object.
 }
 \details{
