@@ -37,17 +37,25 @@
 
 
 fitMC <- function(data, d = 1, mxt = 10) {
+    ##--
+    stopifnot(d >= 1)
+    ##--
     netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
-    ## 
     nset1 <- nrow(netObs)
     nset2 <- ncol(netObs)
+    ##-- Number of parameters
+    # Centrality latent traits:
+    nbc <- nset1 + nset2 - 2
+    # Matching latent traits: NB: Given the constrains on vector's orthogonality, the
+    # dimension of the linear subspace where a new vector is drawn decreases.
+    nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
+    # number of 'fixed' parameters (lambda, delta and m)
+    npr <- 3 + d
     ## check if fitMC is available => 2 be added check the number of parameters
-    npar <- getNumParamMC(nset1, nset2)
-    stopifnot(d >= 1)
+    npar <- nbc + nbm + npr
     stopifnot(npar < prod(dim(netObs)))
-    ## Total number of latent traits
-    nlatpar <- getNumParamMC(nset1, nset2, latentOnly = TRUE)
-    latpar <- paste0("lat_", 1:nlatpar)
+    ##--
+    latpar <- paste0("lat_", 1:(nbc + nbm))
     lam <- paste0("lambda_", 1:d)
     ## 
     pars <- matrix(0, 3, npar)
@@ -60,7 +68,7 @@ fitMC <- function(data, d = 1, mxt = 10) {
     pars[2L, 2:(3 + d)] <- 0
     pars[3L, 2:(3 + d)] <- 1000
     ## 
-    pars[1L, (4 + d):npar] <- -1 + 2 * stats::runif(nlatpar)
+    pars[1L, (4 + d):npar] <- -1 + 2 * stats::runif(nbc + nbm)
     pars[2L, (4 + d):npar] <- -1
     pars[3L, (4 + d):npar] <- 1
     ## Total number of latent traits Get orthogonal basis (prevents from keeping
@@ -79,27 +87,6 @@ fitMC <- function(data, d = 1, mxt = 10) {
 }
 
 
-## Compute the number of parameters.
-getNumParamMC <- function(nset1, nset2, d = 1, latentOnly = FALSE) {
-    ## Matching traits
-    sum <- getNumLatMatParMC(nset1) + getNumLatMatParMC(nset2)
-    ## Centrality traits
-    sum <- sum + nset1 + nset2 - 2
-    ## 
-    if (!latentOnly) {
-        # m, delta1, delta2 and lambda
-        sum <- sum + d + 3
-    }
-    sum
-}
-
-## Get the number paramters needed to generate matching trait.
-getNumLatMatParMC <- function(nset, d = 1) {
-    # Given the constrains on vector's orthogonality, the dimension of the linear
-    # subspace where a new vector is drawn decreases.
-    d * nset - sum(1:d)
-}
-
 ## tidy parameters and retunr the likelyhoog
 coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
     out <- NULL
@@ -117,33 +104,38 @@ coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
 tidyParamMC <- function(nset1, nset2, B1, B2, d = 1, ...) {
     args <- list(...)[[1L]]  # a vector
     tmp <- list()
-    ## 
+    ##--
+    nbc <- nset1 + nset2 - 2
+    nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
+    npr <- 3 + d
+    ##-- 'fixed parameters'
     tmp$m <- args[1L]
     tmp$delta1 <- args[2L]
     tmp$delta2 <- args[3L]
-    k <- 3 + d
-    tmp$Lambda <- unlist(args[4:k])
-    ## get c1 and c2
-    tmp$c1 <- prodNorm(nset1, B1, unlist(args[k + (1:(nset1 - 1))]))
-    tmp$c2 <- prodNorm(nset2, B2, unlist(args[k + nset1 - 1 + (1:(nset2 - 1))]))
-    ## drop all parameters already used
-    args <- args[-(1:(1 + d + nset1 + nset2))]
+    tmp$Lambda <- unlist(args[4:npr])
+    ##-- get c1 and c2
+    args2 <- args[npr + (1:nbc)]
+    tmp$c1 <- prodNorm(nset1, B1, args2[1:(nset1 - 1)])
+    tmp$c2 <- prodNorm(nset2, B2, utils::tail(args2, nset2 - 1))
     ## get Matching vectors
-    tmp$M1 <- getMiMC(B1, nset1, d, args)
-    args <- args[-(1:getNumLatMatParMC(nset1))]
-    tmp$M2 <- getMiMC(B2, nset2, d, args)
+    args3 <- utils::tail(args, nbm)
+    tmp$M1 <- getMiMC(B1, nset1, d, args3[1:(d * nset1 - sum(1:d))])
+    tmp$M2 <- getMiMC(B2, nset2, d, utils::tail(args3, d * nset2 - sum(1:d)))
     ## 
     tmp
 }
 
-## get Matching paramters
+
+## get Matching parameters
 getMiMC <- function(B, nset, d, args) {
     ## 
     M <- matrix(0, d, nset)
     ls_vec <- list()
+    k <- 0
     for (i in 1:d) {
-        idi <- (i - 1) * nset - (i - 1)
-        ls_vec[[i]] <- unlist(args[idi + 1:(nset - i)])
+        inc <- nset - i
+        ls_vec[[i]] <- args[k + (1:inc)]
+        k <- k + inc
     }
     ## 
     Ba <- B
@@ -156,7 +148,7 @@ getMiMC <- function(B, nset, d, args) {
         K[1L, ] <- rep(1, nset)
         for (i in 2:d) {
             K[i, ] <- M[i - 1, ]
-            Ba <- getNull(K)
+            Ba <- getNull(K[1:i, ])
             M[i, ] <- prodNorm(nset, Ba, ls_vec[[i]])
         }
     }
