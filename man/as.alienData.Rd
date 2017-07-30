@@ -5,6 +5,7 @@
 \alias{as.alienData.alienData}
 \alias{as.alienData.matrix}
 \alias{as.alienData.data.frame}
+\alias{as.alienData.igraph}
 \title{Convert various formats to an alienData object.}
 \usage{
 as.alienData(x, ...)
@@ -14,6 +15,8 @@ as.alienData(x, ...)
 \method{as.alienData}{matrix}(x, ...)
 
 \method{as.alienData}{data.frame}(x, ...)
+
+\method{as.alienData}{igraph}(x, ...)
 }
 \arguments{
 \item{x}{Input to as.alienData}

@@ -63,6 +63,30 @@ as.alienData.data.frame <- function(x, ...) {
     out <- do.call("alienData", c(list(dfNodes = dfNodes, dfEdges = dfEdges), args))
     out
 }
-# { args <- list(...)  # dfEdges <- dfNodes out <- as.alienData(...)  ## rm } #'
-# @rdname as.alienData #' @export as.alienData.igraph <- function(x, ...) { args
-# <- list(...)  # dfEdges <- dfNodes <- out <- as.alienData(...)  out }
+
+#' @rdname as.alienData
+#' @export
+as.alienData.igraph <- function(x, ...) {
+    ##--
+    args <- list(...)
+    ##-- Retrieve dfNodes and dfEdges from x
+    tmp <- igraph::as_edgelist(x)
+    dfEdges <- data.frame(idFrom = tmp[, 1L], idTo = tmp[, 2L], value = 1, stringsAsFactors = FALSE)
+    wgt <- igraph::E(x)$weight
+    if (!is.null(wgt)) 
+        dfEdges$value <- wgt
+    ##--
+    dfNodes <- igraph::as_data_frame(x, what = "vertices")
+    if (nrow(dfNodes)) {
+        names(dfNodes)[1L] <- "idNodes"
+    } else {
+        dfNodes <- data.frame(idNodes = unique(c(dfEdges$idFrom, dfEdges$idTo)))
+    }
+    ##--
+    id <- which(names(args) %in% c("dfEdges", "dfNodes"))
+    if (length(id)) 
+        args <- args[-id]
+    ##--
+    out <- do.call("alienData", c(list(dfNodes = dfNodes, dfEdges = dfEdges), args))
+    out
+}

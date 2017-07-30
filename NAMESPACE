@@ -2,6 +2,7 @@
 
 S3method(as.alienData,alienData)
 S3method(as.alienData,data.frame)
+S3method(as.alienData,igraph)
 S3method(as.alienData,matrix)
 S3method(print,summary.alienData)
 S3method(summary,alienData)
