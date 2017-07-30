@@ -1,6 +1,8 @@
-#' @title Conversion from various fornat to alienData
+#' @title Convert various formats to an alienData object.
 #'
-#' @description Format alien output and return an object of class \code{alienPredict}.
+#' @description \code{as.alienData} is a generic function woth method to convert
+#' \code{matrix}, \code{data.frame} and \code{igraph} object into a
+#' an \code{alienData} object.
 #'
 #' @param x Input to as.alienData
 #' @param ... other arguments to be passed to \code{\link[alien]{alienData}}.
@@ -31,25 +33,36 @@ as.alienData.alienData <- function(x, ...) {
 #' @rdname as.alienData
 #' @export
 as.alienData.matrix <- function(x, ...) {
-
-    args <- list(...)
     dfEdges <- getEdgesList(x)
-    ##
-    if ("dfNodes" %in% names(args)) {
-        dfNodes <- args$dfNodes
-    } else {
-        dfNodes <- data.frame(idNodes = unique(c(dfEdges$idFrom, dfEdges$idTo)))
-    }
-    ##
-    id <- which(names(args) %in% c("dfEdges", "dfNodes"))
-    if (length(id))
-        args <- args[-id]
-    ##
-    out <- do.call("alienData", c(list(dfNodes = dfNodes, dfEdges = dfEdges), args))
+    out <- as.alienData.data.frame(dfEdges, ...)
+    # ##-- dfNodes <- args$dfNodes if(is.null(dfNodes)) dfNodes <- data.frame(idNodes
+    # = unique(c(dfEdges$idFrom, dfEdges$idTo))) ##-- id <- which(names(args) %in%
+    # c('dfEdges', 'dfNodes')) if (length(id)) args <- args[-id] ##-- out <-
+    # do.call('alienData', c(list(dfNodes = dfNodes, dfEdges = dfEdges), args))
     out
 }
 
-# #' @rdname as.alienData #' @export as.alienData.data.frame <- function(x, ...)
+#' @rdname as.alienData
+#' @export
+as.alienData.data.frame <- function(x, ...) {
+    stopifnot(all(c("idFrom", "idTo") %in% names(x)))
+    ##--
+    args <- list(...)
+    ##--
+    id <- which(names(x) %in% c("idFrom", "idTo", "idSite", "value"))
+    dfEdges <- x[, id]
+    ##--
+    dfNodes <- args$dfNodes
+    if (is.null(dfNodes)) 
+        dfNodes <- data.frame(idNodes = unique(c(dfEdges$idFrom, dfEdges$idTo)))
+    ##--
+    id <- which(names(args) %in% c("dfEdges", "dfNodes"))
+    if (length(id)) 
+        args <- args[-id]
+    ##--
+    out <- do.call("alienData", c(list(dfNodes = dfNodes, dfEdges = dfEdges), args))
+    out
+}
 # { args <- list(...)  # dfEdges <- dfNodes out <- as.alienData(...)  ## rm } #'
 # @rdname as.alienData #' @export as.alienData.igraph <- function(x, ...) { args
 # <- list(...)  # dfEdges <- dfNodes <- out <- as.alienData(...)  out }

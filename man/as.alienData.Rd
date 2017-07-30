@@ -4,13 +4,16 @@
 \alias{as.alienData}
 \alias{as.alienData.alienData}
 \alias{as.alienData.matrix}
-\title{Conversion from various fornat to alienData}
+\alias{as.alienData.data.frame}
+\title{Convert various formats to an alienData object.}
 \usage{
 as.alienData(x, ...)
 
 \method{as.alienData}{alienData}(x, ...)
 
 \method{as.alienData}{matrix}(x, ...)
+
+\method{as.alienData}{data.frame}(x, ...)
 }
 \arguments{
 \item{x}{Input to as.alienData}
@@ -21,7 +24,9 @@ as.alienData(x, ...)
 An object of the class \code{alienPredict}.
 }
 \description{
-Format alien output and return an object of class \code{alienPredict}.
+\code{as.alienData} is a generic function woth method to convert
+\code{matrix}, \code{data.frame} and \code{igraph} object into a
+an \code{alienData} object.
 }
 \details{
 For objects of class \code{matrix}, see \code{\link[alien]{getEdgesList}}
