@@ -1,6 +1,6 @@
 #' @title Compute the adjacency matrix for a given alienData object
 #'
-#' @description \code{getAdjacencyMatrix} compute the adjacency matrix based on
+#' @description \code{getAdjacencyMatrix} computes the adjacency matrix based on
 #' the \code{dfEdges} element of an alienData object.
 #'
 #' @param object An object of class \code{alienData}.
@@ -38,16 +38,18 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE, binary = FALSE) {
         out <- matrix(0, object$nbNodes, object$nbNodes, dimnames = list(object$dfNodes$idNodes, 
             object$dfNodes$idNodes))
     } else {
+        ## idTo as rows
         uit <- unique(tmp$idTo) %>% sort
+        ## idFrom as columns
         uif <- unique(tmp$idFrom) %>% sort
-        out <- matrix(0, length(uif), length(uit), dimnames = list(uif, uit))
+        out <- matrix(0, length(uit), length(uif), dimnames = list(uit, uif))
     }
     if (binary) {
         tmp$value <- 1
         tmp <- unique(tmp)
     }
     for (i in 1:nrow(tmp)) {
-        out[tmp[i, 1L], tmp[i, 2L]] <- out[tmp[i, 1L], tmp[i, 2L]] + tmp[i, 3L]
+        out[tmp[i, 2L], tmp[i, 1L]] <- out[tmp[i, 2L], tmp[i, 1L]] + tmp[i, 3L]
     }
     out
 }

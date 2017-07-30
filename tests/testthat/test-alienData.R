@@ -1,6 +1,8 @@
 context("alienData function")
 
+# define df_nd0, df_sit0, df_occ0 and df_sit0
 source("minimalEx.R")
+
 
 
 df_nd3 <- df_nd2 <- df_nd1 <- df_nd0
@@ -19,7 +21,7 @@ df_int4[1L,2L] <- "new"
 df_int5$idSite <- idsit
 df_int7 <- df_int6 <- df_int5
 df_int6$idSite[1L] <- "new"
-df_int7$value <- runif(nint)
+df_int7$value <- runif(nrow(df_int0))
 
 ##----
 df_sit2 <- df_sit1 <- df_sit0
@@ -59,7 +61,7 @@ test_that("check dfEdges", {
 test_that("check dfSites", {
   expect_error(alienData(df_nd0, df_int0, dfSites = df_sit1), '"idSite" %in% names(dfSites) is not TRUE', fixed = TRUE)
   expect_error(alienData(df_nd0, df_int0, dfSites = df_sit2), "all(table(dfSites$idSite) == 1) is not TRUE", fixed = TRUE)
-  expect_error(alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfSites$idSite %in% dfEdges$idSite) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfEdges$idSite %in% dfSites$idSite) is not TRUE", fixed = TRUE)
 })
 
 ##
@@ -74,9 +76,9 @@ test_that("check dfOcc", {
 test_that("check output values", {
   expect_warning(alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F), "Site information provided without any occurrence")
   expect_is(res1, "alienData")
-  expect_equal(res1$nbNodes, nbnod)
-  expect_equal(res1$nbEdges, nint)
-  expect_equal(res1$nbSite, nsit)
+  expect_equal(res1$nbNodes, nrow(df_nd0))
+  expect_equal(res1$nbEdges, nrow(df_int0))
+  expect_equal(res1$nbSite, nrow(df_sit0))
   expect_equal(res1$availableMeths$available, c(TRUE, FALSE, FALSE))
   expect_true(all(res1$dfEdges$value==1))
   expect_equal(res2$nmTrait, "var1")
@@ -91,7 +93,4 @@ test_that("check output values", {
   expect_is(sum2$Traits, "table")
   expect_is(sum2$Phylos, "table")
   expect_is(sum2$Taxos, "table")
-  expect_equal(sum2$nbNodes, nbnod)
-  expect_equal(sum2$nbEdges, nint)
-  expect_equal(sum2$nbSite, nsit)
 })

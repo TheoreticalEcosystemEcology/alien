@@ -163,8 +163,11 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         stopifnot("idSite" %in% names(dfSites))
         stopifnot(all(table(dfSites$idSite) == 1))
         dfSites$idSite %<>% as.character
-        if ("idSite" %in% names(dfEdges)) 
-            stopifnot(all(dfSites$idSite %in% dfEdges$idSite))
+        if ("idSite" %in% names(dfEdges)) {
+            if (!all(dfSites$idSite %in% dfEdges$idSite)) {
+                warnings("Sites without interaction records")
+            }
+        }
         nbSites <- nrow(dfSites)
     }
     if (!is.null(nbSites)) {
