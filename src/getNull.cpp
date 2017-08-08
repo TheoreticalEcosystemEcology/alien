@@ -19,6 +19,8 @@
 //'
 //' @return Returns the null basis.
 //'
+//' @importFrom Rcpp evalCpp
+//'
 // [[Rcpp::export]]
 
 arma::mat getNull(arma::mat A) {

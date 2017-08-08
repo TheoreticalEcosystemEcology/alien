@@ -26,7 +26,8 @@ Imports:
     randomForest,
     utils,
     stats,
-    GenSA
+    GenSA,
+    igraph
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
 License: MIT + file LICENSE

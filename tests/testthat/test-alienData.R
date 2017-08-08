@@ -1,31 +1,18 @@
 context("alienData function")
 
+# define df_nd0, df_sit0, df_occ0 and df_sit0
 source("minimalEx.R")
 
-# ##----
-# nbnod <- 20
-# nsit <- 10
-# nint <- 15
-# ind1 <- sample(1:nbnod, nint, replace=TRUE)
-# ind2 <- sample(1:nbnod, nint, replace=TRUE)
-# sit <- sample(1:nsit, nint, replace=TRUE)
-# idsit <- paste0("site", sprintf("%02d", sit))
-# ##----
-# df_nd0 <- data.frame(
-#   idNodes = paste0("id", sprintf("%02d", 1:nbnod)),
-#   stringsAsFactors=FALSE)
+
+
 df_nd3 <- df_nd2 <- df_nd1 <- df_nd0
-##
+
 names(df_nd1) <- "val1"
 df_nd2$idNodes[nbnod] <- df_nd0$idNodes[1L]
 df_nd3$var1 <- runif(nbnod)
 df_nd3$var2 <- runif(nbnod)
 
-# ##----
-# df_int0 <- data.frame(
-#   idFrom = paste0("id", sprintf("%02d", ind1)),
-#   idTo = paste0("id", sprintf("%02d", ind2)),
-#   stringsAsFactors = FALSE)
+##----
 df_int5 <- df_int4 <- df_int3 <- df_int2 <- df_int1 <- df_int0
 names(df_int1)[1L] <- "new"
 names(df_int2)[2L] <- "new"
@@ -34,21 +21,14 @@ df_int4[1L,2L] <- "new"
 df_int5$idSite <- idsit
 df_int7 <- df_int6 <- df_int5
 df_int6$idSite[1L] <- "new"
-df_int7$value <- runif(nint)
+df_int7$value <- runif(nrow(df_int0))
 
 ##----
-# df_sit0 <-  data.frame(
-#   idSite = paste0("site", sprintf("%02d", 1:nsit)),
-#   stringsAsFactors = FALSE)
 df_sit2 <- df_sit1 <- df_sit0
 names(df_sit1)[1L] <- "new"
 df_sit2$idSite[5L] <- df_sit2$idSite[1L]
 
 ##----
- # df_occ0 <-  data.frame(
- #   idSite = paste0("site", sprintf( "%02d", sample(1:nsit, 2*nbnod, replace=TRUE))),
- #   idNodes = rep(df_nd0$idNodes, 2),
- #   stringsAsFactors = FALSE)
  df_occ4 <-df_occ3 <- df_occ2 <- df_occ1 <- df_occ0
  names(df_occ1)[1L] <- "new"
  names(df_occ2)[2L] <- "new"
@@ -81,7 +61,7 @@ test_that("check dfEdges", {
 test_that("check dfSites", {
   expect_error(alienData(df_nd0, df_int0, dfSites = df_sit1), '"idSite" %in% names(dfSites) is not TRUE', fixed = TRUE)
   expect_error(alienData(df_nd0, df_int0, dfSites = df_sit2), "all(table(dfSites$idSite) == 1) is not TRUE", fixed = TRUE)
-  expect_error(alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfSites$idSite %in% dfEdges$idSite) is not TRUE", fixed = TRUE)
+  expect_error(alienData(df_nd0, df_int6, dfSites = df_sit0), "all(dfEdges$idSite %in% dfSites$idSite) is not TRUE", fixed = TRUE)
 })
 
 ##
@@ -96,9 +76,9 @@ test_that("check dfOcc", {
 test_that("check output values", {
   expect_warning(alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F), "Site information provided without any occurrence")
   expect_is(res1, "alienData")
-  expect_equal(res1$nbNodes, nbnod)
-  expect_equal(res1$nbEdges, nint)
-  expect_equal(res1$nbSite, nsit)
+  expect_equal(res1$nbNodes, nrow(df_nd0))
+  expect_equal(res1$nbEdges, nrow(df_int0))
+  expect_equal(res1$nbSite, nrow(df_sit0))
   expect_equal(res1$availableMeths$available, c(TRUE, FALSE, FALSE))
   expect_true(all(res1$dfEdges$value==1))
   expect_equal(res2$nmTrait, "var1")
@@ -113,7 +93,4 @@ test_that("check output values", {
   expect_is(sum2$Traits, "table")
   expect_is(sum2$Phylos, "table")
   expect_is(sum2$Taxos, "table")
-  expect_equal(sum2$nbNodes, nbnod)
-  expect_equal(sum2$nbEdges, nint)
-  expect_equal(sum2$nbSite, nsit)
 })
