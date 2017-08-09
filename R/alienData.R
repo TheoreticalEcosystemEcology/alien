@@ -147,6 +147,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     
     
     ############################## dfSites
+    nmSite <- NULL
     if (is.null(dfSites)) {
         if ("idSite" %in% names(dfEdges)) {
             if (verbose) 
@@ -162,6 +163,20 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     } else {
         stopifnot("idSite" %in% names(dfSites))
         stopifnot(all(table(dfSites$idSite) == 1))
+        ## 
+        if (!is.null(siteEnv)) {
+            ## 
+            dfSites <- cbind(idSite = dfSites$idSite, dfSites[, siteEnv, drop = FALSE])
+            dfSites <- dfSites[, unique(names(dfSites))]
+            ## 
+        }
+        if (ncol(dfSites) > 1) {
+            nmSite <- names(dfSites)[-1L]
+            if (verbose) 
+                message(paste0("==> Site info detected: ", paste(nmSite, collapse = ", ")))
+        } else if (verbose) 
+            message("==> No site info detected")
+        ## 
         dfSites$idSite %<>% as.character
         if ("idSite" %in% names(dfEdges)) {
             if (!all(dfSites$idSite %in% dfEdges$idSite)) {
@@ -169,13 +184,6 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
             }
         }
         nbSites <- nrow(dfSites)
-    }
-    if (!is.null(nbSites)) {
-        nmSite <- names(dfSites)
-        if (verbose) 
-            message(paste0("==> Site info detected: ", paste(nmSite, collapse = ", ")))
-    } else {
-        nmSite <- NULL
     }
     
     ############################## dfOcc

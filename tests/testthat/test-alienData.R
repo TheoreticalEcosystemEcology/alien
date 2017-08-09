@@ -27,6 +27,8 @@ df_int7$value <- runif(nrow(df_int0))
 df_sit2 <- df_sit1 <- df_sit0
 names(df_sit1)[1L] <- "new"
 df_sit2$idSite[5L] <- df_sit2$idSite[1L]
+# add one variable
+df_sit3 <- cbind(df_sit0, var = runif(nrow(df_sit0)))
 
 ##----
  df_occ4 <-df_occ3 <- df_occ2 <- df_occ1 <- df_occ0
@@ -40,6 +42,8 @@ res0 <- alienData(df_nd0, df_int0, dfSites=df_sit0, verbose=F)
 res1 <- alienData(df_nd0, df_int0, dfSites=df_sit0, dfOcc = df_occ0, verbose=F)
 res2 <- alienData(df_nd3, df_int0, dfSites=df_sit0, dfOcc = df_occ0, trait=2, phylo=2, taxo=3, verbose=F)
 res3 <- alienData(df_nd3, df_int7, verbose=F)
+res4 <- alienData(df_nd0, df_int0, dfSites = df_sit3, siteEnv = 2, verbose = F)
+
 sum2 <- summary(res2)
 
 ##
@@ -85,12 +89,18 @@ test_that("check output values", {
   expect_equal(res2$nmPhylo, "var1")
   expect_equal(res2$nmTaxo, "var2")
   expect_true(all(res2$availableMeths$available))
+  #
   expect_equal(res3$nbSites, length(unique(idsit)))
   expect_true(!all(res3$dfEdges$value==1))
+  #
+  # expect_true(all(dim(res4$dfSite) == c(nrow(df_sit0), 2)))
+
   ##
   expect_is(sum2, "summary.alienData")
   expect_is(sum2$dfNodes, "table")
   expect_is(sum2$Traits, "table")
   expect_is(sum2$Phylos, "table")
   expect_is(sum2$Taxos, "table")
+  ##
+
 })
