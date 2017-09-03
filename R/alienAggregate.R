@@ -34,6 +34,9 @@ alienAggregate <- function(object, aggregateCol, keepCols = NULL, idSuffix = "id
     
     slc <- as.factor(object$dfNodes[, aggregateCol])
     nms <- names(object$dfNodes[, aggregateCol, drop = F])
+    
+    stopifnot(class(nms) == "character")
+    
     if (!is.null(keepCols)) {
         nms2 <- names(object$dfNodes[, keepCols, drop = F])
     } else nms2 <- NULL
