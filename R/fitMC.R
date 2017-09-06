@@ -6,7 +6,7 @@
 #' @description Esimation of iteractions probability using the matching centrality
 #' approach as described in Rohr 2014 and Rohr 2016.
 #'
-#' @param data an object of the class alienData, see \code{alienData} function.
+#' @param data an object of the class alienData or an adjacency matrix.
 #' @param d dimensionnality.
 #' @param mxt Numeric. Maximum running time in seconds.
 #' @param verbose Logical. Should extra information be reported on progress?
@@ -34,6 +34,27 @@
 #'
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702 (2016).
 #'
+#' @example
+#' load_all()
+#' set.seed(1987)
+#' n1 = 12
+#' n2 = 18
+#' trait1 <- runif(n1)
+#' trait2 <- runif(n2)
+#' mat <- matrix(0, n1, n2)
+#' for (i in 1:n1) {
+#'   for (j in 1:n2) {
+#'     mat[i, j] <- (trait1[i]-trait2[j])^2
+#'   }
+#' }
+#' mat[mat>0.01] <- 0
+#' mat[mat>0] <- 1
+#'
+#' res = fitMC(mat)
+#'
+#' plot(trait1, res$methodsSpecific$params$M1)
+#' plot(trait2, res$methodsSpecific$params$M2)
+#'
 #' @export
 
 
@@ -41,7 +62,12 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     ##--
     stopifnot(d >= 1)
     ##--
-    netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+    if (class(data) == 'alienData') {
+      netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+    } else {
+      netObs <- data
+    }
+
     nset1 <- nrow(netObs)
     nset2 <- ncol(netObs)
     if (verbose) {
@@ -58,7 +84,7 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     npr <- 3 + d
     ## check if fitMC is available => 2 be added check the number of parameters
     npar <- nbc + nbm + npr
-    if (verbose) cat("total number of parameeter: ", npar, "\n")
+    if (verbose) cat("total number of parameters to be fitted: ", npar, "\n")
     stopifnot(npar < prod(dim(netObs)))
     ##--
     latpar <- paste0("lat_", 1:(nbc + nbm))
