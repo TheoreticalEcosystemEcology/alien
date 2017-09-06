@@ -5,14 +5,16 @@
 \title{Esimation of iteractions probability using the matching centrality
 approach.}
 \usage{
-fitMC(data, d = 1, mxt = 10)
+fitMC(data, d = 1, mxt = 10, verbose = TRUE)
 }
 \arguments{
-\item{data}{an object of the class alienData, see \code{alienData} function.}
+\item{data}{an object of the class alienData or an adjacency matrix.}
 
 \item{d}{dimensionnality.}
 
 \item{mxt}{Numeric. Maximum running time in seconds.}
+
+\item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
 An object of class \code{alienPredict}.
@@ -31,6 +33,27 @@ The second category include the centrality terms. (to be developped).
 Latents traits are buitl under certain topological constraints:
 1- all vectors belongs to the orthogonal basis of the unit vector.
 2- all matching vector of a particluar set of specues are orthogonal to each other.
+}
+\examples{
+load_all()
+set.seed(1987)
+n1 = 12
+n2 = 18
+trait1 <- runif(n1)
+trait2 <- runif(n2)
+mat <- matrix(0, n1, n2)
+for (i in 1:n1) {
+  for (j in 1:n2) {
+    mat[i, j] <- (trait1[i]-trait2[j])^2
+  }
+  if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
+}
+
+res = fitMC(mat)
+
+plot(trait1, res$methodsSpecific$params$M1)
+plot(trait2, res$methodsSpecific$params$M2)
+
 }
 \references{
 Rohr, R. P. & Bascompte, J. Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564 (2014).

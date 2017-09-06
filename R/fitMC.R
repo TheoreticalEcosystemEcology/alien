@@ -34,7 +34,7 @@
 #'
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702 (2016).
 #'
-#' @example
+#' @examples
 #' load_all()
 #' set.seed(1987)
 #' n1 = 12
@@ -46,9 +46,8 @@
 #'   for (j in 1:n2) {
 #'     mat[i, j] <- (trait1[i]-trait2[j])^2
 #'   }
+#'   if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
 #' }
-#' mat[mat>0.01] <- 0
-#' mat[mat>0] <- 1
 #'
 #' res = fitMC(mat)
 #'
@@ -62,17 +61,17 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     ##--
     stopifnot(d >= 1)
     ##--
-    if (class(data) == 'alienData') {
-      netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+    if (class(data) == "alienData") {
+        netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
     } else {
-      netObs <- data
+        netObs <- data
     }
-
+    
     nset1 <- nrow(netObs)
     nset2 <- ncol(netObs)
     if (verbose) {
-      cat("set1 has ", nset1, " elements \n")
-      cat("set2 has ", nset2, " elements \n")
+        cat("set1 has ", nset1, " elements \n")
+        cat("set2 has ", nset2, " elements \n")
     }
     ##-- Number of parameters
     # Centrality latent traits:
@@ -84,12 +83,13 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     npr <- 3 + d
     ## check if fitMC is available => 2 be added check the number of parameters
     npar <- nbc + nbm + npr
-    if (verbose) cat("total number of parameters to be fitted: ", npar, "\n")
+    if (verbose) 
+        cat("total number of parameters to be fitted: ", npar, "\n")
     stopifnot(npar < prod(dim(netObs)))
     ##--
     latpar <- paste0("lat_", 1:(nbc + nbm))
     lam <- paste0("lambda_", 1:d)
-    ##
+    ## 
     pars <- matrix(0, 3, npar)
     rownames(pars) <- c("start", "lower", "upper")
     colnames(pars) <- c(latpar, lam, "delta1", "delta2", "m")
@@ -99,7 +99,7 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     pars[1L, 2:(3 + d)] <- 10 * stats::runif(2 + d)
     pars[2L, 2:(3 + d)] <- 0
     pars[3L, 2:(3 + d)] <- 1000
-    ##
+    ## 
     pars[1L, (4 + d):npar] <- -1 + 2 * stats::runif(nbc + nbm)
     pars[2L, (4 + d):npar] <- -1
     pars[3L, (4 + d):npar] <- 1
@@ -108,12 +108,12 @@ fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     B1 <- getNullOne(nset1)
     B2 <- getNullOne(nset2)
     ## Simulated Annealing
-    tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L,
-        ], control = list(verbose = TRUE, max.time = mxt, smooth = FALSE), netObs = netObs,
+    tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L, 
+        ], control = list(verbose = TRUE, max.time = mxt, smooth = FALSE), netObs = netObs, 
         nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
-    #
+    # 
     params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
-    out <- alienPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
+    out <- alienPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs, 
         params = params)
     out
 }
@@ -125,7 +125,7 @@ coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
     ## get parameters to be used in likelihoodMC
     tmp <- tidyParamMC(nset1, nset2, B1, B2, d, ...)
     ## compute the likelyhood
-    out <- -likelihoodMC(netObs, tmp$M1, tmp$M2, tmp$c1, tmp$c2, tmp$Lambda, tmp$delta1,
+    out <- -likelihoodMC(netObs, tmp$M1, tmp$M2, tmp$c1, tmp$c2, tmp$Lambda, tmp$delta1, 
         tmp$delta2, tmp$m)
     # print(out)
     out
@@ -153,14 +153,14 @@ tidyParamMC <- function(nset1, nset2, B1, B2, d = 1, ...) {
     args3 <- utils::tail(args, nbm)
     tmp$M1 <- getMiMC(B1, nset1, d, args3[1:(d * nset1 - sum(1:d))])
     tmp$M2 <- getMiMC(B2, nset2, d, utils::tail(args3, d * nset2 - sum(1:d)))
-    ##
+    ## 
     tmp
 }
 
 
 ## get Matching parameters
 getMiMC <- function(B, nset, d, args) {
-    ##
+    ## 
     M <- matrix(0, d, nset)
     ls_vec <- list()
     k <- 0
@@ -169,11 +169,11 @@ getMiMC <- function(B, nset, d, args) {
         ls_vec[[i]] <- args[k + (1:inc)]
         k <- k + inc
     }
-    ##
+    ## 
     Ba <- B
-    ##
+    ## 
     M[1L, ] <- prodNorm(nset, Ba, ls_vec[[1L]])
-    ##
+    ## 
     if (d >= 2) {
         ## keep track of vectors to which the next one should be orthogonal to
         K <- matrix(0, d, nset)
@@ -193,16 +193,16 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     #### test size ensures M1, M2 and Lambda use the same dimension d)
     stopifnot(nrow(M1) == length(Lambda))
     stopifnot(nrow(M2) == length(Lambda))
-    ##
+    ## 
     stopifnot(ncol(M1) == length(c1))
     stopifnot(ncol(M2) == length(c2))
-    ##
+    ## 
     stopifnot(nrow(netObs) == length(c1))
     stopifnot(ncol(netObs) == length(c2))
-    ##
+    ## 
     cent1 <- c1 * delta1
     cent2 <- c2 * delta2
-
+    
     #### Get probabilities estimated by the model
     logLik <- 0
     ## logit values
@@ -216,7 +216,7 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
             val <- val + cent1[i] + cent2[j] + m
             ## get the inverse logit
             val <- 1/(1 + exp(-val))
-            ##
+            ## 
             if (netObs[i, j]) {
                 logLik <- logLik + log(val)
             } else {
@@ -224,7 +224,7 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
             }
         }
     }
-
+    
     logLik
 }
 

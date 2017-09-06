@@ -8,5 +8,5 @@ ald1 <- alienData(df_nd0, df_int0, dfSites=df_sit0, dfOcc = df_occ0, verbose=F)
 # implement few tets soon).
 # fitMC(ald1, d=6, 10)
 test_that("check overfit", {
-  expect_error(fitMC(ald1, d=5, 10), 'npar < prod(dim(netObs)) is not TRUE', fixed = TRUE)
+  expect_error(fitMC(ald1, d=5, 10, verbose = FALSE), 'npar < prod(dim(netObs)) is not TRUE', fixed = TRUE)
 })
