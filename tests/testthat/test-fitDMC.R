@@ -1,4 +1,4 @@
-context("firDirectCentrality function")
+context("fitDirectCentrality function")
 
 test_that("check errors", {
 

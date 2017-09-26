@@ -1,6 +1,6 @@
 ---
-title: "How to use itDNS"
-author: "Kevin Cazelles and Steve Vissault"
+title: "An overview"
+author: "All"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,3 +8,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+
+## Matching centrality

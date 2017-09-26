@@ -1,14 +1,15 @@
 #' @name fitMC
 #'
-#' @title Esimation of iteractions probability using the matching centrality
+#' @title Estimation of interaction probabilities using the matching centrality approach.
 #' approach.
 #'
 #' @description Esimation of iteractions probability using the matching centrality
-#' approach as described in Rohr 2014 and Rohr 2016.
+#' approach as described in Rohr (2014) and Rohr (2016).
 #'
-#' @param data an object of the class alienData, see \code{alienData} function.
+#' @param data an object of the class alienData or an adjacency matrix.
 #' @param d dimensionnality.
 #' @param mxt Numeric. Maximum running time in seconds.
+#' @param verbose Logical. Should extra information be reported on progress?
 #'
 #' @author
 #' Kevin Cazelles
@@ -33,16 +34,44 @@
 #'
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702 (2016).
 #'
+#' @examples
+#' set.seed(1987)
+#' n1 = 12
+#' n2 = 18
+#' trait1 <- runif(n1)
+#' trait2 <- runif(n2)
+#' mat <- matrix(0, n1, n2)
+#' for (i in 1:n1) {
+#'   for (j in 1:n2) {
+#'     mat[i, j] <- (trait1[i]-trait2[j])^2
+#'   }
+#'   if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
+#' }
+#'
+#' res = fitMC(mat)
+#'
+#' plot(trait1, res$methodsSpecific$params$M1)
+#' plot(trait2, res$methodsSpecific$params$M2)
+#'
 #' @export
 
 
-fitMC <- function(data, d = 1, mxt = 10) {
+fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     ##--
     stopifnot(d >= 1)
     ##--
-    netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+    if (class(data) == "alienData") {
+        netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+    } else {
+        netObs <- data
+    }
+    
     nset1 <- nrow(netObs)
     nset2 <- ncol(netObs)
+    if (verbose) {
+        cat("set1 has ", nset1, " elements \n")
+        cat("set2 has ", nset2, " elements \n")
+    }
     ##-- Number of parameters
     # Centrality latent traits:
     nbc <- nset1 + nset2 - 2
@@ -53,6 +82,8 @@ fitMC <- function(data, d = 1, mxt = 10) {
     npr <- 3 + d
     ## check if fitMC is available => 2 be added check the number of parameters
     npar <- nbc + nbm + npr
+    if (verbose) 
+        cat("total number of parameters to be fitted: ", npar, "\n")
     stopifnot(npar < prod(dim(netObs)))
     ##--
     latpar <- paste0("lat_", 1:(nbc + nbm))
@@ -87,7 +118,7 @@ fitMC <- function(data, d = 1, mxt = 10) {
 }
 
 
-## tidy parameters and retunr the likelyhoog
+## tidy parameters and return the likelyhood
 coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
     out <- NULL
     ## get parameters to be used in likelihoodMC
