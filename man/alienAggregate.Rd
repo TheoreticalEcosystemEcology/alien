@@ -24,7 +24,7 @@ Aggregate the interactions of an \code{alienData} object
 according to a a given aggregateCol of \code{dfNodes}.
 }
 \examples{
-data(plantsPol)
+utils::data(plantsPol)
 plantsPolSp <- alienAggregate(plantsPol, 'idSp', 'type')
 # plantsPol2 <- plantsPol
 # plantsPol2$dfNodes$var1 <- runif(nrow(plantsPol2$dfNodes))

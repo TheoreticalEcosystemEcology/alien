@@ -14,26 +14,30 @@ Incoming content
 
 ### Methods
 
--   Direct matching centrality (DG)
+-  [ ] Direct matching centrality (DG)
     -   binomial
     -   poisson
     -   RF
--   Indirect matching centrality (latent ~ traits) (DG)
--   Niche binary (DG)
--   Niche probabilistic (DG)
--   iEat recommend (DB)
--   iEat gap-filling (DB)
--   JSDM (GB)
--   Harris (KC)
--   Markov logic (A.T.?)
--   4th corner (GB)
--   Ben's magic (BW)
--   Ives' phylo (GB)
--   Permutation methods (GB)
+-  [X] Indirect matching centrality (latent ~ traits)
+-  [ ] Niche binary (DG)
+-  [ ] Niche probabilistic (DG)
+-  ~~[ ] iEat recommend (DB)~~
+-  ~~[ ] iEat gap-filling (DB)~~
+-  [ ] iEat's similarity and data retrieving in a specific package
+-  [ ] KNN as a minimal iEat
+-  [ ] JSDM (GB)
+-   ~~Harris~~
+-  [ ] Multinomial (replace )
+-  [ ] Markov logic (A.T.?)
+-  [ ] 4th corner (GB)
+-  [ ] Ben's magic (BW)
+-  [ ] Ives' phylo (GB)
+-  [ ] Permutation methods (GB)
     -   C-scores
     -   V-ratio
+- Simulate communities data
 
-**Deadline:** Package ready by Christmas
+
 
 Generate package metadata
 -------------------------

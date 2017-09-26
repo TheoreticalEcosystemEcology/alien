@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitMC.R
 \name{fitMC}
 \alias{fitMC}
-\title{Esimation of iteractions probability using the matching centrality
+\title{Estimation of interaction probabilities using the matching centrality approach.
 approach.}
 \usage{
 fitMC(data, d = 1, mxt = 10, verbose = TRUE)
@@ -21,7 +21,7 @@ An object of class \code{alienPredict}.
 }
 \description{
 Esimation of iteractions probability using the matching centrality
-approach as described in Rohr 2014 and Rohr 2016.
+approach as described in Rohr (2014) and Rohr (2016).
 }
 \details{
 \code{fitMC} implements the matching-centrality method as described in
@@ -35,7 +35,6 @@ Latents traits are buitl under certain topological constraints:
 2- all matching vector of a particluar set of specues are orthogonal to each other.
 }
 \examples{
-load_all()
 set.seed(1987)
 n1 = 12
 n2 = 18

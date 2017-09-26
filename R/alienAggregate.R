@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' data(plantsPol)
+#' utils::data(plantsPol)
 #' plantsPolSp <- alienAggregate(plantsPol, 'idSp', 'type')
 #' # plantsPol2 <- plantsPol
 #' # plantsPol2$dfNodes$var1 <- runif(nrow(plantsPol2$dfNodes))
@@ -31,7 +31,6 @@ alienAggregate <- function(object, aggregateCol, keepCols = NULL, idSuffix = "id
     
     stopifnot(class(object) == "alienData")
     stopifnot(length(aggregateCol) == 1)
-    data(plantsPol)
     slc <- as.factor(object$dfNodes[, aggregateCol])
     nms <- names(object$dfNodes[, aggregateCol, drop = F])
     
