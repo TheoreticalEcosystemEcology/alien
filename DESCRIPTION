@@ -5,7 +5,7 @@ Date: 2016-12-03
 Author: person("Ignasi", "Bartomeus", role = c("aut")),
     person("David", "Beauchesne", role = c("aut")),
     person("Guillaume", "Blanchet", role = c("aut")),
-    person("Kevin", "Cazelles", role = c("aut")),
+    person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
     person("Dominique", "Gravel", role = c("aut")),
     person("Timothée", "Poisot", role = c("aut")),
     person("Steve", "Vissault", role = c("aut")),
