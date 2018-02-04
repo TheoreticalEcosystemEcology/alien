@@ -18,7 +18,7 @@ r_github_packages:
   - jimhester/covr
 
 before_install:
-  - sudo apt-get update
+  - sudo apt-get --yes --force-yes update -qq
 
 after_success:
   - Rscript -e 'covr::codecov()'
