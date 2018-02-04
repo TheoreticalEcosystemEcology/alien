@@ -19,6 +19,10 @@
 #' @examples
 #' getWideDF()
 
-getWideDF <- function(data, nodes, sites) {
+getWideDF <- function(data, nodes=FALSE, sites=FALSE) {
+    ##--
+    out <- data$dfEdges[,c('idFrom', 'idTo')]
+
+    ##--
     invisible(NULL)
 }
