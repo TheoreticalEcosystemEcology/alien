@@ -6,38 +6,39 @@ Status
 [![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien)
 [![Build status](https://ci.appveyor.com/api/projects/status/al10lmlky7se4wa6/branch/master?svg=true)](https://ci.appveyor.com/project/SteveViss/alien/branch/master) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
 
+
 ALIEN: The aim of the package is to predict All Links In Ecological Networks
 ----------------------------------------------------------------------------
 
 Incoming content
 ----------------
 
+
 ### Methods
 
--  [ ] Direct matching centrality (DG)
-    -   binomial
-    -   poisson
-    -   RF
+#### Predictions
+
+-  [X] Direct matching centrality (DG)
 -  [X] Indirect matching centrality (latent ~ traits)
+-  [ ] 4th corner (Brown et al. MEE 2014) (GB)
+-  [ ] JSDM (GB)
 -  [ ] Niche binary (DG)
 -  [ ] Niche probabilistic (DG)
--  ~~[ ] iEat recommend (DB)~~
--  ~~[ ] iEat gap-filling (DB)~~
--  [ ] iEat's similarity and data retrieving in a specific package
--  [ ] KNN as a minimal iEat
--  [ ] JSDM (GB)
--   ~~Harris~~
--  [ ] Multinomial (replace )
--  [ ] Markov logic (A.T.?)
--  [ ] 4th corner (GB)
+-  [ ] KNN as a minimal iEat (KC)
+
+
+
+##### To be implemented
+
+-  [ ] Markov logic (A.T.? => guy in the UK)
+-  [ ] iEat's similarity and data retrieving in a specific package (DB)
 -  [ ] Ben's magic (BW)
--  [ ] Ives' phylo (GB)
 -  [ ] Permutation methods (GB)
     -   C-scores
     -   V-ratio
+-  [ ] Multinomial (somebody?)
 - Simulate communities data
-
-
+-  [ ] Ives' phylo (2006, Amnat see package `picante`) (GB)
 
 Generate package metadata
 -------------------------

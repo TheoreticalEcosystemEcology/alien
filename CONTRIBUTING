@@ -1,0 +1,20 @@
+### Development practices
+
+- the `master` branch is protected -- code can only make the master branch after a pull request, that has must be apporved by @SteveViss @KevCaz @guiblanchet
+- everyone work on branches in this repo
+- `git fetch` / `git pull` before you do anything else
+- good commit messages are 72 chars max on the first line and explain what has been done in the imperative tone. A good rule of thumb is that if you say "If merged, this commit will" before the commit message, it should be a sentence. For the sake of example, a good commit message is: "*add information about development practices*" while a bad one could be "*CONTRIBUTING changes*"
+- if the branching complexity of your function is > 3 (number of nested for / if / while), rewrite
+
+
+### Style Guide
+
+- function names are explicit and with `CamelCased` verbs, *e.g.* `SimulatesNicheModel`.
+- objects are declared with lowercase, underscores and small caps, *e.g.* `trophic_level`
+- namespaces with `::` (e.g `reshape2::acast`)
+- Packages dependencies are declared in the `DESCRIPTION` (import section)
+- all `roxygen2` flags (e.g. @param etc.) are to be set up.
+- R extension file has to be written in capital letter (e.g `fitBayesReg.R`)
+
+Have a look at [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
+For further details on namespace: [http://r-pkgs.had.co.nz/namespace.html](http://r-pkgs.had.co.nz/namespace.html)

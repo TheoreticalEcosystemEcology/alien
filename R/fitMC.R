@@ -205,10 +205,10 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     #### Get probabilities estimated by the model
     logLik <- 0
     ## logit values
-    for (i in 1:nrow(netObs)) {
-        for (j in 1:ncol(netObs)) {
+    for (i in seq_len(nrow(netObs))) {
+        for (j in seq_len(ncol(netObs))) {
             val <- 0
-            for (k in 1:nrow(M1)) {
+            for (k in seq_len(nrow(M1))) {
                 tmp <- M1[k, i] - M2[k, j]
                 val <- val + Lambda[k] * tmp * tmp
             }
@@ -234,10 +234,10 @@ estimateMC <- function(netObs, lsArgs) {
     cent1 <- lsArgs$c1 * lsArgs$delta1
     cent2 <- lsArgs$c2 * lsArgs$delta2
     ## logit values
-    for (i in 1:nrow(netObs)) {
-        for (j in 1:ncol(netObs)) {
+    for (i in seq_len(nrow(netObs))) {
+        for (j in seq_len(ncol(netObs))) {
             val <- 0
-            for (k in 1:nrow(lsArgs$M1)) {
+            for (k in seq_len(nrow(lsArgs$M1))) {
                 tmp <- lsArgs$M1[k, i] - lsArgs$M2[k, j]
                 val <- val + lsArgs$Lambda[k] * tmp * tmp
             }

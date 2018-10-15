@@ -225,11 +225,10 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     
     
     ############################## Return results
-    res <- list(nbNodes = nrow(dfNodes), nbEdges = nrow(dfEdges), directed = directed, 
-        nbSites = nbSites, nbOcc = nbOcc, dfNodes = dfNodes, dfEdges = dfEdges, dfSites = dfSites, 
-        dfOcc = dfOcc, nmTrait = nmTrait, nmPhylo = nmPhylo, nmTaxo = nmTaxo, nmSite = nmSite, 
-        availableMeths = availableMeths)
-    
+    res <- list(dfNodes = dfNodes, dfEdges = dfEdges, dfSites = dfSites, dfOcc = dfOcc, 
+        info = list(nbNodes = nrow(dfNodes), nbEdges = nrow(dfEdges), directed = directed, 
+            nbSites = nbSites, nbOcc = nbOcc, nmTrait = nmTrait, nmPhylo = nmPhylo, 
+            nmTaxo = nmTaxo, nmSite = nmSite, availableMeths = availableMeths))
     class(res) <- "alienData"
-    return(res)
+    res
 }
