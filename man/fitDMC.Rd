@@ -12,9 +12,9 @@ fitDMC(data, class = NULL, family = NULL, formula = "I ~ . * .",
 
 \item{class}{method to be applied on the data which can be 'rf' for randomForest or 'glm'.}
 
-\item{family}{one family of the `stats` package (e.g. binomial(), Gamma(), gaussian() etc.)}
+\item{family}{one family of the \code{stats} package (e.g. binomial(), Gamma(), gaussian() etc.)}
 
-\item{formula}{set the formula passed to the algorithm (see `family`).}
+\item{formula}{set the formula passed to the algorithm (see \code{family}).}
 
 \item{level}{specify the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.}
 

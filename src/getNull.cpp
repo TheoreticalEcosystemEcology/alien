@@ -12,12 +12,12 @@
 //' original function can.
 //'
 //' @param A a matrix.
-//' @param B a matrix (it should actually is a orthogonal basis).
+//' @param B a matrix (it should actually be a orthogonal basis).
 //' @param V a vector.
-//' @param nbsp an integer (from an ecological standpoint, it denote a number
+//' @param nbsp an integer (from an ecological standpoint, a number
 //' of species).
 //'
-//' @return Returns the null basis.
+//' @return The null basis.
 //'
 //' @importFrom Rcpp evalCpp
 //'

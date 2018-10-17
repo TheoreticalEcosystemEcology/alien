@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+
 //' @name webFromNicheModel
 //'
 //' @title Generate a web using the niche model.

@@ -11,7 +11,7 @@
 #' cross-comparison among methods.
 #'
 #' @return
-#' An object of the class \code{alienPredict} is returned .
+#' An object of the class \code{alienPredict} is returned.
 #'
 #' @author Kevin Cazelles & Steve Vissault
 #'

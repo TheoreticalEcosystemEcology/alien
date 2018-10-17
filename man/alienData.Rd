@@ -39,12 +39,12 @@ providing information about the site where the interactions have been observed.}
 \item{dfOcc}{A data frame with at least two columns \code{idNodes} and \code{idSite}
 providing the occurrence of nodes.}
 
-\item{directed}{Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).}
+\item{directed}{Logical. If \code{TRUE} (default value) the network is considered as directed (see \code{Details}).}
 
 \item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
-An object of the class \code{alienData} is returned .
+An object of the class \code{alienData} is returned.
 }
 \description{
 \code{alienData} is used to check and format data, if correct

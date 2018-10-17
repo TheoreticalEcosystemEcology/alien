@@ -15,15 +15,15 @@ prodNorm(nbsp, B, V)
 \arguments{
 \item{A}{a matrix.}
 
-\item{nbsp}{an integer (from an ecological standpoint, it denote a number
+\item{nbsp}{an integer (from an ecological standpoint, a number
 of species).}
 
-\item{B}{a matrix (it should actually is a orthogonal basis).}
+\item{B}{a matrix (it should actually be a orthogonal basis).}
 
 \item{V}{a vector.}
 }
 \value{
-Returns the null basis.
+The null basis.
 }
 \description{
 A wrapper around the \code{null} function of Armadillo library

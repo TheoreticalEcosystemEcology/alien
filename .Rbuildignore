@@ -10,6 +10,6 @@
 ^README\.rmd
 ^record*
 ^inst/*.R
-^CONTRIBUTING.md
+^CONTRIBUTING
 ^\.DS_Store
 ^beforeInstall.sh

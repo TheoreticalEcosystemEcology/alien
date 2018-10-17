@@ -14,7 +14,7 @@ alienPredict(logLik, netEstim, ...)
 \item{...}{other arguments to be appended to the \code{alienPredict} object.}
 }
 \value{
-An object of the class \code{alienPredict} is returned .
+An object of the class \code{alienPredict} is returned.
 }
 \description{
 Format alien output and return an object of class \code{alienPredict}.

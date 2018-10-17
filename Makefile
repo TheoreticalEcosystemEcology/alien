@@ -2,13 +2,9 @@ rfun := $(wildcard R/*.R)
 rman := $(wildcard man/)
 rcpp := $(wildcard src/*.cpp)
 rtes := $(wildcard tests/testthat/*.R)
-chk = record_updates.txt
 rscr = ../pkg2date.R
 
-
-all: $(md) $(chk)
-
-$(chk): $(rfun) $(rtes) $(rman) $(rcpp)
+regular:
 	Rscript --no-init-file $(rscr) 1
 
 readme:
