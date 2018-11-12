@@ -1,9 +1,9 @@
-#' @name fitMC
+#' @name fitIMC
 #'
-#' @title Estimation of interaction probabilities using the matching centrality approach.
+#' @title Estimation of interaction probabilities using the indirect matching centrality approach.
 #' approach.
 #'
-#' @description Esimation of iteractions probability using the matching centrality
+#' @description Esimation of iteractions probability using the indirect matching centrality
 #' approach as described in Rohr (2014) and Rohr (2016).
 #'
 #' @param data an object of the class alienData or an adjacency matrix.
@@ -15,7 +15,7 @@
 #' Kevin Cazelles
 #'
 #' @details
-#' \code{fitMC} implements the matching-centrality method as described in
+#' \code{fitIMC} implements the indirect matching-centrality method as described in
 #' Rohr 2014 and Rohr 2016. Briefly, the method uses latent traits to fit
 #' interactions. The first step requires the definition of two sets of interacting
 #' species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
@@ -56,7 +56,7 @@
 #' @export
 
 
-fitMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
+fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     ##--
     stopifnot(d >= 1)
     ##--
