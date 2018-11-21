@@ -6,6 +6,11 @@
 #' @param level Either 'individual' or 'species'. The ecological level on which the traits should be extracted. Default is 'species'.
 #' @param bipartite Logical. Whether the network to consider is bipartite (TRUE) or not (FALSE). Default is FALSE.
 #'
+#' @details 
+#' 
+#' The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species.
+#'
+#'
 #' @author
 #' F. Guillaume Blanchet
 #' 
@@ -25,10 +30,10 @@ getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
     toRow <- which(object$dfNodes$idNodes %in% to)
     
     traitFrom <- traitRaw[fromRow,]
-    spFrom <- spRaw[fromRow]
+    spFrom <- as.factor(spRaw[fromRow])
 
     traitTo <- traitRaw[toRow,]
-    spTo <- spRaw[toRow]
+    spTo <- as.factor(spRaw[toRow])
 
     # Remove the columns of NAs in From
     traitFrom <- traitFrom[,-which(apply(traitFrom, 2, function(x) all(is.na(x))))]
@@ -49,8 +54,8 @@ getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
           traitFromSp[[i]] <- tapply(traitFrom[,i],spFrom, mean)
         }
         
-        if(is.factor(traitFrom[,i])){
-          traitFromSp[[i]] <- tapply(traitFrom[,i],spFrom, 
+        if(is.character(traitFrom[,i])){
+          traitFromSp[[i]] <- tapply(as.factor(traitFrom[,i]),spFrom, 
                                      function(x) names(summary(x))[which.max(summary(x))])
           traitFromSp[[i]] <- as.factor(traitFromSp[[i]])
         }
@@ -67,8 +72,8 @@ getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
           traitToSp[[i]] <- tapply(traitTo[,i],spTo, mean)
         }
         
-        if(is.factor(traitTo[,i])){
-          traitToSp[[i]] <- tapply(traitTo[,i],spTo, 
+        if(is.character(traitTo[,i])){
+          traitToSp[[i]] <- tapply(as.factor(traitTo[,i]),spTo, 
                                      function(x) names(summary(x))[which.max(summary(x))])
           traitToSp[[i]] <- as.factor(traitToSp[[i]])
         }
@@ -87,10 +92,8 @@ getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
     if(any(is.na(traitRaw))){
       stop("Traits have NAs that should not be there")
     }
-
-    if(level == "individual"){
-      res <- traitRaw
-    }
+    
+    # Species
     if(level == "species"){
       traitRawSp <- vector("list", length = ncol(traitRaw))
       names(traitRawSp) <- colnames(traitRaw)
@@ -100,14 +103,19 @@ getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
           traitRawSp[[i]] <- tapply(traitRaw[,i],spFrom, mean)
         }
         
-        if(is.factor(traitRaw[,i])){
-          traitRawSp[[i]] <- tapply(traitRaw[,i],spFrom, 
+        if(is.character(traitRaw[,i])){
+          traitRawSp[[i]] <- tapply(as.factor(traitRaw[,i]),spFrom, 
                                      function(x) names(summary(x))[which.max(summary(x))])
           traitRawSp[[i]] <- as.factor(traitRawSp[[i]])
         }
       }
       
       res <- as.data.frame(traitRawSp)
+    }
+    
+    # Individual
+    if(level == "individual"){
+      res <- traitRaw
     }
   }
 
