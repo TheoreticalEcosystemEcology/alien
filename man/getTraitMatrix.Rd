@@ -4,15 +4,20 @@
 \alias{getTraitMatrix}
 \title{Compute the trait matrix (or matrices) for a given alienData object}
 \usage{
-getTraitMatrix(object, level = "species")
+getTraitMatrix(object, level = "species", bipartite = TRUE)
 }
 \arguments{
 \item{object}{An object of class \code{alienData}.}
 
 \item{level}{Either 'individual' or 'species'. The ecological level on which the traits should be extracted. Default is 'species'.}
+
+\item{bipartite}{Logical. Whether the network to consider is bipartite (TRUE) or not (FALSE). Default is FALSE.}
 }
 \description{
 Computes the trait matrix (or matrices) using \code{dfNodes} and \code{nmTrait} of an \link{alienData} object.
+}
+\details{
+The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species.
 }
 \author{
 F. Guillaume Blanchet

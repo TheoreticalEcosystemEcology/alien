@@ -16,6 +16,10 @@
 #' 
 #' @export
 getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
+
+  # General check
+  stopifnot(class(object) == "alienData")
+  
   # Extract the trait information
   selCol <- colnames(object$dfNodes) %in% object$nmTrait
   traitRaw <- object$dfNodes[,selCol]
