@@ -6,6 +6,7 @@
 #' @param object An object of class \code{alienData}.
 #' @param bipartite A logical. Is the adjacency matrix associated with a
 #' bipartite network? Default is set to \code{FALSE}.
+#' @param level Either "species" or "individuals". Whether the analysis should be done at the species or the individual levels. Default is "species". (See details)
 #' @param binary A logical. Should the interactions be binary (see details)?
 #' Otherwise the \code{value} column of \code{dfEdges} is used. Default is set
 #' to \code{FALSE}.
@@ -17,6 +18,8 @@
 #' nodes found in the \code{idFrom} column of \code{dfEdges} are used to name
 #' the rows of the adjacency matrix. Similarly, \code{idTo}'s nodes become the
 #' columns' names.
+#' 
+#' The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species. Note that if, at the finest resolution, the raw data is at the species level, than the argument \code{level} defined at the individual or species level will results in the same adjacency matrix.
 #'
 #' Currenlty if there are several values for the same interaction
 #' \code{getAdjacencyMatrix} sums them unless \code{binary} is \code{TRUE}.
@@ -31,9 +34,10 @@
 #' @keywords adjacency matrix
 #' @export
 
-getAdjacencyMatrix <- function(object, bipartite = FALSE, binary = FALSE) {
+getAdjacencyMatrix <- function(object, bipartite = FALSE, level = "individual", binary = FALSE) {
     stopifnot(class(object) == "alienData")
     tmp <- object$dfEdges[, c("idFrom", "idTo", "value")]
+    
     if (!bipartite) {
         out <- matrix(0, object$nbNodes, object$nbNodes, dimnames = list(object$dfNodes$idNodes, 
             object$dfNodes$idNodes))
@@ -44,6 +48,7 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE, binary = FALSE) {
         uif <- unique(tmp$idFrom) %>% sort
         out <- matrix(0, length(uit), length(uif), dimnames = list(uit, uif))
     }
+    
     if (binary) {
         tmp$value <- 1
         tmp <- unique(tmp)
@@ -51,5 +56,6 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE, binary = FALSE) {
     for (i in 1:nrow(tmp)) {
         out[tmp[i, 2L], tmp[i, 1L]] <- out[tmp[i, 2L], tmp[i, 1L]] + tmp[i, 3L]
     }
-    out
+    
+    return(out)
 }
