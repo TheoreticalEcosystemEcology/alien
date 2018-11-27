@@ -3,11 +3,10 @@
 #' @description \code{alienData} is used to check and format data, if correct
 #' it returns an object of class \code{alienData}.
 #'
-#' @param dfNodes A vector or a data frame with at least one column named \code{idNodes} providing
-#' unique identifiers for each species (or individuals) of the dataset. The remaining
-#' columns could be either traits or phylogenetic or taxonomic data that must
-#' be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
-#' parameter described below (otherwise they are ignored).
+#' @param nodes A vector, data.frame or list of data.frame with at least one column named \code{idNodes} providing
+#' unique identifiers for each species considered. The remaining
+#' columns are traits data that must
+#' be specified in the \code{trait} argument, otherwise they will be ignored.
 #' @param dfEdges A data frame with at least two columns: \code{idFrom} and \code{idTo}
 #' descibring the set of edges (links between nodes). If \code{directed} is set
 #' to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
@@ -17,9 +16,7 @@
 #' which respectively provide the values associated with edges (if absent, they are
 #' set to 1) and the identifier of the site where the interaction has been obsereved
 #' (see details).
-#' @param trait A vector indicating columns number (or names) of \code{dfNodes} containing traits data (see \code{Details}).
-#' @param phylo A vector indicating colums number (or names) of \code{dfNodes} containing phylo data (see \code{Details}).
-#' @param taxo A vector indicating columns number (or names) of \code{dfNodes} containing taxo data (see \code{Details}).
+#' @param trait A vector indicating columns number (or names) of \code{nodes} containing traits data (see \code{Details}).
 #' @param directed Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).
 #' @param dfSites A data frame with at least two columns named \code{idSite}
 #' providing information about the site where the interactions have been observed.
@@ -30,11 +27,13 @@
 #'
 #' @details
 #'
+#' In the \code{nodes} argument, each layer of the list needs to include information about a particular layer of species in the network. If all species can potentially interact among each other, only a vector or a data.frame can be included. 
+#'
 #' The user is required to provide specific column names to prevent the function
 #' from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
 #' information are provided) are used to check the consistency of the data.
 #' First, all values taken by \code{idFrom} and \code{idTo} column in \code{dfEdges}
-#' must be found in \code{idNodes} column of \code{dfNodes} (otherwise an error
+#' must be found in \code{idNodes} column of \code{nodes} (otherwise an error
 #' is returned). Second if \code{dfSites} and occurrence information is provided too,
 #' \code{idSite} is used to ensure all the sites for which an occurrence event have
 #' are reported in \code{idSite}.
@@ -48,7 +47,7 @@
 #' @return
 #' An object of the class \code{alienData} is returned.
 #'
-#' @author Guillaume Blanchet, Kevin Cazelles & Steve Vissault
+#' @author F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
@@ -58,7 +57,7 @@
 #' @export
 
 
-alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
+alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE, verbose = TRUE) {
 
     #### handle options
@@ -66,19 +65,38 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     options(stringsAsFactors = FALSE)
     on.exit(options(osaf))
 
-    #### dfNodes
-    if (is.vector(dfNodes)) {
-        dfNodes <- data.frame(ID = as.character(dfNodes))
+    #### nodes 
+    # List
+    if(is.list(nodes)){
+      nlayers <- length(nodes)
+      for(i in 1:nlayers){
+        if(is.vector(nodes[[i]])){
+          nodes[[i]] <- as.list(data.frame(ID = as.character(nodes)))
+        }
+      }
     }
+    
+    # Vector
+    if (is.atomic(nodes)) {
+      nodes <- as.list(data.frame(ID = as.character(nodes)))
+    }
+    
+    # data.frame
+    if (is.data.frame(nodes)) {
+      nodes <- list(nodes)
+    }
+    
     ##
-    dfNodes %<>% as.data.frame
+    nodes %<>% as.data.frame
     dfEdges %<>% as.data.frame
+    
     ##
-    stopifnot("idNodes" %in% names(dfNodes))
+    stopifnot("idNodes" %in% names(nodes))
     stopifnot("idFrom" %in% names(dfEdges))
     stopifnot("idTo" %in% names(dfEdges))
+    
     ##
-    dfNodes$idNodes %<>% as.character
+    nodes$idNodes %<>% as.character
     dfEdges$idFrom %<>% as.character
     dfEdges$idTo %<>% as.character
     ##
@@ -86,7 +104,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         "iEat"), available = FALSE)
 
     ##
-    stopifnot(!any(table(dfNodes$idNodes) > 1))
+    stopifnot(!any(table(nodes$idNodes) > 1))
     if (verbose)
         message("==> Nodes information detected")
 
@@ -97,7 +115,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         if (verbose)
             message("==> No traits detected")
     } else {
-        nmTrait <- names(dfNodes[, trait, drop = FALSE])
+        nmTrait <- names(nodes[, trait, drop = FALSE])
         sc <- 1
         if (verbose)
             message(paste0("==> Traits detected: ", paste(nmTrait, collapse = ", ")))
@@ -108,7 +126,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         if (verbose)
             message("==> No phylo detected")
     } else {
-        nmPhylo <- names(dfNodes[, phylo, drop = FALSE])
+        nmPhylo <- names(nodes[, phylo, drop = FALSE])
         sc <- 1
         if (verbose)
             message(paste0("==> Phylo detected: ", paste(nmPhylo, collapse = ", ")))
@@ -119,7 +137,7 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         if (verbose)
             message("==> No taxon detected")
     } else {
-        nmTaxo <- names(dfNodes[, taxo, drop = FALSE])
+        nmTaxo <- names(nodes[, taxo, drop = FALSE])
         sc <- 1
         if (verbose)
             message(paste0("==> Taxo detected: ", paste(nmTaxo, collapse = ", ")))
@@ -132,11 +150,11 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
 
 
     ############################## dfEdges
-    stopifnot(all(dfEdges$idFrom %in% dfNodes$idNodes))
-    stopifnot(all(dfEdges$idTo %in% dfNodes$idNodes))
-    idn <- which(!dfNodes$idNodes %in% c(dfEdges$idFrom, dfEdges$idTo))
+    stopifnot(all(dfEdges$idFrom %in% nodes$idNodes))
+    stopifnot(all(dfEdges$idTo %in% nodes$idNodes))
+    idn <- which(!nodes$idNodes %in% c(dfEdges$idFrom, dfEdges$idTo))
     if (length(idn))
-        warning(paste0("Unlinked nodes: ", paste(dfNodes$idNodes[idn], collapse = ", ")))
+        warning(paste0("Unlinked nodes: ", paste(nodes$idNodes[idn], collapse = ", ")))
 
     if (!"value" %in% names(dfEdges)) {
         if (verbose)
@@ -207,9 +225,9 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         stopifnot("idNodes" %in% names(dfOcc))
         ##
         stopifnot(all(dfOcc$idSite %in% dfSites$idSite))
-        stopifnot(all(dfOcc$idNodes %in% dfNodes$idNodes))
+        stopifnot(all(dfOcc$idNodes %in% nodes$idNodes))
         occ <- TRUE
-        if (!all(dfNodes$idNodes %in% dfOcc$idNodes))
+        if (!all(nodes$idNodes %in% dfOcc$idNodes))
             warning("Nodes without any occurrence record.")
         if (verbose)
             message("==> Occurrence information detected")
@@ -225,8 +243,8 @@ alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
 
 
     #### Return results
-    res <- list(dfNodes = dfNodes, dfEdges = dfEdges, dfSites = dfSites, dfOcc = dfOcc,
-        info = list(nbNodes = nrow(dfNodes), nbEdges = nrow(dfEdges), directed = directed,
+    res <- list(nodes = nodes, dfEdges = dfEdges, dfSites = dfSites, dfOcc = dfOcc,
+        info = list(nbNodes = nrow(nodes), nbEdges = nrow(dfEdges), directed = directed,
             nbSites = nbSites, nbOcc = nbOcc, nmTrait = nmTrait, nmPhylo = nmPhylo,
             nmTaxo = nmTaxo, nmSite = nmSite, availableMeths = availableMeths))
     class(res) <- "alienData"
