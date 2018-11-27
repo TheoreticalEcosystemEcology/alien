@@ -66,28 +66,36 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     on.exit(options(osaf))
 
     #### nodes 
-    # List
-    if(is.list(nodes)){
-      nlayers <- length(nodes)
-      for(i in 1:nlayers){
-        if(is.vector(nodes[[i]])){
-          nodes[[i]] <- as.list(data.frame(ID = as.character(nodes)))
-        }
-      }
-    }
-    
     # Vector
     if (is.atomic(nodes)) {
-      nodes <- as.list(data.frame(ID = as.character(nodes)))
+      nodes <- list(df1 = data.frame(ID = as.character(nodes)))
     }
     
     # data.frame
     if (is.data.frame(nodes)) {
-      nodes <- list(nodes)
+      nodes <- list(df1 = nodes)
+    }
+   
+    # List
+    if(is.list(nodes)){
+      nodes <- list("test1" = 1:10, test2 = 11:20)
+      nLayers <- length(nodes)
+      nmNodes <- names(nodes)
+      nodesTmp <- vector("list", length = nLayers)
+      names(nodesTmp) <- nmNodes
+      
+      for(i in 1:nLayers){
+        if(is.vector(nodes[[i]])){
+          nodesTmp[[i]] <- data.frame(ID = as.character(nodes[[i]]))
+        }
+        if(is.data.frame(nodes[[i]])){
+          nodesTmp[[i]] <- nodes[[i]]
+        }
+      }
+      nodes <- nodesTmp
     }
     
     ##
-    nodes %<>% as.data.frame
     dfEdges %<>% as.data.frame
     
     ##
@@ -130,17 +138,6 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
         sc <- 1
         if (verbose)
             message(paste0("==> Phylo detected: ", paste(nmPhylo, collapse = ", ")))
-    }
-    ##
-    if (is.null(taxo)) {
-        nmTaxo <- NULL
-        if (verbose)
-            message("==> No taxon detected")
-    } else {
-        nmTaxo <- names(nodes[, taxo, drop = FALSE])
-        sc <- 1
-        if (verbose)
-            message(paste0("==> Taxo detected: ", paste(nmTaxo, collapse = ", ")))
     }
     ##
     if (sc) {
@@ -243,10 +240,15 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
 
 
     #### Return results
-    res <- list(nodes = nodes, dfEdges = dfEdges, dfSites = dfSites, dfOcc = dfOcc,
-        info = list(nbNodes = nrow(nodes), nbEdges = nrow(dfEdges), directed = directed,
-            nbSites = nbSites, nbOcc = nbOcc, nmTrait = nmTrait, nmPhylo = nmPhylo,
-            nmTaxo = nmTaxo, nmSite = nmSite, availableMeths = availableMeths))
+    res <- list(nodes = nodes, dfEdges = dfEdges, dfSites = dfSites,
+                dfOcc = dfOcc, info = list(nbNodes = nrow(nodes),
+                                           nbEdges = nrow(dfEdges),
+                                           directed = directed, 
+                                           nbSites = nbSites, 
+                                           nbOcc = nbOcc, 
+                                           nmTrait = nmTrait, 
+                                           nmSite = nmSite, 
+                                           availableMeths = availableMeths))
     class(res) <- "alienData"
     res
 }
