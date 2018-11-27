@@ -94,7 +94,9 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
       }
       nodes <- nodesTmp
     }
-    
+    ### ICI ###
+    ### ICI ###
+    ### ICI ###
     ##
     dfEdges %<>% as.data.frame
     
@@ -107,6 +109,7 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     nodes$idNodes %<>% as.character
     dfEdges$idFrom %<>% as.character
     dfEdges$idTo %<>% as.character
+    
     ##
     availableMeths <- data.frame(methods = c("Co-occurence", "Direct Matching Centrality",
         "iEat"), available = FALSE)
