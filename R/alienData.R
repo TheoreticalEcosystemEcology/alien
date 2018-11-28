@@ -57,6 +57,20 @@
 #' @export
 
 
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/4D1DB951-1F0F-48DC-A0D6-7054CE4DECEA/edges_gal_par.RDA")
+
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/E0320368-CB9E-42BF-998E-A7AD41182E82/edges_sal_gal.RDA")
+
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/CF898134-3311-4E51-89A9-B59788869401/galler_traits.RDA")
+
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/1D3778C7-4EAF-4B87-BF0D-02385C01DE1A/paras_traits.RDA")
+
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/E98FB05E-E006-4E3F-AA12-596732643172/salix_traits.RDA")
+
+load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/C700AF82-CA1E-4250-9C59-1AC49A7858A7/sites.RDA")
+
+nodes <- list(salix = salix, galler = galler, paras = paras)
+
 alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
     dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE, verbose = TRUE) {
 
@@ -78,22 +92,17 @@ alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
    
     # List
     if(is.list(nodes)){
-      nodes <- list("test1" = 1:10, test2 = 11:20)
-      nLayers <- length(nodes)
-      nmNodes <- names(nodes)
-      nodesTmp <- vector("list", length = nLayers)
-      names(nodesTmp) <- nmNodes
-      
-      for(i in 1:nLayers){
-        if(is.vector(nodes[[i]])){
-          nodesTmp[[i]] <- data.frame(ID = as.character(nodes[[i]]))
-        }
-        if(is.data.frame(nodes[[i]])){
-          nodesTmp[[i]] <- nodes[[i]]
+      checkDf <- sapply(nodes, is.data.frame)
+      if(!all(checkdf)){
+        nodesNoDf <- which(!checkdf)
+        for(i in nodesNoDf){
+          if(is.vector(nodes[[i]])){
+            nodes[[i]] <- data.frame(idNodes = as.character(nodes[[i]]))
+          }
         }
       }
-      nodes <- nodesTmp
     }
+    
     ### ICI ###
     ### ICI ###
     ### ICI ###
