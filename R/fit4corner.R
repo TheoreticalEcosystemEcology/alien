@@ -30,11 +30,6 @@
 #' @author
 #' F. Guillaume Blanchet
 #' 
-#' @importFrom mvabund traitglm
-#' @importFrom HMSC as.HMSCdata
-#' @importFrom HMSC as.HMSCprior
-#' @importFrom HMSC as.HMSCparam
-#' @importFrom HMSC hmsc
 #'
 #' @export
 
@@ -55,10 +50,10 @@ fit4corner <- function(data, formulaFrom = "~ .", formulaTo = "~ .",
   traits <- getTraitMatrix(data, level = level, bipartite = TRUE)
   
   # Trait data from
-  traitsFrom <- model.matrix(as.formula(formulaFrom), data = traits$from)
+  traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
   
   # Trait data to
-  traitsTo <- model.matrix(as.formula(formulaTo), data = traits$to)
+  traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
   
   # mvabund
   if(class == "mvabund"){

@@ -48,7 +48,7 @@ for (i in 1:n1) {
   if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
 }
 
-res = fitMC(mat)
+res <- fitIMC(mat)
 
 plot(trait1, res$methodsSpecific$params$M1)
 plot(trait2, res$methodsSpecific$params$M2)

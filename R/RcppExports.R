@@ -32,7 +32,7 @@ getNullOne <- function(nbsp) {
     .Call('_alien_getNullOne', PACKAGE = 'alien', nbsp)
 }
 
-#' @describeIn getNull A repeated matrix produc in \code{fitMC} that requires
+#' @describeIn getNull A repeated matrix produc in \code{fitIMC} that requires
 #' to normalise one vector.
 prodNorm <- function(nbsp, B, V) {
     .Call('_alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
