@@ -48,7 +48,7 @@
 #'   if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
 #' }
 #'
-#' res = fitMC(mat)
+#' res = fitIMC(mat)
 #'
 #' plot(trait1, res$methodsSpecific$params$M1)
 #' plot(trait2, res$methodsSpecific$params$M2)
@@ -80,7 +80,7 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
     nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
     # number of 'fixed' parameters (lambda, delta and m)
     npr <- 3 + d
-    ## check if fitMC is available => 2 be added check the number of parameters
+    ## check if fitIMC is available => 2 be added check the number of parameters
     npar <- nbc + nbm + npr
     if (verbose) 
         cat("total number of parameters to be fitted: ", npar, "\n")
