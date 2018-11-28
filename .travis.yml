@@ -8,6 +8,7 @@ notifications:
     recipients:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
+      - Guillaume.Blanchet@USherbrooke.ca
   slack: insileco:We4RUIQpzZ8vcazD9FIRt3Me
 
 
