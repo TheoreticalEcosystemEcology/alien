@@ -29,6 +29,7 @@ Imports:
     igraph,
     mvabund,
     HMSC
+Remotes: guiblanchet/HMSC
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
 License: MIT + file LICENSE
