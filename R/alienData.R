@@ -3,21 +3,19 @@
 #' @description \code{alienData} is used to check and format data, if correct
 #' it returns an object of class \code{alienData}.
 #'
-#' @param nodes A data.frame with two columns. The first column includes unique individual identifications and the second columns presents species identification. (See details).
-#' unique identifiers for each species considered. The remaining
-#' columns are traits data that must
-#' be specified in the \code{trait} argument, otherwise they will be ignored.
-#' @param dfEdges A data frame with at least two columns: \code{idFrom} and \code{idTo}
+#' @param node A data.frame with two columns. The first column includes unique individual identifications and the second columns presents species identification. (See details).
+#' @param edges A data frame with at least two columns: \code{from} and \code{to}
 #' descibring the set of edges (links between nodes). If \code{directed} is set
-#' to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
+#' to \code{TRUE} then the interaction is directed from \code{from} to \code{to}.
 #' Directed interactions for consumer/resource interactions correspond to a transfer
-#' of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
-#' The presence of two additonnal columns are checked: \code{value} and \code{idSite}
+#' of energy so that \code{from} is the resource and \code{to} is the consumer.
+#' The presence of two additonnal columns are checked: \code{value} and \code{site}
 #' which respectively provide the values associated with edges (if absent, they are
-#' set to 1) and the identifier of the site where the interaction has been obsereved
-#' (see details).
-#' @param trait A vector indicating columns number (or names) of \code{nodes} containing traits data (see \code{Details}).
-#' @param directed Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).
+#' set to 1) and the identifier of the site where the interaction has been observed.
+#' (See details).
+#' @param trait A data.frame with three columns. The first column is the individual identifier, the second colum is the trait names and the third column is the trait characteristic, which could be a numeric or a character string. (See details).
+#' @param phylo An object of class \code{\link[ape]{phylo}}.
+#' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
 #' @param dfSites A data frame with at least two columns named \code{idSite}
 #' providing information about the site where the interactions have been observed.
 #' @param siteEnv A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).
@@ -27,8 +25,10 @@
 #'
 #' @details
 #'
-#' In the \code{nodes} argument, the first columns (individual identification) identifathe first columns should have noeach layer of the list needs to include information about a particular layer of species in the network. If all species can potentially interact among each other, only a vector or a data.frame can be included. 
-#'
+#' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted. Note also that if the data available is at the species level, the species as well as the the individual identifiers will not repeat.
+#' 
+#' It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTraitMatrix}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
+#' 
 #' The user is required to provide specific column names to prevent the function
 #' from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
 #' information are provided) are used to check the consistency of the data.
@@ -38,7 +38,7 @@
 #' \code{idSite} is used to ensure all the sites for which an occurrence event have
 #' are reported in \code{idSite}.
 #'
-#' If \code{idSite} is found in \code{dfEdges} and \code{dfSites} is \code{NULL} then, this
+#' If \code{site} is found in \code{edges} and \code{dfSites} is \code{NULL} then, this
 #' column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
 #' it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
 #' \code{dfEdges} means that theuser has spatial information about interactions
@@ -69,9 +69,20 @@ load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Dow
 
 load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/C700AF82-CA1E-4250-9C59-1AC49A7858A7/sites.RDA")
 
-nodes <- list(salix = salix, galler = galler, paras = paras)
+node <- list(salix = salix, galler = galler, paras = paras)
 
-alienData <- function(nodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
-    dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE, verbose = TRUE) {
+alienData <- function(node, edge, trait = NULL, phylo = NULL, directed = TRUE) {
+  # Checks
+  if(ncol(node) != 2){
+    stop("'node' must have two columns")
+  }
   
+  nIndID <- length(unique(node[,1]))
+  nSample <- nrow(node)
+  
+  if(nIndID != nSample){
+    stop("The number of identifier in the first column should be unique")
+  }
+  
+    
 }
