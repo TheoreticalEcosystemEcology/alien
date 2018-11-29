@@ -32,7 +32,7 @@
 #' The user is required to provide specific column names to prevent the function
 #' from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
 #' information are provided) are used to check the consistency of the data.
-#' First, all values taken by \code{idFrom} and \code{idTo} column in \code{dfEdges}
+#' First, all values taken by \code{from} and \code{to} column in \code{edge}
 #' must be found in \code{idNodes} column of \code{nodes} (otherwise an error
 #' is returned). Second if \code{dfSites} and occurrence information is provided too,
 #' \code{idSite} is used to ensure all the sites for which an occurrence event have
@@ -41,7 +41,7 @@
 #' If \code{site} is found in \code{edges} and \code{dfSites} is \code{NULL} then, this
 #' column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
 #' it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
-#' \code{dfEdges} means that theuser has spatial information about interactions
+#' \code{edge} means that theuser has spatial information about interactions
 #' which is more informative than providing occurrence and interaction  data separetly.
 #'
 #' @return
@@ -71,7 +71,8 @@ load("/Users/guslevesque/Library/Containers/com.apple.mail/Data/Library/Mail Dow
 
 node <- list(salix = salix, galler = galler, paras = paras)
 
-alienData <- function(node, edge, trait = NULL, phylo = NULL, directed = TRUE) {
+alienData <- function(node, edge, trait = NULL, phylo = NULL,
+                      directed = TRUE, verbose = TRUE) {
   # Checks
   if(ncol(node) != 2){
     stop("'node' must have two columns")
@@ -84,5 +85,24 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL, directed = TRUE) {
     stop("The number of identifier in the first column should be unique")
   }
   
-    
+  ######
+  # edge
+  ######
+  stopifnot(all(edge$from %in% node[,1]))
+  stopifnot(all(edge$to %in% node[,1]))
+  idn <- which(!node[,1] %in% c(edge$from, edge$to))
+  if (length(idn))
+    warning(paste0("Unlinked nodes: ", paste(node[idn,1], collapse = ", ")))
+  
+  if (!"value" %in% names(edge)) {
+    if (verbose){
+      message("==> No Edges' value detected, values are set to 1")
+    }
+    edge$value <- 1
+  }else{
+    if (verbose){
+      message("==> Edges' values detected")
+    }
+  }
+
 }
