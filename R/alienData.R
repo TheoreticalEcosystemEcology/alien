@@ -73,7 +73,9 @@ node <- list(salix = salix, galler = galler, paras = paras)
 
 alienData <- function(node, edge, trait = NULL, phylo = NULL,
                       directed = TRUE, verbose = TRUE) {
-  # Checks
+  ######
+  # node
+  ######
   if(ncol(node) != 2){
     stop("'node' must have two columns")
   }
@@ -104,5 +106,29 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL,
       message("==> Edges' values detected")
     }
   }
+  
+  #######
+  # trait
+  #######
+  if(ncol(trait) != 3){
+    stop("'trait' must have three columns")
+  }
+  
+  nIndID <- length(unique(node[,1]))
+  nSample <- nrow(node)
+  
+  if(nIndID != nSample){
+    stop("The number of identifier in the first column should be unique")
+  }
+  
+  
+  # Results
+  res <- list(node = node, edge = edge, trait = trait,
+              dfOcc = dfOcc, info = list(nbNode = nrow(node),
+                                         nbEdge = nrow(edge),
+                                         directed = directed))
+  class(res) <- "alienData"
+  
+  return(res)
 
 }
