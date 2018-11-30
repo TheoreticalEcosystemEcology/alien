@@ -4,7 +4,7 @@
 #' it returns an object of class \code{alienData}.
 #'
 #' @param node A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).
-#' @param edges A data frame with two columns: \code{from} and \code{to}
+#' @param edge A data frame with two columns: \code{from} and \code{to}
 #' describing the set of edges (links between nodes). If \code{directed} is set
 #' to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer
 #' The presence of a  \code{value} and \code{site}
@@ -14,11 +14,6 @@
 #' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
 #' @param phylo An object of class \code{\link[ape]{phylo}}.
 #' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
-#' @param dfSites A data frame with at least two columns named \code{idSite}
-#' providing information about the site where the interactions have been observed.
-#' @param siteEnv A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).
-#' @param dfOcc A data frame with at least two columns \code{idNodes} and \code{idSite}
-#' providing the occurrence of nodes.
 #' @param verbose Logical. Should extra information be reported on progress?
 #'
 #' @details
