@@ -1,127 +1,144 @@
 #' @title Compute the trait matrix (or matrices) for a given alienData object
 #'
-#' @description Computes the trait matrix (or matrices) using \code{dfNodes} and \code{nmTrait} of an \link{alienData} object.
+#' @description Computes the trait matrix (or matrices) using \code{node} and \code{trait} of an \link{alienData} object.
 #'
 #' @param object An object of class \code{alienData}.
-#' @param level Either 'individual' or 'species'. The ecological level on which the traits should be extracted. Default is 'species'.
 #' @param bipartite Logical. Whether the network to consider is bipartite (TRUE) or not (FALSE). Default is FALSE.
 #'
 #' @details 
 #' 
-#' The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species.
-#'
-#'
+#' When the argument \code{bipartite} is set to TRUE, it is assumed that there are two sets of species with potentially different sets of traits. In this case, \code{edge} will be used in the \code{alienData} object to seperate both sets of traits
+#' 
+#' @return 
+#' 
+#' An object of class alienTrait
+#' 
 #' @author
 #' F. Guillaume Blanchet
 #' 
+#' @importFrom reshape2 dcast
+#' 
 #' @export
-getTraitMatrix <- function(object, level = "species", bipartite = TRUE){
+getTraitMatrix <- function(object, bipartite = TRUE){
 
   # General check
   stopifnot(class(object) == "alienData")
   
-  # Extract the trait information
-  selCol <- colnames(object$dfNodes) %in% object$nmTrait
-  traitRaw <- object$dfNodes[,selCol]
-  spRaw <- object$dfNodes$idSp
-  nodeRaw <- object$dfNodes$idNodes
+  # Check for numeric values in character string
+  grepNum <- "^((-|\\+)?((\\.?\\d+)|(\\d+\\.\\d+)|(\\d+\\.?)))$"
   
-  # Separate the traits in two groups (From and To)
+  # Check for complex values in character string
+  grepComp <- "^((-|\\+)?((\\.?\\d+)|(\\d+\\.\\d+)|(\\d+\\.?))(-|\\+)?((\\.?\\d+)|(\\d+\\.\\d+)|(\\d+\\.?))i?)$"
+  
   if(bipartite){
-    from <- unique(object$dfEdges$idFrom)
-    fromRow <- which(object$dfNodes$idNodes %in% from)
-    to <- unique(object$dfEdges$idTo)
-    toRow <- which(object$dfNodes$idNodes %in% to)
+    ## "to" as rows
+    uiTo <- unique(object$edge$to)
+    traitTo <- object$trait[object$trait$idInd %in% uiTo,]
     
-    traitFrom <- traitRaw[fromRow,]
-    spFrom <- as.factor(spRaw[fromRow])
-
-    traitTo <- traitRaw[toRow,]
-    spTo <- as.factor(spRaw[toRow])
-
-    # Remove the columns of NAs in From
-    traitFrom <- traitFrom[,-which(apply(traitFrom, 2, function(x) all(is.na(x))))]
-    traitTo <- traitTo[,-which(apply(traitTo, 2, function(x) all(is.na(x))))]
+    ## "from" as columns
+    uiFrom <- unique(object$edge$from)
+    traitFrom <- object$trait[object$trait$idInd %in% uiFrom,]
     
-    if(any(is.na(traitFrom)) || any(is.na(traitTo))){
-      stop("Traits have NAs that should not be there")
-    }
-
-    # Species
-    if(level == "species"){
-      # From
-      traitFromSp <- vector("list", length = ncol(traitFrom))
-      names(traitFromSp) <- colnames(traitFrom)
+    res <- vector("list", length = 2)
+    names(res) <- c("from", "to")
+    
+    res[[1]] <- reshape2::dcast(traitFrom, idInd ~ trait, value.var = "value")
+    res[[2]] <- reshape2::dcast(traitTo, idInd ~ trait, value.var = "value")
+    
+    # Make idInd as row names
+    for(i in 1:2){
+      rowName <- res[[i]]$idInd
+      colName <- colnames(res[[i]])
       
-      for(i in 1:ncol(traitFrom)){
-        if(is.numeric(traitFrom[,i])){
-          traitFromSp[[i]] <- tapply(traitFrom[,i],spFrom, mean)
-        }
-        
-        if(is.character(traitFrom[,i])){
-          traitFromSp[[i]] <- tapply(as.factor(traitFrom[,i]),spFrom, 
-                                     function(x) names(summary(x))[which.max(summary(x))])
-          traitFromSp[[i]] <- as.factor(traitFromSp[[i]])
-        }
+      if(length(colName) == 2){
+        res[[i]] <- data.frame(bogusName = res[[i]][,2])
+        colnames(res[[i]]) <- colName[2]
       }
       
-      traitFromSp <- as.data.frame(traitFromSp)
-  
-      # To
-      traitToSp <- vector("list", length = ncol(traitTo))
-      names(traitToSp) <- colnames(traitTo)
-      
-      for(i in 1:ncol(traitTo)){
-        if(is.numeric(traitTo[,i])){
-          traitToSp[[i]] <- tapply(traitTo[,i],spTo, mean)
-        }
-        
-        if(is.character(traitTo[,i])){
-          traitToSp[[i]] <- tapply(as.factor(traitTo[,i]),spTo, 
-                                     function(x) names(summary(x))[which.max(summary(x))])
-          traitToSp[[i]] <- as.factor(traitToSp[[i]])
-        }
+      if(length(colName) > 2){
+        res[[i]] <- res[[i]][,-1]
       }
-      
-      traitToSp <- as.data.frame(traitToSp)
-      
-      res <- list(from = traitFromSp, to = traitToSp)
+      rownames(res[[i]]) <- rowName
     }
     
-    # Individual
-    if(level == "individual"){
-      res <- list(from = traitFrom, to = traitTo)
+    # Check if a variable can be converted to numeric (and convert if it is the case)
+    for(i in 1:2){
+      for(j in 1:ncol(res[[i]])){
+        # Find NAs
+        foundNA <- which(is.na(res[[i]][,j]))
+        
+        # Find numeric
+        foundNum <- grep(grepNum, res[[i]][,j])
+        numVec <- nrow(res[[i]]) == length(c(foundNA, foundNum))
+        
+        # Find complex
+        foundComp <- grep(grepComp, res[[i]][,j])
+        compVec <- nrow(res[[i]]) == length(c(foundNA, foundComp))
+        
+        # Convert to complex
+        if(compVec){
+          res[[i]][,j] <- as.complex(res[[i]][,j])
+        }
+        
+        # Convert to numeric
+        if(numVec){
+          res[[i]][,j] <- as.numeric(res[[i]][,j])
+        }
+        
+        # Convert to factor
+        if(length(foundNum) == 0 & length(foundComp) == 0){
+          res[[i]][,j] <- as.factor(res[[i]][,j])
+        }
+      }
     }
   }else{
-    if(any(is.na(traitRaw))){
-      stop("Traits have NAs that should not be there")
+    res <- reshape2::dcast(trait, idInd ~ trait, value.var = "value")
+
+    # Make idInd as row names
+    rowName <- res$idInd
+    colName <- colnames(res)
+    
+    if(length(colName) == 2){
+      res <- data.frame(bogusName = res[,2])
+      colnames(res) <- colName[2]
     }
     
-    # Species
-    if(level == "species"){
-      traitRawSp <- vector("list", length = ncol(traitRaw))
-      names(traitRawSp) <- colnames(traitRaw)
+    if(length(colName) > 2){
+      res <- res[,-1]
+    }
+    rownames(res) <- rowName
+
+    # Check if a variable can be converted to numeric (and convert if it is the case)
+    for(j in 1:ncol(res)){
+      # Find NAs
+      foundNA <- which(is.na(res[,j]))
       
-      for(i in 1:ncol(traitRaw)){
-        if(is.numeric(traitRaw[,i])){
-          traitRawSp[[i]] <- tapply(traitRaw[,i],spFrom, mean)
-        }
-        
-        if(is.character(traitRaw[,i])){
-          traitRawSp[[i]] <- tapply(as.factor(traitRaw[,i]),spFrom, 
-                                     function(x) names(summary(x))[which.max(summary(x))])
-          traitRawSp[[i]] <- as.factor(traitRawSp[[i]])
-        }
+      # Find numeric
+      foundNum <- grep(grepNum, res[,j])
+      numVec <- nrow(res) == length(c(foundNA, foundNum))
+      
+      # Find complex
+      foundComp <- grep(grepComp, res[,j])
+      compVec <- nrow(res) == length(c(foundNA, foundComp))
+      
+      # Convert to complex
+      if(compVec){
+        res[,j] <- as.complex(res[,j])
+      }
+    
+      # Convert to numeric
+      if(numVec){
+        res[,j] <- as.numeric(res[,j])
       }
       
-      res <- as.data.frame(traitRawSp)
-    }
-    
-    # Individual
-    if(level == "individual"){
-      res <- traitRaw
+      # Convert to factor
+      if(length(foundNum) == 0 & length(foundComp) == 0){
+        res[,j] <- as.factor(res[,j])
+      }
     }
   }
 
+  class(res) <- "alienTrait"
+  
   return(res)
 }
