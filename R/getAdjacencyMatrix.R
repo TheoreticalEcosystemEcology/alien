@@ -36,7 +36,6 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE,
   stopifnot(class(object) == "alienData")
     
   # Basic objects
-  edge <- object$edge[, c("from", "to", "value")]
   nNode <- nrow(object$node)
   
   if (!bipartite) {
@@ -53,7 +52,7 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE,
                     dimnames = list(uit, uif))
   }
   
-  for (i in 1:nrow(edge)) {
+  for (i in 1:nrow(object$edge)) {
       out[object$edge[i, 2L],
           object$edge[i, 1L]] <- out[object$edge[i, 2L],
                                      object$edge[i, 1L]] +
