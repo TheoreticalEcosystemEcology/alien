@@ -10,15 +10,7 @@ alienData(node, edge, trait = NULL, phylo = NULL, directed = TRUE,
 \arguments{
 \item{node}{A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).}
 
-\item{trait}{A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).}
-
-\item{phylo}{An object of class \code{\link[ape]{phylo}}.}
-
-\item{directed}{Logical. If \code{TRUE} (default value) the network is considered directed. (See details).}
-
-\item{verbose}{Logical. Should extra information be reported on progress?}
-
-\item{edges}{A data frame with two columns: \code{from} and \code{to}
+\item{edge}{A data frame with two columns: \code{from} and \code{to}
 describing the set of edges (links between nodes). If \code{directed} is set
 to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer
 The presence of a  \code{value} and \code{site}
@@ -26,13 +18,13 @@ which respectively provide the values associated with edges (if absent, they are
 set to 1) and the identifier of the site where the interaction has been observed.
 (See details).}
 
-\item{dfSites}{A data frame with at least two columns named \code{idSite}
-providing information about the site where the interactions have been observed.}
+\item{trait}{A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).}
 
-\item{siteEnv}{A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).}
+\item{phylo}{An object of class \code{\link[ape]{phylo}}.}
 
-\item{dfOcc}{A data frame with at least two columns \code{idNodes} and \code{idSite}
-providing the occurrence of nodes.}
+\item{directed}{Logical. If \code{TRUE} (default value) the network is considered directed. (See details).}
+
+\item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
 An object of the class \code{alienData} is returned.
