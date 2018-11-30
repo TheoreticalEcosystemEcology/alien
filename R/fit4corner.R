@@ -21,6 +21,8 @@
 #' 
 #' The arguments \code{formulaFrom} and \code{formulaTo} should take the form \code{~ x + y * z}, that is, the left side of the equation should not be given. Also, note that the default formulas always include an intercept.
 #' 
+#' 
+#' 
 #' @return
 #' 
 #' An object of class hmsc (for the analysis carried out with the HMSC package) or an object of class traitglm (for the analysis carried out with the mvabund package).
@@ -52,8 +54,12 @@ fit4corner <- function(data, formulaFrom = "~ .",
   adjData <- getAdjacencyMatrix(data, bipartite = TRUE)
   
   # "Raw " trait data
-  traits <- getTraitMatrix(data, bipartite = TRUE)
+  traits <- getTrait(data, bipartite = TRUE)
   
+  # Check for NAs in traits
+  if(any(sapply(traits, function(x) any(is.na(x))))){
+    stop("There is at least one NA in the traits. Use getTrait() to investigate")
+  }
   # mvabund
   if(class == "mvabund"){
     # Perform traitglm analysis

@@ -2,31 +2,25 @@
 % Please edit documentation in R/fitDMC.R
 \name{fitDMC}
 \alias{fitDMC}
-\title{Fit direct matching centrality among species or individus}
+\title{Fit direct matching centrality}
 \usage{
-fitDMC(data, class = NULL, family = NULL, formula = "I ~ . * .",
-  level = "species", traits = NULL, step = FALSE, ...)
+fitDMC(formula, data, class = NULL, family = NULL, traits = NULL,
+  step = FALSE, ...)
 }
 \arguments{
-\item{data}{an object of the class alienData, see as.alienData function.}
+\item{formula}{formula to define the model.}
 
-\item{class}{method to be applied on the data which can be 'rf' for randomForest or 'glm'.}
+\item{data}{an object of the class \code{\link{alienData}}}
 
-\item{family}{one family of the \code{stats} package (e.g. binomial(), Gamma(), gaussian() etc.)}
+\item{class}{Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}).}
 
-\item{formula}{set the formula passed to the algorithm (see \code{family}).}
+\item{family}{The family of the response variable. See \link[stats]{family}, or the choices available.}
 
-\item{level}{specify the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.}
-
-\item{traits}{vector of traits to include in the algorithm}
-
-\item{step}{logical, specify if variables are selected by stepAIC. Only availabe for glm class. FALSE by default}
-
-\item{...}{other params passed to the glm, step or randomForest functions.}
+\item{\dots}{Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.}
 }
 \description{
-Fit direct matching centrality models among species or individus
+Fit direct matching centrality model
 }
 \author{
-Dominique Gravel & Steve Vissault
+Dominique Gravel, Steve Vissault, F. Guillaume Blanchet
 }

@@ -47,7 +47,7 @@ fitKNN <- function(data, distFrom = "jaccard", distTo = "jaccard",
   nToSp <- nrow(adjMat)
   
   # Get trait matrix
-  traits <- getTraitMatrix(data)
+  traits <- getTrait(data)
   traitsFrom <- stats::model.matrix(~ -1 +., data = traits$from)
   traitsTo <- stats::model.matrix(~ -1 +., data = traits$to)
 

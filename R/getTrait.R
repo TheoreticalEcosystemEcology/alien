@@ -19,7 +19,7 @@
 #' @importFrom reshape2 dcast
 #' 
 #' @export
-getTraitMatrix <- function(object, bipartite = TRUE){
+getTrait <- function(object, bipartite = TRUE){
 
   # General check
   stopifnot(class(object) == "alienData")
