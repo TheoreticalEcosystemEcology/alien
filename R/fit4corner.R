@@ -28,12 +28,6 @@
 #' @author
 #' F. Guillaume Blanchet
 #' 
-#' @importFrom stats model.matrix
-#' @importFrom mvabund traitglm
-#' @importFrom HMSC as.HMSCdata
-#' @importFrom HMSC as.HMSCprior
-#' @importFrom HMSC as.HMSCparam
-#' @importFrom HMSC hmsc
 #'
 #' @export
 
@@ -51,8 +45,13 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # Adjacency matrix
   adjData <- getAdjacencyMatrix(data, bipartite = TRUE)
   
-  # "Raw " trait data
-  traits <- getTraitMatrix(data, bipartite = TRUE)
+  traits <- getTraitMatrix(data, level = level, bipartite = TRUE)
+  
+  # Trait data from
+  traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
+  
+  # Trait data to
+  traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
   
   # mvabund
   if(class == "mvabund"){

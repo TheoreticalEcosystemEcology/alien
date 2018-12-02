@@ -36,7 +36,7 @@ arma::mat getNullOne(int nbsp) {
   return arma::null(vecU1);
 }
 
-//' @describeIn getNull A repeated matrix produc in \code{fitMC} that requires
+//' @describeIn getNull A repeated matrix produc in \code{fitIMC} that requires
 //' to normalise one vector.
 // [[Rcpp::export]]
 arma::vec prodNorm(int nbsp, arma::mat B, arma::vec V) {

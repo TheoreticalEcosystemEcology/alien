@@ -48,10 +48,10 @@
 #' #  if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
 #' #}
 #'
-#' #res = fitIMC(mat)
-#'
-#' #plot(trait1, res$methodsSpecific$params$M1)
-#' #plot(trait2, res$methodsSpecific$params$M2)
+#' res <- fitIMC(mat)
+#' 
+#' plot(trait1, res$methodsSpecific$params$M1)
+#' plot(trait2, res$methodsSpecific$params$M2)
 #'
 #' @export
 
@@ -64,12 +64,10 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
   netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
   nset1 <- nrow(netObs)
   nset2 <- ncol(netObs)
-    
   if (verbose) {
-    cat("set1 has ", nset1, " elements \n")
-    cat("set2 has ", nset2, " elements \n")
+      cat("set1 has ", nset1, " elements \n")
+      cat("set2 has ", nset2, " elements \n")
   }
-    
   ##-- Number of parameters
   # Centrality latent traits:
   nbc <- nset1 + nset2 - 2
@@ -78,7 +76,7 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
   nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
   # number of 'fixed' parameters (lambda, delta and m)
   npr <- 3 + d
-  ## check if fitMC is available => 2 be added check the number of parameters
+  ## check if fitIMC is available => 2 be added check the number of parameters
   npar <- nbc + nbm + npr
   if (verbose) 
       cat("total number of parameters to be fitted: ", npar, "\n")
@@ -105,13 +103,9 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
   B1 <- getNullOne(nset1)
   B2 <- getNullOne(nset2)
   ## Simulated Annealing
-  tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC,
-                      lower = pars[2L, ], upper = pars[3L,],
-                      control = list(verbose = TRUE,
-                                     max.time = mxt,
-                                     smooth = FALSE),
-                      netObs = netObs, nset1 = nset1, 
-                      nset2 = nset2, d = d, B1 = B1, B2 = B2)
+  tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L, 
+      ], control = list(verbose = TRUE, max.time = mxt, smooth = FALSE), netObs = netObs, 
+      nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
   # 
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
   out <- alienPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs, 
