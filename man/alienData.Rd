@@ -4,42 +4,25 @@
 \alias{alienData}
 \title{Formatting data and return an \code{alienData} object}
 \usage{
-alienData(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
-  dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE,
+alienData(node, edge, trait = NULL, phylo = NULL, directed = TRUE,
   verbose = TRUE)
 }
 \arguments{
-\item{dfNodes}{A vector or a data frame with at least one column named \code{idNodes} providing
-unique identifiers for each species (or individuals) of the dataset. The remaining
-columns could be either traits or phylogenetic or taxonomic data that must
-be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
-parameter described below (otherwise they are ignored).}
+\item{node}{A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).}
 
-\item{dfEdges}{A data frame with at least two columns: \code{idFrom} and \code{idTo}
-descibring the set of edges (links between nodes). If \code{directed} is set
-to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
-Directed interactions for consumer/resource interactions correspond to a transfer
-of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
-The presence of two additonnal columns are checked: \code{value} and \code{idSite}
+\item{edge}{A data frame with two columns: \code{from} and \code{to}
+describing the set of edges (links between nodes). If \code{directed} is set
+to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer
+The presence of a  \code{value} and \code{site}
 which respectively provide the values associated with edges (if absent, they are
-set to 1) and the identifier of the site where the interaction has been obsereved
-(see details).}
+set to 1) and the identifier of the site where the interaction has been observed.
+(See details).}
 
-\item{trait}{A vector indicating columns number (or names) of \code{dfNodes} containing traits data (see \code{Details}).}
+\item{trait}{A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).}
 
-\item{phylo}{A vector indicating colums number (or names) of \code{dfNodes} containing phylo data (see \code{Details}).}
+\item{phylo}{An object of class \code{\link[ape]{phylo}}.}
 
-\item{taxo}{A vector indicating columns number (or names) of \code{dfNodes} containing taxo data (see \code{Details}).}
-
-\item{dfSites}{A data frame with at least two columns named \code{idSite}
-providing information about the site where the interactions have been observed.}
-
-\item{siteEnv}{A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).}
-
-\item{dfOcc}{A data frame with at least two columns \code{idNodes} and \code{idSite}
-providing the occurrence of nodes.}
-
-\item{directed}{Logical. If \code{TRUE} (default value) the network is considered as directed (see \code{Details}).}
+\item{directed}{Logical. If \code{TRUE} (default value) the network is considered directed. (See details).}
 
 \item{verbose}{Logical. Should extra information be reported on progress?}
 }
@@ -51,23 +34,16 @@ An object of the class \code{alienData} is returned.
 it returns an object of class \code{alienData}.
 }
 \details{
-The user is required to provide specific column names to prevent the function
-from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
-information are provided) are used to check the consistency of the data.
-First, all values taken by \code{idFrom} and \code{idTo} column in \code{dfEdges}
-must be found in \code{idNodes} column of \code{dfNodes} (otherwise an error
-is returned). Second if \code{dfSites} and occurrence information is provided too,
-\code{idSite} is used to ensure all the sites for which an occurrence event have
-are reported in \code{idSite}.
+In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
 
-If \code{idSite} is found in \code{dfEdges} and \code{dfSites} is \code{NULL} then, this
-column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
-it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
-\code{dfEdges} means that theuser has spatial information about interactions
-which is more informative than providing occurrence and interaction  data separetly.
+If the data available is at the species level, the species as well as the the individual identifiers will not repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
+
+It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTraitMatrix}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function.
+
+The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
 }
 \author{
-Guillaume Blanchet, Kevin Cazelles & Steve Vissault
+F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 }
 \keyword{classes}
 \keyword{manip}

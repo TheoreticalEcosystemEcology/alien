@@ -3,232 +3,132 @@
 #' @description \code{alienData} is used to check and format data, if correct
 #' it returns an object of class \code{alienData}.
 #'
-#' @param dfNodes A vector or a data frame with at least one column named \code{idNodes} providing
-#' unique identifiers for each species (or individuals) of the dataset. The remaining
-#' columns could be either traits or phylogenetic or taxonomic data that must
-#' be specified respectively by \code{trait}, \code{phylo} or \code{taxo}
-#' parameter described below (otherwise they are ignored).
-#' @param dfEdges A data frame with at least two columns: \code{idFrom} and \code{idTo}
-#' descibring the set of edges (links between nodes). If \code{directed} is set
-#' to \code{TRUE} then the interaction is directed from \code{idFrom} to \code{idTo}.
-#' Directed interactions for consumer/resource interactions correspond to a transfer
-#' of energy so that \code{idFrom} is the resource and \code{idTo} is the consumer.
-#' The presence of two additonnal columns are checked: \code{value} and \code{idSite}
+#' @param node A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).
+#' @param edge A data frame with two columns: \code{from} and \code{to}
+#' describing the set of edges (links between nodes). If \code{directed} is set
+#' to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer
+#' The presence of a  \code{value} and \code{site}
 #' which respectively provide the values associated with edges (if absent, they are
-#' set to 1) and the identifier of the site where the interaction has been obsereved
-#' (see details).
-#' @param trait A vector indicating columns number (or names) of \code{dfNodes} containing traits data (see \code{Details}).
-#' @param phylo A vector indicating colums number (or names) of \code{dfNodes} containing phylo data (see \code{Details}).
-#' @param taxo A vector indicating columns number (or names) of \code{dfNodes} containing taxo data (see \code{Details}).
-#' @param directed Logical. If `TRUE` (default value) the network is considered as directed (see \code{Details}).
-#' @param dfSites A data frame with at least two columns named \code{idSite}
-#' providing information about the site where the interactions have been observed.
-#' @param siteEnv A vector indicating colums number (or names) of \code{dfSites} containing environmental variables (see \code{Details}).
-#' @param dfOcc A data frame with at least two columns \code{idNodes} and \code{idSite}
-#' providing the occurrence of nodes.
+#' set to 1) and the identifier of the site where the interaction has been observed.
+#' (See details).
+#' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
+#' @param phylo An object of class \code{\link[ape]{phylo}}.
+#' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
 #' @param verbose Logical. Should extra information be reported on progress?
 #'
 #' @details
 #'
-#' The user is required to provide specific column names to prevent the function
-#' from returning errors. Two primary keys \code{idNodes} and \code{idSite} (if site
-#' information are provided) are used to check the consistency of the data.
-#' First, all values taken by \code{idFrom} and \code{idTo} column in \code{dfEdges}
-#' must be found in \code{idNodes} column of \code{dfNodes} (otherwise an error
-#' is returned). Second if \code{dfSites} and occurrence information is provided too,
-#' \code{idSite} is used to ensure all the sites for which an occurrence event have
-#' are reported in \code{idSite}.
-#'
-#' If \code{idSite} is found in \code{dfEdges} and \code{dfSites} is \code{NULL} then, this
-#' column will be used to identify sites. Also, if \code{dfOcc} is \code{NULL},
-#' it will be used to build \code{dfOcc}. Note that providing \code{idSites} in
-#' \code{dfEdges} means that theuser has spatial information about interactions
-#' which is more informative than providing occurrence and interaction  data separetly.
-#'
+#' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted. 
+#' 
+#' If the data available is at the species level, the species as well as the the individual identifiers will not repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
+#' 
+#' It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTraitMatrix}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
+#' 
+#' The check on the \code{phylo} argument assumes that the phylogeny is at the species level. 
+#' 
 #' @return
 #' An object of the class \code{alienData} is returned.
 #'
-#' @author Guillaume Blanchet, Kevin Cazelles & Steve Vissault
-#'
-#' @importFrom magrittr %>%
-#' @importFrom magrittr %<>%
+#' @author F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 #'
 #' @keywords manip
 #' @keywords classes
 #' @export
+alienData <- function(node, edge, trait = NULL, phylo = NULL,
+                      directed = TRUE, verbose = TRUE) {
+  
+  ######
+  # node
+  ######
+  if(ncol(node) != 2){
+    stop("'node' must have two columns")
+  }
+  
+  nIndID <- length(unique(node$idInd))
+  nSpID <- length(unique(node$idSp))
+  nSample <- nrow(node)
+  
+  if(nIndID != nSample){
+    stop("The number of identifier in the first column should be unique")
+  }
+  
+  nodeName <- colnames(node)
+  
+  if(nodeName[1] != "idInd"){
+    stop("The first column name of 'node' should be 'idInd'")
+  }
 
-
-alienData <- function(dfNodes, dfEdges, trait = NULL, phylo = NULL, taxo = NULL,
-    dfSites = NULL, siteEnv = NULL, dfOcc = NULL, directed = FALSE, verbose = TRUE) {
-
-    #### handle options
-    osaf <- options()
-    options(stringsAsFactors = FALSE)
-    on.exit(options(osaf))
-
-    #### dfNodes
-    if (is.vector(dfNodes)) {
-        dfNodes <- data.frame(ID = as.character(dfNodes))
+  if(nodeName[2] != "idSp"){
+    stop("The second column name of 'node' should be 'idSp'")
+  }
+  
+  if(nIndID == nSpID){
+    node$idInd <- node$idSp
+  }
+  
+  ######
+  # edge
+  ######
+  stopifnot(all(edge$from %in% node$idInd))
+  stopifnot(all(edge$to %in% node$idInd))
+  
+  idn <- which(!node$idInd %in% c(edge$from, edge$to))
+  if (length(idn)){
+    warning(paste0("Unlinked nodes: ", paste(node$idInd, collapse = ", ")))
+  }
+  
+  if (!"value" %in% names(edge)) {
+    if (verbose){
+      message("==> No Edges' value detected, values are set to 1")
     }
-    ##
-    dfNodes %<>% as.data.frame
-    dfEdges %<>% as.data.frame
-    ##
-    stopifnot("idNodes" %in% names(dfNodes))
-    stopifnot("idFrom" %in% names(dfEdges))
-    stopifnot("idTo" %in% names(dfEdges))
-    ##
-    dfNodes$idNodes %<>% as.character
-    dfEdges$idFrom %<>% as.character
-    dfEdges$idTo %<>% as.character
-    ##
-    availableMeths <- data.frame(methods = c("Co-occurence", "Direct Matching Centrality",
-        "iEat"), available = FALSE)
-
-    ##
-    stopifnot(!any(table(dfNodes$idNodes) > 1))
-    if (verbose)
-        message("==> Nodes information detected")
-
-    ##
-    sc <- 0
-    if (is.null(trait)) {
-        nmTrait <- NULL
-        if (verbose)
-            message("==> No traits detected")
-    } else {
-        nmTrait <- names(dfNodes[, trait, drop = FALSE])
-        sc <- 1
-        if (verbose)
-            message(paste0("==> Traits detected: ", paste(nmTrait, collapse = ", ")))
+    edge$value <- 1
+  }
+  
+  #######
+  # trait
+  #######
+  if(!is.null(trait)){
+    stopifnot(all(trait$idInd %in% node$idInd))
+    
+    if(ncol(trait) != 3){
+      stop("'trait' must have three columns")
     }
-    ##
-    if (is.null(phylo)) {
-        nmPhylo <- NULL
-        if (verbose)
-            message("==> No phylo detected")
-    } else {
-        nmPhylo <- names(dfNodes[, phylo, drop = FALSE])
-        sc <- 1
-        if (verbose)
-            message(paste0("==> Phylo detected: ", paste(nmPhylo, collapse = ", ")))
+    
+    traitName <- colnames(trait)
+    
+    if(traitName[1] != "idInd"){
+      stop("The first column name of 'trait' should be 'idInd'")
     }
-    ##
-    if (is.null(taxo)) {
-        nmTaxo <- NULL
-        if (verbose)
-            message("==> No taxon detected")
-    } else {
-        nmTaxo <- names(dfNodes[, taxo, drop = FALSE])
-        sc <- 1
-        if (verbose)
-            message(paste0("==> Taxo detected: ", paste(nmTaxo, collapse = ", ")))
+    
+    if(traitName[2] != "trait"){
+      stop("The second column name of 'trait' should be 'trait'")
     }
-    ##
-    if (sc) {
-        availableMeths$available[availableMeths$methods == "iEat"] <- TRUE
-        availableMeths$available[availableMeths$methods == "Direct Matching Centrality"] <- TRUE
+  
+    if(traitName[3] != "value"){
+      stop("The third column name of 'trait' should be 'value'")
     }
-
-
-    ############################## dfEdges
-    stopifnot(all(dfEdges$idFrom %in% dfNodes$idNodes))
-    stopifnot(all(dfEdges$idTo %in% dfNodes$idNodes))
-    idn <- which(!dfNodes$idNodes %in% c(dfEdges$idFrom, dfEdges$idTo))
-    if (length(idn))
-        warning(paste0("Unlinked nodes: ", paste(dfNodes$idNodes[idn], collapse = ", ")))
-
-    if (!"value" %in% names(dfEdges)) {
-        if (verbose)
-            message("==> No Edges' value detected, values are set to 1")
-        dfEdges$value <- 1
-    } else if (verbose)
-        message("==> Edges' values detected")
-
-
-    #### dfSites
-    nmSite <- NULL
-    if (is.null(dfSites)) {
-        if ("idSite" %in% names(dfEdges)) {
-            if (verbose)
-                message("==> Sites' ID are provided by dfEdges")
-            dfSites <- data.frame(idSite = unique(dfEdges$idSite))
-            nbSites <- nrow(dfSites)
-        } else {
-            if (verbose)
-                message("==> No site info detected")
-            nbSites <- NULL
-        }
-
-    } else {
-        stopifnot("idSite" %in% names(dfSites))
-        stopifnot(all(table(dfSites$idSite) == 1))
-        ##
-        if (!is.null(siteEnv)) {
-            ##
-            dfSites <- cbind(idSite = dfSites$idSite, dfSites[, siteEnv, drop = FALSE])
-            dfSites <- dfSites[, unique(names(dfSites))]
-            ##
-        }
-        if (ncol(dfSites) > 1) {
-            nmSite <- names(dfSites)[-1L]
-            if (verbose)
-                message(paste0("==> Site info detected: ", paste(nmSite, collapse = ", ")))
-        } else if (verbose)
-            message("==> No site info detected")
-        ##
-        dfSites$idSite %<>% as.character
-        if ("idSite" %in% names(dfEdges)) {
-            if (!all(dfSites$idSite %in% dfEdges$idSite)) {
-                warnings("Sites without interaction records")
-            }
-        }
-        nbSites <- nrow(dfSites)
+    
+    # Make sure "value" is a character string
+    trait$value <- as.character(trait$value)
+  }
+  
+  
+  #######
+  # phylo
+  #######
+  if(!is.null(phylo)){
+    stopifnot(all(phylo$tip.label %in% node$idSp))
+    
+    if(class(phylo) != "phylo"){
+      stop("'phylo' needs to be an object of class phylo")
     }
-
-    #### dfOcc
-    occ <- FALSE
-    if ("idSite" %in% names(dfEdges) & is.null(dfOcc)) {
-        stopifnot(all(dfEdges$idSite %in% dfSites$idSite))
-        dfEdges$idSite %<>% as.character
-        if (verbose)
-            message("==> Getting occurrence information from 'dfEdges'...")
-        ##
-        dfOcc <- data.frame(id = c(dfEdges$idTo, dfEdges$idFrom), idSite = rep(dfEdges$idSite,
-            2)) %>% unique
-        ##
-        names(dfOcc)[1L] <- "idNodes"
-    }
-
-
-    if (!is.null(dfOcc)) {
-        stopifnot("idSite" %in% names(dfOcc))
-        dfOcc$idSite %<>% as.character
-        stopifnot("idNodes" %in% names(dfOcc))
-        ##
-        stopifnot(all(dfOcc$idSite %in% dfSites$idSite))
-        stopifnot(all(dfOcc$idNodes %in% dfNodes$idNodes))
-        occ <- TRUE
-        if (!all(dfNodes$idNodes %in% dfOcc$idNodes))
-            warning("Nodes without any occurrence record.")
-        if (verbose)
-            message("==> Occurrence information detected")
-        dfOcc$idNodes %<>% as.character
-        ##
-        nbOcc <- nrow(dfOcc)
-        availableMeths$available[availableMeths$methods == "Co-occurence"] <- TRUE
-    } else {
-        if (!is.null(nbSites))
-            warning("Site information provided without any occurrence")
-        nbOcc <- NULL
-    }
-
-
-    #### Return results
-    res <- list(dfNodes = dfNodes, dfEdges = dfEdges, dfSites = dfSites, dfOcc = dfOcc,
-        info = list(nbNodes = nrow(dfNodes), nbEdges = nrow(dfEdges), directed = directed,
-            nbSites = nbSites, nbOcc = nbOcc, nmTrait = nmTrait, nmPhylo = nmPhylo,
-            nmTaxo = nmTaxo, nmSite = nmSite, availableMeths = availableMeths))
-    class(res) <- "alienData"
-    res
+  }
+  
+  # Results
+  res <- list(node = node, edge = edge, trait = trait,
+              phylo = phylo, info = list(directed = directed))
+  
+  class(res) <- "alienData"
+  
+  return(res)
 }

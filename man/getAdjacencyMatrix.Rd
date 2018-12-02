@@ -4,43 +4,37 @@
 \alias{getAdjacencyMatrix}
 \title{Compute the adjacency matrix for a given alienData object}
 \usage{
-getAdjacencyMatrix(object, bipartite = FALSE, level = "individual",
-  binary = FALSE)
+getAdjacencyMatrix(object, bipartite = FALSE, binary = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{alienData}.}
 
-\item{bipartite}{A logical. Is the adjacency matrix associated with a
-bipartite network? Default is set to \code{FALSE}.}
+\item{bipartite}{Logical. Whether the adjacency matrix should be constructed for a associated with a
+bipartite network? Default is \code{FALSE}.}
 
-\item{level}{Either "species" or "individuals". Whether the analysis should be done at the species or the individual levels. Default is "species". (See details)}
-
-\item{binary}{A logical. Should the interactions be binary (see details)?
-Otherwise the \code{value} column of \code{dfEdges} is used. Default is set
-to \code{FALSE}.}
+\item{binary}{Logical. Should the interactions be binary (see details)?
+Otherwise the \code{value} column of \code{edge} is used. Default is \code{FALSE}.}
 }
 \value{
 An adjacency matrix of class \code{matrix}.
 }
 \description{
-\code{getAdjacencyMatrix} computes the adjacency matrix based on
-the \code{dfEdges} element of an alienData object.
+Computes the adjacency matrix based on
+the \code{edge} par of an alienData object.
 }
 \details{
 By default \code{getAdjacencyMatrix} creates a square matrix including all
-nodes found in the \code{dfNodes} data frame of \code{object}. Then, it reads
-\code{dfEdges} to fill the matrix out. If bipartite is \code{TRUE} then only the
-nodes found in the \code{idFrom} column of \code{dfEdges} are used to name
-the rows of the adjacency matrix. Similarly, \code{idTo}'s nodes become the
-columns' names.
+nodes found in the \code{node} data frame of \code{object}. Then, it reads
+\code{edge} to fill the matrix out. If bipartite is \code{TRUE} then only the
+nodes found in the \code{from} column of \code{edge} are used to name
+the rows of the adjacency matrix. Similarly, the \code{to} nodes become the
+columns names.
 
-The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species. Note that if, at the finest resolution, the raw data is at the species level, than the argument \code{level} defined at the individual or species level will results in the same adjacency matrix.
-
-Currenlty if there are several values for the same interaction
+Currently if there are several values for the same interaction
 \code{getAdjacencyMatrix} sums them unless \code{binary} is \code{TRUE}.
 }
 \author{
-Kevin Cazelles
+Kevin Cazelles, F. Guillaume Blanchet
 }
 \keyword{adjacency}
 \keyword{matrix}

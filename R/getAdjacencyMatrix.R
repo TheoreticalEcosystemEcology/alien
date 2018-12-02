@@ -1,61 +1,67 @@
 #' @title Compute the adjacency matrix for a given alienData object
 #'
-#' @description \code{getAdjacencyMatrix} computes the adjacency matrix based on
-#' the \code{dfEdges} element of an alienData object.
+#' @description Computes the adjacency matrix based on
+#' the \code{edge} par of an alienData object.
 #'
 #' @param object An object of class \code{alienData}.
-#' @param bipartite A logical. Is the adjacency matrix associated with a
-#' bipartite network? Default is set to \code{FALSE}.
-#' @param level Either "species" or "individuals". Whether the analysis should be done at the species or the individual levels. Default is "species". (See details)
-#' @param binary A logical. Should the interactions be binary (see details)?
-#' Otherwise the \code{value} column of \code{dfEdges} is used. Default is set
-#' to \code{FALSE}.
+#' @param bipartite Logical. Whether the adjacency matrix should be constructed for a associated with a
+#' bipartite network? Default is \code{FALSE}.
+#' @param binary Logical. Should the interactions be binary (see details)?
+#' Otherwise the \code{value} column of \code{edge} is used. Default is \code{FALSE}.
 #'
 #' @details
 #' By default \code{getAdjacencyMatrix} creates a square matrix including all
-#' nodes found in the \code{dfNodes} data frame of \code{object}. Then, it reads
-#' \code{dfEdges} to fill the matrix out. If bipartite is \code{TRUE} then only the
-#' nodes found in the \code{idFrom} column of \code{dfEdges} are used to name
-#' the rows of the adjacency matrix. Similarly, \code{idTo}'s nodes become the
-#' columns' names.
+#' nodes found in the \code{node} data frame of \code{object}. Then, it reads
+#' \code{edge} to fill the matrix out. If bipartite is \code{TRUE} then only the
+#' nodes found in the \code{from} column of \code{edge} are used to name
+#' the rows of the adjacency matrix. Similarly, the \code{to} nodes become the
+#' columns names.
 #' 
-#' The argument \code{level} takes into account species if the data considered has multiple measures for the same species. In this case the mean (numeric variable) or the dominant level (factor) will be considered when gathering the data by species. Note that if, at the finest resolution, the raw data is at the species level, than the argument \code{level} defined at the individual or species level will results in the same adjacency matrix.
-#'
-#' Currenlty if there are several values for the same interaction
+#' Currently if there are several values for the same interaction
 #' \code{getAdjacencyMatrix} sums them unless \code{binary} is \code{TRUE}.
 #'
 #' @return
 #' An adjacency matrix of class \code{matrix}.
 #'
-#' @author Kevin Cazelles
+#' @author Kevin Cazelles, F. Guillaume Blanchet
 #'
 #' @importFrom magrittr %>%
 #'
 #' @keywords adjacency matrix
 #' @export
 
-getAdjacencyMatrix <- function(object, bipartite = FALSE, level = "individual", binary = FALSE) {
-    stopifnot(class(object) == "alienData")
-    tmp <- object$dfEdges[, c("idFrom", "idTo", "value")]
+getAdjacencyMatrix <- function(object, bipartite = FALSE,
+                               binary = FALSE) {
+  
+  stopifnot(class(object) == "alienData")
     
-    if (!bipartite) {
-        out <- matrix(0, object$nbNodes, object$nbNodes, dimnames = list(object$dfNodes$idNodes, 
-            object$dfNodes$idNodes))
-    } else {
-        ## idTo as rows
-        uit <- unique(tmp$idTo) %>% sort
-        ## idFrom as columns
-        uif <- unique(tmp$idFrom) %>% sort
-        out <- matrix(0, length(uit), length(uif), dimnames = list(uit, uif))
-    }
-    
-    if (binary) {
-        tmp$value <- 1
-        tmp <- unique(tmp)
-    }
-    for (i in 1:nrow(tmp)) {
-        out[tmp[i, 2L], tmp[i, 1L]] <- out[tmp[i, 2L], tmp[i, 1L]] + tmp[i, 3L]
-    }
-    
-    return(out)
+  # Basic objects
+  nNode <- nrow(object$node)
+  
+  if (!bipartite) {
+      out <- matrix(0, nrow = nNode, ncol = nNode,
+                    dimnames = list(object$node$idInd,
+                                    object$node$idInd))
+  } else {
+      ## "to" as rows
+      uit <- unique(object$edge$to) %>% sort
+      ## "from" as columns
+      uif <- unique(object$edge$from) %>% sort
+      
+      out <- matrix(0, length(uit), length(uif),
+                    dimnames = list(uit, uif))
+  }
+  
+  for (i in 1:nrow(object$edge)) {
+      out[object$edge[i, 2L],
+          object$edge[i, 1L]] <- out[object$edge[i, 2L],
+                                     object$edge[i, 1L]] +
+                                 object$edge[i, 3L]
+  }
+  
+  if (binary) {
+    out <- ifelse(out < 1, 0, 1)
+  }
+  
+  return(out)
 }
