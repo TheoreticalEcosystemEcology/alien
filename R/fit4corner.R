@@ -12,50 +12,49 @@
 #' @param priors An object of class \code{HMSCprior} (\code{\link[HMSC]{as.HMSCprior}}). If NULL, the function will generate flat priors to estimate the model. This argument is active only when "HMSC" is used.
 #' @param iniParam An object of class \code{HMSCparam} (\code{\link[HMSC]{as.HMSCparam}}). If NULL, the function will generate initial parameters ramdomly. This argument is active only when "HMSC" is used.
 #' @param \dots Other parameters passed to either \link[mvabund]{traitglm} or \link[HMSC]{hmsc}.
-#' 
-#' @details 
-#' 
+#'
+#' @details
+#'
 #' The fourth corner models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
-#' 
+#'
 #' The fourth corner models assume that adjacency matrix (species by species matrix) used to perform the analysis has as rows the "From" species and as columns the "To" species.
-#' 
+#'
 #' The arguments \code{formulaFrom} and \code{formulaTo} should take the form \code{~ x + y * z}, that is, the left side of the equation should not be given. Also, note that the default formulas always include an intercept.
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' @return
-#' 
+#'
 #' An object of class hmsc (for the analysis carried out with the HMSC package) or an object of class traitglm (for the analysis carried out with the mvabund package).
-#' 
+#'
 #' @author
 #' F. Guillaume Blanchet
-#' 
-#' @importFrom stats model.matrix
-#' @importFrom mvabund traitglm
-#' @importFrom HMSC as.HMSCdata
-#' @importFrom HMSC as.HMSCprior
-#' @importFrom HMSC as.HMSCparam
-#' @importFrom HMSC hmsc
+#'
 #'
 #' @export
 
 
-fit4corner <- function(data, formulaFrom = "~ .", 
-                       formulaTo = "~ .", type = "HMSC", 
-                       family = NULL, priors = NULL, 
+fit4corner <- function(data, formulaFrom = "~ .",
+                       formulaTo = "~ .", type = "HMSC",
+                       family = NULL, priors = NULL,
                        iniParam = NULL, ...){
   # General check
   stopifnot(class(data) == "alienData")
-  
+
   #############
   # Format data
   #############
   # Adjacency matrix
   adjData <- getAdjacencyMatrix(data, bipartite = TRUE)
-  
-  # "Raw " trait data
-  traits <- getTrait(data, bipartite = TRUE)
-  
+
+  traits <- getTrait(data, level = level, bipartite = TRUE)
+
+  # Trait data from
+  traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
+
+  # Trait data to
+  traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
+
   # Check for NAs in traits
   if(any(sapply(traits, function(x) any(is.na(x))))){
     stop("There is at least one NA in the traits. Use getTrait() to investigate")
@@ -71,10 +70,10 @@ fit4corner <- function(data, formulaFrom = "~ .",
   if(class == "HMSC"){
     # Trait data from
     traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
-    
+
     # Trait data to
     traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
-    
+
     # Construct HMSCdata object
     Data <- HMSC::as.HMSCdata(Y = adjData, X = traitsTo,
                               Tr = t(traitsFrom), scaleX = FALSE,
@@ -86,17 +85,16 @@ fit4corner <- function(data, formulaFrom = "~ .",
     if(is.null(priors)){
       priors <- HMSC::as.HMSCprior(Data, family = family)
     }
-    
+
     # Construct HMSCprior object
     if(is.null(iniParam)){
       iniParam <- HMSC::as.HMSCparam(Data, priors)
     }
-      
+
     # Perform HMSC analysis
     res <- HMSC::hmsc(Data, param = iniParam, priors = priors,
                       family = family, ...)
   }
-  
+
   return(res)
 }
-  

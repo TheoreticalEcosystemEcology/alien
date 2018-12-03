@@ -23,11 +23,9 @@ vignettes/*.pdf
 *.Rproj
 
 # Rcpp files
-/src/*.o
-/src/*.o-*
-/src/*.d
-/src/*.so
-*.dll
+src/*.o
+src/*.so
+src/*.dll
 
 # Temporary files created by R markdown
 *.utf8.md

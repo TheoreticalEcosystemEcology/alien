@@ -27,6 +27,8 @@ fitDMC <- function(formula, data, class = NULL, family = NULL,
 
   # Construct adjencency matrix
   adjMat <- getAdjacencyMatrix(data, bipartite = TRUE)
+  nFromSp <- ncol(adjMat)
+  nToSp <- nrow(adjMat)
   
   # Construct trait matrix
   traits <- getTrait(data, bipartite = TRUE)
@@ -36,7 +38,15 @@ fitDMC <- function(formula, data, class = NULL, family = NULL,
     stop("There is at least one NA in the traits. Use getTrait() to investigate.")
   }
   
-  # Unfold adj
+  # Unfold adjMat into a vector
+  adjVec <- as.vector(adjMat)
+  
+  # Organize trait$to to match the size of adjMat
+  traitsTo <- do.call(rbind, replicate(nFromSp, traits$to, simplify=FALSE))
+  # Organize trait$to to match the size of adjMat
+  traitsFrom <- do.call(rbind, replicate(nToSp, traits$from, simplify=FALSE))
+  
+  do.call(rbind, replicate(nFromSp, traits$to, simplify=FALSE))
   
   # set I
     df_interact <- data.frame(expand.grid(rownames(df_interact), colnames(df_interact)),

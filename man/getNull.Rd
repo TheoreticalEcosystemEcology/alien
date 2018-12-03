@@ -36,7 +36,7 @@ original function can.
 \item \code{getNullOne}: Special case of \code{getNull} for which the orthonormal
 basis of the unit vector is required.
 
-\item \code{prodNorm}: A repeated matrix produc in \code{fitMC} that requires
+\item \code{prodNorm}: A repeated matrix produc in \code{fitIMC} that requires
 to normalise one vector.
 }}
 

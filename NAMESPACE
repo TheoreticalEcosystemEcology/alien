@@ -8,12 +8,17 @@ export(fitIMC)
 export(fitKNN)
 export(getAdjacencyMatrix)
 export(getConnectance)
+<<<<<<< HEAD
 export(getTrait)
 export(webFromNicheModel)
 importFrom(HMSC,as.HMSCdata)
 importFrom(HMSC,as.HMSCparam)
 importFrom(HMSC,as.HMSCprior)
 importFrom(HMSC,hmsc)
+=======
+export(getTraitMatrix)
+import(randomForest)
+>>>>>>> fbe2841db5f0131cd368d38f7da1f46859a73a75
 importFrom(Rcpp,evalCpp)
 importFrom(magrittr,"%>%")
 importFrom(mvabund,traitglm)
