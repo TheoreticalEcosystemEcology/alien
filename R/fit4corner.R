@@ -53,9 +53,17 @@ fit4corner <- function(data, formulaFrom = "~ .",
   traitsFrom <- stats::model.matrix(as.formula(formulaFrom), 
                                     data = traits$from)
   
+  if(any(colSums(traitsFrom)==0)){
+    stop("Some trait combinations defined by formulaFrom do not exist")
+  }
+  
   # Trait data to
   traitsTo <- stats::model.matrix(as.formula(formulaTo), 
                                   data = traits$to)
+
+  if(any(colSums(traitsTo)==0)){
+    stop("Some trait combinations defined by formulaTo do not exist")
+  }
   
   # mvabund
   if(type == "mvabund"){
