@@ -26,6 +26,8 @@ vignettes/*.pdf
 src/*.o
 src/*.so
 src/*.dll
+src/*.rds
+
 
 # Temporary files created by R markdown
 *.utf8.md
