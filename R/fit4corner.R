@@ -60,8 +60,8 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # mvabund
   if(type == "mvabund"){
     # Perform traitglm analysis
-    res <- mvabund::traitglm(adjData, traits$to, traits$from,
-                             family = family, ...)
+    model <- mvabund::traitglm(adjData, traits$to, traits$from,
+                               family = family, ...)
   }
 
   # HMSC
@@ -92,10 +92,14 @@ fit4corner <- function(data, formulaFrom = "~ .",
     }
       
     # Perform HMSC analysis
-    res <- HMSC::hmsc(Data, param = iniParam, priors = priors,
+    model <- HMSC::hmsc(Data, param = iniParam, priors = priors,
                       family = family, ...)
+    
   }
   
+  # Prediction
+  res <- predict(model)
+
   return(res)
 }
   
