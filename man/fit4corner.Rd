@@ -11,9 +11,9 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 \arguments{
 \item{data}{an object of the class alienData, see as.alienData function.}
 
-\item{formulaFrom}{formula to construct the trait variables associated to the "From" organisms. Default is "~ .".}
+\item{formulaFrom}{A one-sided formula specifying how to construct the trait variables associated to the "From" organisms. Default is "~ .".}
 
-\item{formulaTo}{formula to construct the trait variables associated to the "To" organisms. Default is "~ .".}
+\item{formulaTo}{A one-sided formula specifying how to construct the trait variables associated to the "To" organisms. Default is "~ .".}
 
 \item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
 
@@ -28,7 +28,7 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 \item{\dots}{Other parameters passed to either \link[mvabund]{traitglm} or \link[HMSC]{hmsc}.}
 }
 \value{
-An object of class hmsc (for the analysis carried out with the HMSC package) or an object of class traitglm (for the analysis carried out with the mvabund package).
+A species by species matrix.
 }
 \description{
 Fit fourth corner prediction model using either the approach proposed by Brown et al. (2014) (\code{\link[mvabund]{traitglm}}) or Ovaskainen et al. (2017) (\link[HMSC]{hmsc}).

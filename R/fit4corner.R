@@ -5,8 +5,8 @@
 #' @description Fit fourth corner prediction model using either the approach proposed by Brown et al. (2014) (\code{\link[mvabund]{traitglm}}) or Ovaskainen et al. (2017) (\link[HMSC]{hmsc}).
 #'
 #' @param data an object of the class alienData, see as.alienData function.
-#' @param formulaFrom formula to construct the trait variables associated to the "From" organisms. Default is "~ .".
-#' @param formulaTo formula to construct the trait variables associated to the "To" organisms. Default is "~ .".
+#' @param formulaFrom A one-sided formula specifying how to construct the trait variables associated to the "From" organisms. Default is "~ .".
+#' @param formulaTo A one-sided formula specifying how to construct the trait variables associated to the "To" organisms. Default is "~ .".
 #' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
 #' @param type method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.
 #' @param family For 'mvabund', the family of the response variable can be defined using \link[stats]{family}. The negative binomial with unknown overdispersion and a log-link can be specified as "negative.binomial", and it is the default. For 'HMSC', use either 'probit', 'logit', 'gaussian', 'poisson', 'overPoisson'.
@@ -24,7 +24,7 @@
 #' 
 #' @return
 #' 
-#' An object of class hmsc (for the analysis carried out with the HMSC package) or an object of class traitglm (for the analysis carried out with the mvabund package).
+#' A species by species matrix.
 #' 
 #' @author
 #' F. Guillaume Blanchet
