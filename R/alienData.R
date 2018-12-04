@@ -11,7 +11,7 @@
 #' which respectively provide the values associated with edges (if absent, they are
 #' set to 1) and the identifier of the site where the interaction has been observed.
 #' (See details).
-#' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "traits" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
+#' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "trait" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
 #' @param phylo An object of class \code{\link[ape]{phylo}}.
 #' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
 #' @param verbose Logical. Should extra information be reported on progress?
@@ -20,9 +20,9 @@
 #'
 #' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
 #'
-#' If the data available is at the species level, the species as well as the the individual identifiers will not repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
+#' If the data available is at the species level, the species as well as the the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
 #'
-#' It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
+#' It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
 #'
 #' The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
 #'
