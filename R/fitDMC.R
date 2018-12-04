@@ -20,8 +20,8 @@
 #' @importFrom utils type.convert
 #'
 #' @export
-fitDMC <- function(formula, data, class = NULL, family = NULL, 
-                   traits = NULL, step = FALSE, ...) {
+fitDMC <- function(formula, data, binary = TRUE, class = NULL, family = NULL, 
+                   traits = NULL, ...) {
 
   stopifnot(class(data) == "alienData")
 
@@ -41,9 +41,13 @@ fitDMC <- function(formula, data, class = NULL, family = NULL,
   # Unfold adjMat into a vector
   adjVec <- as.vector(adjMat)
   
-  # Organize trait$to to match the size of adjMat
-  traitsTo <- do.call(rbind, replicate(nFromSp, traits$to, simplify=FALSE))
-  # Organize trait$to to match the size of adjMat
-  traitsFrom <- do.call(rbind, replicate(nToSp, traits$from, simplify=FALSE))
-
+  # Organize trait$to to match the size and organization of adjMat
+  traitsTo <- as.data.frame(traits$to[rep(seq_len(nToSp), nFromSp),])
+  colnames(traitsTo) <- colnames(traits$to)
+  
+  # Organize trait$from to match the size and organization of adjMat
+  traitsFrom <- as.data.frame(traits$from[rep(seq_len(nFromSp), each = nToSp),])
+  colnames(traitsFrom) <- colnames(traits$from)
+  
+  dat <- cbind(adjVec, traitsTo, traitsFrom)
 }
