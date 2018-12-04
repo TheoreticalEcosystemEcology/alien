@@ -28,7 +28,8 @@ Imports:
     GenSA,
     igraph,
     mvabund,
-    HMSC
+    HMSC,
+    vegan
 Remotes: guiblanchet/HMSC
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes

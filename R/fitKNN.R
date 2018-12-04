@@ -27,8 +27,6 @@
 #'
 #' A matrix giving the the probability of interaction among each pairs of species.
 #'
-#' @importFrom stats model.matrix
-#'
 #' @export
 fitKNN <- function(data, distFrom = "jaccard", distTo = "jaccard",
                    distTraitFrom = "euclidean",

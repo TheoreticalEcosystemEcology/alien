@@ -38,7 +38,7 @@ In the \code{nodes} argument, the first columns (individual identification) shou
 
 If the data available is at the species level, the species as well as the the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
 
-It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function.
+It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTrait}} function.
 
 The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
 }
