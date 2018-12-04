@@ -48,10 +48,10 @@ Latents traits are buitl under certain topological constraints:
 #  if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
 #}
 
-#res <- fitIMC(mat)
+res <- fitIMC(mat)
 
-#plot(trait1, res$methodsSpecific$params$M1)
-#plot(trait2, res$methodsSpecific$params$M2)
+plot(trait1, res$methodsSpecific$params$M1)
+plot(trait2, res$methodsSpecific$params$M2)
 
 }
 \references{
