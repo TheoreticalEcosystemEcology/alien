@@ -59,7 +59,7 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   dat <- cbind(adjVec, traitsTo, traitsFrom)
   
   # Reorganize formula
-  Formula <- adjVec ~ x + y
+  Formula <- adjVec ~ x + y # Bogus formula
   Formula[[1]] <- formula[[1]]
   Formula[[3]] <- formula[[2]]
   
