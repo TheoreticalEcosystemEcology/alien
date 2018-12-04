@@ -4,7 +4,7 @@
 #'
 #' @description Fit direct matching centrality model
 #'
-#' @param formula A one-sided formula specifying how the different traits should be used to estimate species interactions.
+#' @param formula A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.
 #' @param data an object of the class \code{\link{alienData}}
 #' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
 #' @param type Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}). 

@@ -7,7 +7,7 @@
 fitDMC(formula, data, binary = TRUE, type = NULL, family = NULL, ...)
 }
 \arguments{
-\item{formula}{A one-sided formula specifying how the different traits should be used to estimate species interactions.}
+\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.}
 
 \item{data}{an object of the class \code{\link{alienData}}}
 
