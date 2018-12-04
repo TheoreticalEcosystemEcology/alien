@@ -18,14 +18,14 @@
 #'
 #' @details
 #'
-#' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted. 
-#' 
+#' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
+#'
 #' If the data available is at the species level, the species as well as the the individual identifiers will not repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
-#' 
-#' It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTraitMatrix}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
-#' 
-#' The check on the \code{phylo} argument assumes that the phylogeny is at the species level. 
-#' 
+#'
+#' It is from the \code{traits} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTraitMatrix}} function. 
+#'
+#' The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
+#'
 #' @return
 #' An object of the class \code{alienData} is returned.
 #'
@@ -36,24 +36,24 @@
 #' @export
 alienData <- function(node, edge, trait = NULL, phylo = NULL,
                       directed = TRUE, verbose = TRUE) {
-  
+
   ######
   # node
   ######
   if(ncol(node) != 2){
     stop("'node' must have two columns")
   }
-  
+
   nIndID <- length(unique(node$idInd))
   nSpID <- length(unique(node$idSp))
   nSample <- nrow(node)
-  
+
   if(nIndID != nSample){
     stop("The number of identifier in the first column should be unique")
   }
-  
+
   nodeName <- colnames(node)
-  
+
   if(nodeName[1] != "idInd"){
     stop("The first column name of 'node' should be 'idInd'")
   }
@@ -61,74 +61,74 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL,
   if(nodeName[2] != "idSp"){
     stop("The second column name of 'node' should be 'idSp'")
   }
-  
+
   if(nIndID == nSpID){
     node$idInd <- node$idSp
   }
-  
+
   ######
   # edge
   ######
   stopifnot(all(edge$from %in% node$idInd))
   stopifnot(all(edge$to %in% node$idInd))
-  
+
   idn <- which(!node$idInd %in% c(edge$from, edge$to))
   if (length(idn)){
     warning(paste0("Unlinked nodes: ", paste(node$idInd, collapse = ", ")))
   }
-  
+
   if (!"value" %in% names(edge)) {
     if (verbose){
       message("==> No Edges' value detected, values are set to 1")
     }
     edge$value <- 1
   }
-  
+
   #######
   # trait
   #######
   if(!is.null(trait)){
     stopifnot(all(trait$idInd %in% node$idInd))
-    
+
     if(ncol(trait) != 3){
       stop("'trait' must have three columns")
     }
-    
+
     traitName <- colnames(trait)
-    
+
     if(traitName[1] != "idInd"){
       stop("The first column name of 'trait' should be 'idInd'")
     }
-    
+
     if(traitName[2] != "trait"){
       stop("The second column name of 'trait' should be 'trait'")
     }
-  
+
     if(traitName[3] != "value"){
       stop("The third column name of 'trait' should be 'value'")
     }
-    
+
     # Make sure "value" is a character string
     trait$value <- as.character(trait$value)
   }
-  
-  
+
+
   #######
   # phylo
   #######
   if(!is.null(phylo)){
     stopifnot(all(phylo$tip.label %in% node$idSp))
-    
+
     if(class(phylo) != "phylo"){
       stop("'phylo' needs to be an object of class phylo")
     }
   }
-  
+
   # Results
   res <- list(node = node, edge = edge, trait = trait,
               phylo = phylo, info = list(directed = directed))
-  
+
   class(res) <- "alienData"
-  
+
   return(res)
 }
