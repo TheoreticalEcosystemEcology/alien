@@ -45,7 +45,7 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # Adjacency matrix
   adjData <- getAdjacencyMatrix(data, bipartite = TRUE)
   
-  traits <- getTraitMatrix(data, level = level, bipartite = TRUE)
+  traits <- getTrait(data, bipartite = TRUE)
   
   # Trait data from
   traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
