@@ -54,14 +54,14 @@ fit4corner <- function(data, formulaFrom = "~ .",
   traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
   
   # mvabund
-  if(class == "mvabund"){
+  if(type == "mvabund"){
     # Perform traitglm analysis
     res <- mvabund::traitglm(adjData, traits$to, traits$from,
                              family = family, ...)
   }
 
   # HMSC
-  if(class == "HMSC"){
+  if(type == "HMSC"){
     # Trait data from
     traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
     
