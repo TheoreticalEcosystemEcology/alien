@@ -15,7 +15,7 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 
 \item{formulaTo}{formula to construct the trait variables associated to the "To" organisms. Default is "~ .".}
 
-\item{binary}{Logical. Whether the adjacency matrix is binary or not.}
+\item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
 
 \item{type}{method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.}
 

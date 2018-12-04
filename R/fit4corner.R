@@ -7,7 +7,7 @@
 #' @param data an object of the class alienData, see as.alienData function.
 #' @param formulaFrom formula to construct the trait variables associated to the "From" organisms. Default is "~ .".
 #' @param formulaTo formula to construct the trait variables associated to the "To" organisms. Default is "~ .".
-#' @param binary Logical. Whether the adjacency matrix is binary or not.
+#' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
 #' @param type method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.
 #' @param family For 'mvabund', the family of the response variable can be defined using \link[stats]{family}. The negative binomial with unknown overdispersion and a log-link can be specified as "negative.binomial", and it is the default. For 'HMSC', use either 'probit', 'logit', 'gaussian', 'poisson', 'overPoisson'.
 #' @param priors An object of class \code{HMSCprior} (\code{\link[HMSC]{as.HMSCprior}}). If NULL, the function will generate flat priors to estimate the model. This argument is active only when "HMSC" is used.
@@ -44,15 +44,18 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # Format data
   #############
   # Adjacency matrix
-  adjData <- getAdjacencyMatrix(data, bipartite = TRUE, binary = binary)
+  adjData <- getAdjacencyMatrix(data, bipartite = TRUE, 
+                                binary = binary)
   
   traits <- getTrait(data, bipartite = TRUE)
   
   # Trait data from
-  traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
+  traitsFrom <- stats::model.matrix(as.formula(formulaFrom), 
+                                    data = traits$from)
   
   # Trait data to
-  traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
+  traitsTo <- stats::model.matrix(as.formula(formulaTo), 
+                                  data = traits$to)
   
   # mvabund
   if(type == "mvabund"){
@@ -64,10 +67,12 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # HMSC
   if(type == "HMSC"){
     # Trait data from
-    traitsFrom <- stats::model.matrix(as.formula(formulaFrom), data = traits$from)
+    traitsFrom <- stats::model.matrix(as.formula(formulaFrom),
+                                      data = traits$from)
     
     # Trait data to
-    traitsTo <- stats::model.matrix(as.formula(formulaTo), data = traits$to)
+    traitsTo <- stats::model.matrix(as.formula(formulaTo),
+                                    data = traits$to)
     
     # Construct HMSCdata object
     Data <- HMSC::as.HMSCdata(Y = adjData, X = traitsTo,

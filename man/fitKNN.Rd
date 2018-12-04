@@ -4,12 +4,14 @@
 \alias{fitKNN}
 \title{Fit using K-nearest neighbour}
 \usage{
-fitKNN(data, distFrom = "jaccard", distTo = "jaccard",
+fitKNN(data, binary = TRUE, distFrom = "jaccard", distTo = "jaccard",
   distTraitFrom = "euclidean", distTraitTo = "euclidean", traitWeight,
   nNeig)
 }
 \arguments{
 \item{data}{An object of the class alienData, see \code{\link{alienData}}.}
+
+\item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
 
 \item{distFrom}{Character string defining which distance (or dissimilarity) to apply on the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "jaccard".}
 

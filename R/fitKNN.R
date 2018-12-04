@@ -5,6 +5,7 @@
 #' @description Model adegency matrix using K-nearest neighbour approach
 #'
 #' @param data An object of the class alienData, see \code{\link{alienData}}.
+#' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
 #' @param distFrom Character string defining which distance (or dissimilarity) to apply on the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "jaccard".
 #' @param distTo Character string defining which distance (or dissimilarity) to apply on the "To" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "jaccard".
 #' @param distTraitFrom Character string defining which distance (or dissimilarity) to apply on traits of the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "euclidean".
@@ -28,7 +29,8 @@
 #' A matrix giving the the probability of interaction among each pairs of species.
 #'
 #' @export
-fitKNN <- function(data, distFrom = "jaccard", distTo = "jaccard",
+fitKNN <- function(data, binary = TRUE, distFrom = "jaccard", 
+                   distTo = "jaccard",
                    distTraitFrom = "euclidean",
                    distTraitTo = "euclidean", traitWeight, nNeig){
   # Check
@@ -38,7 +40,8 @@ fitKNN <- function(data, distFrom = "jaccard", distTo = "jaccard",
   }
 
   # Get adjacency matrix
-  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE)
+  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE,
+                               binary = binary)
 
   # Basic information
   nFromSp <- ncol(adjMat)
