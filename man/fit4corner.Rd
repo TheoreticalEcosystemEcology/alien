@@ -5,8 +5,8 @@
 \title{Fit fourth corner prediction model}
 \usage{
 fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
-  type = "HMSC", family = NULL, priors = NULL, iniParam = NULL,
-  ...)
+  binary = TRUE, type = "HMSC", family = NULL, priors = NULL,
+  iniParam = NULL, ...)
 }
 \arguments{
 \item{data}{an object of the class alienData, see as.alienData function.}
@@ -14,6 +14,8 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 \item{formulaFrom}{formula to construct the trait variables associated to the "From" organisms. Default is "~ .".}
 
 \item{formulaTo}{formula to construct the trait variables associated to the "To" organisms. Default is "~ .".}
+
+\item{binary}{Logical. Whether the adjacency matrix is binary or not.}
 
 \item{type}{method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.}
 
