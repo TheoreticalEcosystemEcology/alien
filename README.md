@@ -20,22 +20,16 @@ Incoming content
 
 -  [X] Direct matching centrality (DG)
 -  [X] Indirect matching centrality (latent ~ traits)
--  [ ] 4th corner (Brown et al. MEE 2014) (GB)
--  [ ] JSDM (GB)
+-  [X] 4th corner (Brown et al. MEE 2014) (GB)
+-  [X] JSDM (GB)
 -  [ ] Niche binary (DG)
 -  [ ] Niche probabilistic (DG)
--  [ ] KNN as a minimal iEat (KC)
-
+-  [X] KNN as a minimal iEat (KC)
 
 
 ##### To be implemented
 
--  [ ] Markov logic (A.T.? => guy in the UK)
 -  [ ] iEat's similarity and data retrieving in a specific package (DB)
--  [ ] Ben's magic (BW)
--  [ ] Permutation methods (GB)
-    -   C-scores
-    -   V-ratio
 -  [ ] Multinomial (somebody?)
 - Simulate communities data
 -  [ ] Ives' phylo (2006, Amnat see package `picante`) (GB)
