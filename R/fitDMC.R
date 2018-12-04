@@ -4,48 +4,49 @@
 #'
 #' @description Fit direct matching centrality models among species or individus
 #'
-#' @param data an object of the class alienData, see as.alienData function.
-#' @param class method to be applied on the data which can be 'rf' for randomForest or 'glm'.
-#' @param family one family of the `stats` package (e.g. binomial(), Gamma(), gaussian() etc.)
-#' @param formula set the formula passed to the algorithm (see `family`).
-#' @param level specify the ecological level on which the method is applied. Choices are 'individus' or 'species'. Default is species.
-#' @param traits vector of traits to include in the algorithm
-#' @param step logical, specify if variables are selected by stepAIC. Only availabe for glm class. FALSE by default
-#' @param ... other params passed to the glm, step or randomForest functions.
+#' @param formula formula to define the model.
+#' @param data an object of the class \code{\link{alienData}}
+#' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
+#' @param type Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}). 
+#' @param family The family of the response variable. See \link[stats]{family}, or the choices available.
+#' @param \dots Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.
+#' 
+#' @details 
+#' 
+#' The direct matching centrality models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
+#' 
 #' @author
-#' Dominique Gravel & Steve Vissault
+#' 
+#' Dominique Gravel, Steve Vissault, F. Guillaume Blanchet
 #'
 #' @importFrom stats aggregate as.formula
 #' @importFrom utils type.convert
 #' @import randomForest
 #'
 #' @export
-fitDMC <- function(data, class = NULL, family = NULL, formula = "I ~ . * .", level = "species",
-    traits = NULL, step = FALSE, ...) {
+fitDMC <- function(formula, data, binary = TRUE, type = NULL,
+                   family = NULL, traits = NULL, ...) {
+  
+  stopifnot(class(data) == "alienData")
 
-    stopifnot(class(data) == "alienData")
-
-    if (level == "species") {
-        if (all(is.null(data$traitSp), is.null(data$interactSp))) {
-            stop("traitSp and interactSp are absent from data. Both have to be provided to fit the algorithm at the species level")
-        }
-
-        df_trait <- data$traitSp
-        df_interact <- data$interactSp
-        id <- "idSp"
-    }
-
-    if (level == "individus") {
-        # check if traitInd and interactInd are provided by the function as.alienData()
-        if (all(is.null(data$traitInd), is.null(data$interactInd))) {
-            stop("traitInd and interactInd are absent from data. Both have to be provided to fit the algorithm at the individu level")
-        }
-
-        df_trait <- data$traitInd
-        df_interact <- data$interactInd
-        id <- "idInd"
-    }
-
+  # Construct adjencency matrix
+  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE, binary = binary)
+  nFromSp <- ncol(adjMat)
+  nToSp <- nrow(adjMat)
+  
+  # Construct trait matrix
+  traits <- getTrait(data, bipartite = TRUE)
+  
+  # Check for NAs in traits
+  if(any(sapply(traits, function(x) any(is.na(x))))){
+    stop("There is at least one NA in the traits. Use getTrait() to investigate.")
+  }
+  
+  # Unfold adjMat into a vector
+  adjVec <- as.vector(adjMat)
+  
+  traitFrom <- traitFrom
+  
     # set I
     df_interact <- data.frame(expand.grid(rownames(df_interact), colnames(df_interact)),
         I = as.vector(df_interact))
