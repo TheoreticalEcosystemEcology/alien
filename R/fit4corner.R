@@ -8,7 +8,7 @@
 #' @param formulaFrom A one-sided formula specifying how to construct the trait variables associated to the "From" organisms. Default is "~ .".
 #' @param formulaTo A one-sided formula specifying how to construct the trait variables associated to the "To" organisms. Default is "~ .".
 #' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
-#' @param type method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.
+#' @param type Method to be used to estimate the model. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.
 #' @param family For 'mvabund', the family of the response variable can be defined using \link[stats]{family}. The negative binomial with unknown overdispersion and a log-link can be specified as "negative.binomial", and it is the default. For 'HMSC', use either 'probit', 'logit', 'gaussian', 'poisson', 'overPoisson'.
 #' @param priors An object of class \code{HMSCprior} (\code{\link[HMSC]{as.HMSCprior}}). If NULL, the function will generate flat priors to estimate the model. This argument is active only when "HMSC" is used.
 #' @param iniParam An object of class \code{HMSCparam} (\code{\link[HMSC]{as.HMSCparam}}). If NULL, the function will generate initial parameters ramdomly. This argument is active only when "HMSC" is used.

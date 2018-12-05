@@ -17,7 +17,7 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 
 \item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
 
-\item{type}{method to be applied on the data. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.}
+\item{type}{Method to be used to estimate the model. Either 'mvabund' or 'HMSC' for the implementation of the 'mvabund' (\link[mvabund]{traitglm}) or the 'HMSC' (\link[HMSC]{hmsc}) R package, respectively.}
 
 \item{family}{For 'mvabund', the family of the response variable can be defined using \link[stats]{family}. The negative binomial with unknown overdispersion and a log-link can be specified as "negative.binomial", and it is the default. For 'HMSC', use either 'probit', 'logit', 'gaussian', 'poisson', 'overPoisson'.}
 
