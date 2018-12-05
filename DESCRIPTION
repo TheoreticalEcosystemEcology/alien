@@ -4,7 +4,7 @@ Version: 0.0.1
 Date: 2018-10-15
 Author: person("Ignasi", "Bartomeus", role = c("aut"), comment = c(ORCID = "0000-0001-7893-4389")),
     person("David", "Beauchesne", role = c("aut")),
-    person("Guillaume", "Blanchet", role = c("aut")),
+    person("F. Guillaume", "Blanchet", role = c("aut")),
     person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
     person("Dominique", "Gravel", role = c("aut")),
     person("Timothée", "Poisot", role = c("aut")),

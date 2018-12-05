@@ -20,7 +20,7 @@ set to 1) and the identifier of the site where the interaction has been observed
 
 \item{trait}{A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "trait" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).}
 
-\item{phylo}{An object of class \code{\link[ape]{phylo}}.}
+\item{phylo}{An object (or a list of objects) of class \code{\link[ape]{phylo}} .}
 
 \item{directed}{Logical. If \code{TRUE} (default value) the network is considered directed. (See details).}
 

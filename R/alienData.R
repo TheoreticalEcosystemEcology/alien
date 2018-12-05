@@ -12,7 +12,7 @@
 #' set to 1) and the identifier of the site where the interaction has been observed.
 #' (See details).
 #' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "trait" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
-#' @param phylo An object of class \code{\link[ape]{phylo}}.
+#' @param phylo An object (or a list of objects) of class \code{\link[ape]{phylo}} .
 #' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
 #' @param verbose Logical. Should extra information be reported on progress?
 #'
@@ -117,10 +117,21 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL,
   # phylo
   #######
   if(!is.null(phylo)){
-    stopifnot(all(phylo$tip.label %in% node$idSp))
-
-    if(class(phylo) != "phylo"){
-      stop("'phylo' needs to be an object of class phylo")
+    
+    if(!is.list(phylo)){
+      stopifnot(all(phylo$tip.label %in% node$idSp))
+      
+      if(class(phylo) != "phylo"){
+        stop("'phylo' needs to be an object of class phylo")
+      }
+    }else{
+      for(i in 1:length(phylo)){
+        stopifnot(all(phylo[[i]]$tip.label %in% node$idSp))
+      
+        if(class(phylo[[i]]) != "phylo"){
+          stop("Each part of 'phylo' needs to be an object of class phylo")
+        }
+      }
     }
   }
 
