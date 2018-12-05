@@ -55,7 +55,7 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   traitsFrom <- as.data.frame(traits$from[rep(seq_len(nFromSp), each = nToSp),])
   colnames(traitsFrom) <- colnames(traits$from)
   
-  # organize data into a single object
+  # Organize data into a single object
   dat <- cbind(adjVec, traitsTo, traitsFrom)
   
   # Reorganize formula
