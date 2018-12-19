@@ -21,9 +21,9 @@ Incoming content
 -  [X] Direct matching centrality (DG)
 -  [X] Indirect matching centrality (latent ~ traits)
 -  [X] 4th corner (Brown et al. MEE 2014) (GB)
--  [X] JSDM (GB)
--  [ ] Niche binary (DG)
--  [ ] Niche probabilistic (DG)
+-  [ ] JSDM (GB)
+-  [X] Niche binary (DG)
+-  [X] Niche probabilistic (DG)
 -  [X] KNN as a minimal iEat (KC)
 
 
