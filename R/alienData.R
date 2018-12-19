@@ -127,7 +127,14 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL,
     }else{
       for(i in 1:length(phylo)){
         stopifnot(all(phylo[[i]]$tip.label %in% node$idSp))
-      
+        
+        # Find phylo for from species
+        if(all(phylo[[1]]$tip.label  %in% edge$from)){
+          names(phylo) <- c("from", "to")
+        }else{
+          names(phylo) <- c("to", "from")
+        }
+        
         if(class(phylo[[i]]) != "phylo"){
           stop("Each part of 'phylo' needs to be an object of class phylo")
         }
