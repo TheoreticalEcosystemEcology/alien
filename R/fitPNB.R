@@ -16,7 +16,7 @@
 #'
 #' @details
 #'
-#' For now this function is only designed to handle presence-only and presence-absence data. 
+#' For now this function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
 #'
 #' @author
 #' 
@@ -30,17 +30,6 @@
 fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
                    range, rangeMin, rangeMax, verbose = TRUE){
 
-  
-  
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
-  ## Doit être retravailler... Je crois qu'il y a un bug dans le code ou du moins elle doit être généralisé
   stopifnot(class(data) == "alienData")
   
   # Construct adjencency matrix
@@ -61,42 +50,74 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
   
   # Organize trait$to to match the size and organization of adjMat
   traitsTo <- as.data.frame(traits$to[rep(seq_len(nToSp), nFromSp),])
-  colnames(traitsTo) <- colnames(traits$to)
+  traitsTo <- model.matrix(~ -1 + ., data = traitsTo)
   
   # Organize trait$from to match the size and organization of adjMat
   traitsFrom <- as.data.frame(traits$from[rep(seq_len(nFromSp), each = nToSp),])
-  colnames(traitsFrom) <- colnames(traits$from)
+  traitsFrom <- model.matrix(~ -1 + ., data = traitsFrom)
+  
+  # Check number of traits for From and To
+  if(ncol(traitsTo) > 1){
+    stop("There should be only a single 'To' trait")
+  }
+  colnames(traitsTo) <- "To"
+  
+  if(ncol(traitsFrom) > 1){
+    stop("There should be only a single 'From' trait")
+  }
+  colnames(traitsFrom) <- "From"
   
   # Choose the probabilitic model to use
   if(type == "P"){
     # Organize data into a single object
-    dat <- cbind(adjVec, traitsTo, traitsFrom)
+    dat <- data.frame(To = traitsTo, From = traitsFrom)
     
     # Keep only the data on where an interaction was found
-    dat <- dat[dat[,1] == 1,]
+    dat <- dat[adjVec == 1,]
     
     minFunc <- nicheFuncPres
+    
+    # Estimate parameters using simulated annealing
+    estimPars <- GenSA::GenSA(par = c(optimum, range), fn = minFunc, 
+                              lower = c(optimumMin, rangeMin), 
+                              upper = c(optimumMax, rangeMax), 
+                              control = list(verbose = verbose, smooth=FALSE), 
+                              traitsFrom = dat$From, traitsTo = dat$To)
   }
   if(type == "PA"){
-    # Organize data into a single object
-    dat <- cbind(adjVec, traitsTo, traitsFrom)
-    
     minFunc <- nicheFuncPresAbs
+
+    # Estimate parameters using simulated annealing
+    estimPars <- GenSA::GenSA(par = c(optimum, range), fn = minFunc, 
+                              lower = c(optimumMin, rangeMin), 
+                              upper = c(optimumMax, rangeMax), 
+                              control = list(verbose = verbose, smooth=FALSE), 
+                              traitsFrom = traitsFrom, traitsTo = traitsTo,
+                              adjVec = adjVec)
   }
+  
+  # Prediction
+  optimumPred <- estimPars[1] + estimPars[2] * traitsTo  
+  rangePred <- estimPars[3] + estimPars[4] * traitsTo  
+  
+  res <- exp(-(optimumPred - traitsFrom)^2 / (2 * rangePred^2))
+  
+  # Return result
+  return(res)
 }
 
 # Presence-only data
-nicheFuncPres <- function(pars, Tlevel1, Tlevel2) {
+nicheFuncPres <- function(pars, traitsFrom, traitsTo) {
 
   # Optimum and range
-  Optimum <- pars[1] + pars[2] * Tlevel2  
-  Range <- pars[3] + pars[4] * Tlevel2
+  Optimum <- pars[1] + pars[2] * traitsTo  
+  Range <- pars[3] + pars[4] * traitsTo
   
   # Compute the conditional
-  pLM <- exp(-(Optimum - Tlevel1)^2 / 2 / Range^2)
-  
+  pLM <- exp(-(Optimum - traitsFrom)^2 /( 2 * Range^2))
+
   # Compute the marginal
-  pM <- 1/(max(Tlevel1) - min(Tlevel1))
+  pM <- 1/(max(traitsFrom) - min(traitsFrom))
   
   #  Integrate the denominator
   pL <- Range / sqrt(pi)
@@ -109,24 +130,19 @@ nicheFuncPres <- function(pars, Tlevel1, Tlevel2) {
 }
 
 # Presence-absence data
-nicheFuncPresAbs <- function(pars, Tlevel1, Tlevel2, L) {
-  
-  a0 = pars[1]
-  a1 = pars[2]
-  b0 = pars[3]
-  b1 = pars[4]
+nicheFuncPresAbs <- function(pars, traitsFrom, traitsTo, adjVec) {
   
   # Optimum and range
-  o = a0 + a1*Tlevel2  
-  r = b0 + b1*Tlevel2
+  Optimum = pars[1] + pars[2]*traitsTo  
+  Range = pars[3] + pars[4]*traitsTo
   
   # Compute the interaction probility
-  pL = exp(-(o-Tlevel1)^2/2/r^2)
+  pL <- exp(-(Optimum - traitsFrom)^2 / ( 2 * Range^2))
   
   # Compute the log-likelihood
-  ll = L*0
-  ll[L == 1] = log(pL[L == 1])
-  ll[L == 0] = log(1-pL[L == 0])
+  ll <- adjVec*0
+  ll[adjVec == 1] <- log(pL[adjVec == 1])
+  ll[adjVec == 0] <- log(1 - pL[adjVec == 0])
   
   return(-sum(ll))		
 }

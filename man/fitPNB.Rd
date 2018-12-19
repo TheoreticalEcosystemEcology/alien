@@ -33,7 +33,7 @@ A matrix giving the the probability of interaction among each pairs of species.
 Model adegency matrix using K-nearest neighbour approach
 }
 \details{
-For now this function is only designed to handle presence-only and presence-absence data.
+For now this function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
 }
 \author{
 Dominique Gravel and F. Guillaume Blanchet
