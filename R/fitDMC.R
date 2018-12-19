@@ -26,6 +26,7 @@
 #' Dominique Gravel, Steve Vissault, F. Guillaume Blanchet
 #'
 #' @export
+
 fitDMC <- function(formula, data, binary = TRUE, type = NULL,
                    family = NULL, ...) {
 
