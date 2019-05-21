@@ -79,6 +79,17 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   
   # Organise result into a matrix
   res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
+  rownames(res) <- rownames(adjMat)
+  colnames(res) <- colnames(adjMat)
+  
+  # Add model as attribute
+  baseAttr <- attributes(res)
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = model)
+  
+  # Define object class
+  class(res) <- "alienFit"
   
   # Return results
   return(res)

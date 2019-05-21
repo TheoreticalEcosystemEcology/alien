@@ -107,7 +107,16 @@ fit4corner <- function(data, formulaFrom = "~ .",
   
   # Prediction
   res <- predict(model)
-
+  
+  # Add model as attribute
+  baseAttr <- attributes(res)
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = model)
+  
+  # Define object class
+  class(res) <- "alienFit"
+  
   return(res)
 }
   

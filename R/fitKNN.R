@@ -81,6 +81,15 @@ fitKNN <- function(data, binary = TRUE, distFrom = "jaccard",
                    sum(adjMat[j, KNNFromSp])/ nNeig / 2
     }
   }
-
+  
+  # Add model as attribute
+  baseAttr <- attributes(res)
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = model)
+  
+  # Define object class
+  class(res) <- "alienFit"
+  
   return(res)
 }

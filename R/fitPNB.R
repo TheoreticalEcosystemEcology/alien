@@ -102,6 +102,15 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
   
   res <- exp(-(optimumPred - traitsFrom)^2 / (2 * rangePred^2))
   
+  # Add model as attribute
+  baseAttr <- attributes(res)
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = model)
+  
+  # Define object class
+  class(res) <- "alienFit"
+  
   # Return result
   return(res)
 }
