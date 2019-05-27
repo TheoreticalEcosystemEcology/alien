@@ -8,7 +8,7 @@
 #' @param data an object of the class \code{\link{alienData}}
 #' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
 #' @param type Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}). 
-#' @param family The family of the response variable. See \link[stats]{family}, or the choices available.
+#' @param family The family of the response variable. See \link[stats]{family}, or the choices available. This is argument is only active when type = "glm".
 #' @param \dots Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.
 #' 
 #' @details 
@@ -86,7 +86,8 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   baseAttr <- attributes(res)
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
-                          model = model)
+                          model = model,
+                          alienData = data)
   
   # Define object class
   class(res) <- "alienFit"
