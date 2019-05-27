@@ -15,7 +15,7 @@ fitDMC(formula, data, binary = TRUE, type = NULL, family = NULL, ...)
 
 \item{type}{Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}).}
 
-\item{family}{The family of the response variable. See \link[stats]{family}, or the choices available.}
+\item{family}{The family of the response variable. See \link[stats]{family}, or the choices available. This is argument is only active when type = "glm".}
 
 \item{\dots}{Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.}
 }

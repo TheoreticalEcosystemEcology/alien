@@ -44,7 +44,7 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # Format data
   #############
   # Adjacency matrix
-  adjData <- getAdjacencyMatrix(data, bipartite = TRUE, 
+  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE, 
                                 binary = binary)
   
   traits <- getTrait(data, bipartite = TRUE)
@@ -68,7 +68,7 @@ fit4corner <- function(data, formulaFrom = "~ .",
   # mvabund
   if(type == "mvabund"){
     # Perform traitglm analysis
-    model <- mvabund::traitglm(adjData, traits$to, traits$from,
+    model <- mvabund::traitglm(adjMat, traits$to, traits$from,
                                family = family, ...)
   }
 
@@ -83,7 +83,7 @@ fit4corner <- function(data, formulaFrom = "~ .",
                                     data = traits$to)
     
     # Construct HMSCdata object
-    Data <- HMSC::as.HMSCdata(Y = adjData, X = traitsTo,
+    Data <- HMSC::as.HMSCdata(Y = adjMat, X = traitsTo,
                               Tr = t(traitsFrom), scaleX = FALSE,
                               scaleTr = FALSE,
                               interceptX = FALSE,
@@ -113,7 +113,7 @@ fit4corner <- function(data, formulaFrom = "~ .",
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
                           model = model,
-                          alienData = data)
+                          adjMat = adjMat)
   
   # Define object class
   class(res) <- "alienFit"

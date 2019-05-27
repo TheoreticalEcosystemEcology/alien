@@ -107,7 +107,7 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
                           model = model,
-                          alienData = data)
+                          adjMat = adjMat)
   
   # Define object class
   class(res) <- "alienFit"
