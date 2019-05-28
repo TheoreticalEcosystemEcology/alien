@@ -1,27 +1,25 @@
-#' @title Format alien output.
+#' @title Format IMC output.
 #'
-#' @description Format alien output and return an object of class \code{alienPredict}.
+#' @description Format IMC output and return an object of class \code{IMCPredict}.
 #'
 #' @param logLik Likelihood log-transformed.
 #' @param netEstim a probabilistic network.
 #' @param ... other arguments to be appended to the \code{alienPredict} object.
 #'
 #' @details
-#' \code{alienPredict} aims at structuring the output of alien package to ease
-#' cross-comparison among methods.
+#' \code{IMCPredict} aims at structuring the output of the IMC function.
 #'
 #' @return
-#' An object of the class \code{alienPredict} is returned.
+#' An object of the class \code{IMCPredict} is returned.
 #'
 #' @author Kevin Cazelles & Steve Vissault
 #'
 #'
-#' @keywords manip
-#' @keywords classes
-#' @export
+#' @keywords internal
+#' 
 
 
-alienPredict <- function(logLik, netEstim, ...) {
+IMCPredict <- function(logLik, netEstim, ...) {
     out <- list()
     out$logLik <- logLik
     ##--
@@ -31,6 +29,6 @@ alienPredict <- function(logLik, netEstim, ...) {
     ##--
     out$methodsSpecific <- list(...)
     ##--
-    class(out) <- "alienPredict"
+    class(out) <- "IMCPredict"
     out
 }

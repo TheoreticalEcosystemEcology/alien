@@ -34,25 +34,6 @@
 #'
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702 (2016).
 #'
-#' @examples
-#' #set.seed(1987)
-#' #n1 = 12
-#' #n2 = 18
-#' #trait1 <- runif(n1)
-#' #trait2 <- runif(n2)
-#' #mat <- matrix(0, n1, n2)
-#' #for (i in 1:n1) {
-#' #  for (j in 1:n2) {
-#' #    mat[i, j] <- (trait1[i]-trait2[j])^2
-#' #  }
-#' #  if (sum(mat[i,]==0)) mat[i,1+floor(runif(1,0,n2))] <- 1
-#' #}
-#'
-#' #res <- fitIMC(mat)
-#'
-#' #plot(trait1, res$methodsSpecific$params$M1)
-#' #plot(trait2, res$methodsSpecific$params$M2)
-#'
 #' @export
 
 
@@ -108,9 +89,25 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
       nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
   #
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
-  out <- alienPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
+  out <- IMCPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
       params = params)
-  out
+  
+  # Standardize results
+  res <- out$netEstim
+  
+  # Format results attributes
+  baseAttr <- attributes(res)
+  
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = out$methodsSpecific$params,
+                          adjMat = netObs)
+  
+  # Define object class
+  class(res) <- "alienFit"
+  
+  # Return result
+  return(res)
 }
 
 

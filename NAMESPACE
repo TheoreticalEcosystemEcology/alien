@@ -2,7 +2,6 @@
 
 S3method(print,alienFit)
 export(alienData)
-export(alienPredict)
 export(fit4corner)
 export(fitDMC)
 export(fitIMC)
