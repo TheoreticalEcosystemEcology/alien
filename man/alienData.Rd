@@ -12,7 +12,7 @@ alienData(node, edge, trait = NULL, phylo = NULL, directed = TRUE,
 
 \item{edge}{A data frame with two columns: \code{from} and \code{to}
 describing the set of edges (links between nodes). If \code{directed} is set
-to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer
+to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer.
 The presence of a  \code{value} and \code{site}
 which respectively provide the values associated with edges (if absent, they are
 set to 1) and the identifier of the site where the interaction has been observed.
@@ -27,7 +27,9 @@ set to 1) and the identifier of the site where the interaction has been observed
 \item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
-An object of the class \code{alienData} is returned.
+An object of class \code{alienData} is returned.
+
+Because an  \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
 }
 \description{
 \code{alienData} is used to check and format data, if correct
@@ -36,7 +38,7 @@ it returns an object of class \code{alienData}.
 \details{
 In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
 
-If the data available is at the species level, the species as well as the the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
+If the data available is at the species level, the species as well as the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
 
 It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the \code{\link{getTrait}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link{getTrait}} function.
 
