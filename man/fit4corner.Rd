@@ -28,7 +28,7 @@ fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
 \item{\dots}{Other parameters passed to either \link[mvabund]{traitglm} or \link[HMSC]{hmsc}.}
 }
 \value{
-A species by species matrix.
+An object of class alienFit.
 }
 \description{
 Fit fourth corner prediction model using either the approach proposed by Brown et al. (2014) (\code{\link[mvabund]{traitglm}}) or Ovaskainen et al. (2017) (\link[HMSC]{hmsc}).

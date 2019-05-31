@@ -22,11 +22,12 @@
 #' When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument   \code{tie.method} in the \code{\link{rank}} function is set to "first".
 #'
 #' @author
+#' 
 #' F. Guillaume Blanchet and Dominique Gravel
 #'
 #' @return
 #'
-#' A matrix giving the the probability of interaction among each pairs of species.
+#' An object of class alienFit.
 #'
 #' @export
 fitKNN <- function(data, binary = TRUE, distFrom = "jaccard", 

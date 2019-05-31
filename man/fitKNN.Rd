@@ -26,7 +26,7 @@ fitKNN(data, binary = TRUE, distFrom = "jaccard", distTo = "jaccard",
 \item{nNeig}{Integer defining how many neighbours to consider.}
 }
 \value{
-A matrix giving the the probability of interaction among each pairs of species.
+An object of class alienFit.
 }
 \description{
 Model adegency matrix using K-nearest neighbour approach

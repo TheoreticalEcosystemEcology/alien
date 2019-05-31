@@ -20,7 +20,7 @@ fitDMC(formula, data, binary = TRUE, type = NULL, family = NULL, ...)
 \item{\dots}{Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.}
 }
 \value{
-A species by species matrix.
+An object of class alienFit.
 }
 \description{
 Fit direct matching centrality model

@@ -24,7 +24,7 @@
 #'
 #' @return
 #'
-#' A matrix giving the the probability of interaction among each pairs of species.
+#' An object of class alienFit.
 #'
 #' @export
 fitPNB <- function(data, type, optimum, optimumMin, optimumMax,

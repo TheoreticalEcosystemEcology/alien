@@ -19,7 +19,7 @@
 #' 
 #' @return 
 #' 
-#' A species by species matrix.
+#' An object of class alienFit.
 #' 
 #' @author
 #' 

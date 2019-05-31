@@ -27,7 +27,8 @@
 #'
 #'
 #' @return
-#' An object of class \code{alienPredict}.
+#' 
+#' An object of class alienFit.
 #'
 #' @references
 #' Rohr, R. P. & Bascompte, J. Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564 (2014).

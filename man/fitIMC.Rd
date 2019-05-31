@@ -17,7 +17,7 @@ fitIMC(data, d = 1, mxt = 10, verbose = TRUE)
 \item{verbose}{Logical. Should extra information be reported on progress?}
 }
 \value{
-An object of class \code{alienPredict}.
+An object of class alienFit.
 }
 \description{
 Esimation of iteractions probability using the indirect matching centrality

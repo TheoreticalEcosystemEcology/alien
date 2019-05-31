@@ -27,7 +27,7 @@ fitPNB(data, type, optimum, optimumMin, optimumMax, range, rangeMin,
 \item{verbose}{Logical. Whether messages from the algorithm are shown (TRUE) or not (FALSE). Default is TRUE.}
 }
 \value{
-A matrix giving the the probability of interaction among each pairs of species.
+An object of class alienFit.
 }
 \description{
 Model adegency matrix using K-nearest neighbour approach
