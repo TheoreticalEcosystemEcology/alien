@@ -2,17 +2,17 @@ Package: alien
 Title: Comparative analysis of interaction inference methods
 Version: 0.0.1
 Date: 2018-10-15
-Author: person("Ignasi", "Bartomeus", role = c("aut"), comment = c(ORCID = "0000-0001-7893-4389")),
-    person("David", "Beauchesne", role = c("aut")),
-    person("F. Guillaume", "Blanchet", role = c("aut")),
+Author: person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000-0001-7893-4389")),
+    person("David", "Beauchesne", role = c("ctb")),
+    person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),
     person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
     person("Dominique", "Gravel", role = c("aut")),
-    person("Timothée", "Poisot", role = c("aut")),
+    person("Timothée", "Poisot", role = c("ctb")),
     person("Steve", "Vissault", role = c("aut")),
-    person("Ben", "Weinstein", role = c("aut")),
+    person("Ben", "Weinstein", role = c("ctb")),
 Depends:
     R (>= 3.1.0)
-Maintainer: Steve Vissault <steve.vissault@usherbrooke.ca>
+Maintainer: F. Guillaume Blanchet <guillaume.blanchet@usherbrooke.ca>
 Description: Comparative analysis of interaction inference methods.
 Suggests:
     testthat (>= 0.8.0),
@@ -29,7 +29,8 @@ Imports:
     igraph,
     mvabund,
     HMSC,
-    vegan
+    vegan,
+    MPSEM 
 Remotes: guiblanchet/HMSC
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
