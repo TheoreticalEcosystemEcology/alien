@@ -21,6 +21,7 @@
 #' 
 #' @method PEM.build alienData
 #' @export
+#' @importFrom MPSEM PEM.build
 #' 
 PEM.build.alienData <- function(x, ...){
   # General check
