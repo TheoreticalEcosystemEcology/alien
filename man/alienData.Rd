@@ -13,7 +13,7 @@ alienData(node, edge, trait = NULL, phylo = NULL, directed = TRUE,
 \item{edge}{A data frame with two columns: \code{from} and \code{to}
 describing the set of edges (links between nodes). If \code{directed} is set
 to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer.
-The presence of a  \code{value} and \code{site}
+The presence of a \code{value} and \code{site}
 which respectively provide the values associated with edges (if absent, they are
 set to 1) and the identifier of the site where the interaction has been observed.
 (See details).}
