@@ -66,12 +66,12 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   
   # GLM
   if(type == "glm"){
-    model <- stats::glm(Formula, data = dat, family = family)
+    model <- stats::glm(Formula, data = dat, family = family, ...)
   }
 
   # Random forest
   if(type == "randomForest"){
-    model <- randomForest::randomForest(Formula, data = dat)
+    model <- randomForest::randomForest(Formula, data = dat, ...)
   }
   
   # Prediction
