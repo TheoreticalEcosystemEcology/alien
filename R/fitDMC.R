@@ -67,18 +67,33 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   # GLM
   if(type == "glm"){
     model <- stats::glm(Formula, data = dat, family = family, ...)
+
+    pred <- predict(model, type = "response")
+    
+    # Organise result into a matrix
+    res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
   }
 
   # Random forest
   if(type == "randomForest"){
+    if(binary){
+      dat$adjVec <- as.factor(dat$adjVec)
+    }
     model <- randomForest::randomForest(Formula, data = dat, ...)
+
+    # Prediction
+    if(binary){
+      pred <- predict(model, type = "prob")
+      
+      # Organise result into a matrix
+      res <- matrix(pred[,2], nrow = nToSp, ncol = nFromSp) # Focuses only on 1s
+    }else{
+      pred <- predict(model, type = "response")
+      
+      # Organise result into a matrix
+      res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
+    }
   }
-  
-  # Prediction
-  pred <- predict(model, type = "response")
-  
-  # Organise result into a matrix
-  res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
   rownames(res) <- rownames(adjMat)
   colnames(res) <- colnames(adjMat)
   
