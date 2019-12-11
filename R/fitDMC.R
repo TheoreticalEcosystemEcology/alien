@@ -68,6 +68,7 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   if(type == "glm"){
     model <- stats::glm(Formula, data = dat, family = family, ...)
 
+    # Prediction
     pred <- predict(model, type = "response")
     
     # Organise result into a matrix
