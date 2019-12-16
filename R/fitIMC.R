@@ -201,7 +201,7 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     ## logit values
     for (i in seq_len(nrow(netObs))) {
         for (j in seq_len(ncol(netObs))) {
-            if(netObs[i,j]!=NA) {
+            if(is.na(netObs[i,j])==FALSE) {
               val <- 0
               for (k in seq_len(nrow(M1))) {
                   tmp <- M1[k, i] - M2[k, j]
