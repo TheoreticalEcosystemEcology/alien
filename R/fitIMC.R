@@ -196,30 +196,42 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     cent1 <- c1 * delta1
     cent2 <- c2 * delta2
 
-    #### Get probabilities estimated by the model
-    logLik <- 0
-    ## logit values
-    for (i in seq_len(nrow(netObs))) {
-        for (j in seq_len(ncol(netObs))) {
-            if(is.na(netObs[i,j])==FALSE) {
-              val <- 0
-              for (k in seq_len(nrow(M1))) {
-                  tmp <- M1[k, i] - M2[k, j]
-                  val <- val + Lambda[k] * tmp * tmp
-              }
-              val <- val + cent1[i] + cent2[j] + m
-              ## get the inverse logit
-              val <- 1/(1 + exp(-val))
-              ##
-              if (netObs[i, j]) {
-                  logLik <- logLik + log(val)
-              } else {
-                  logLik <- logLik + log(1 - val)
-              }
-           }
-        }
-    }
-    logLik
+    # #### Get probabilities estimated by the model
+    # logLik <- 0
+    # ## logit values
+    # for (i in seq_len(nrow(netObs))) {
+    #     for (j in seq_len(ncol(netObs))) {
+    #         if(is.na(netObs[i,j])==FALSE) {
+    #           val <- 0
+    #           for (k in seq_len(nrow(M1))) {
+    #               tmp <- M1[k, i] - M2[k, j]
+    #               val <- val + Lambda[k] * tmp * tmp
+    #           }
+    #           val <- val + cent1[i] + cent2[j] + m
+    #           ## get the inverse logit
+    #           val <- 1/(1 + exp(-val))
+    #           ##
+    #           if (netObs[i, j]) {
+    #               logLik <- logLik + log(val)
+    #           } else {
+    #               logLik <- logLik + log(1 - val)
+    #           }
+    #        }
+    #     }
+    # }
+    # logLik
+
+    # Vectorial version to speed up computation
+    ij = expand.grid(seq_len(nrow(netObs)),seq_len(ncol(netObs)))
+    netObs_vec = stack(as.data.frame(netObs))[,1]
+    tmp = numeric(nrow(ij))
+    for (k in seq_len(nrow(M1))) tmp = tmp + Lambda[k]*(M1[k, ij[,1]] - M2[k, ij[,2]])*(M1[k, ij[,1]] - M2[k, ij[,2]])
+    logit = tmp + cent1[ij[,1]] + cent2[ij[,2]] + m
+    p = 1/(1+exp(-logit))
+    LL = netObs_vec*log(p) + (1-netObs_vec)*log(1-p)
+    sum(LL,na.rm=T)
+
+
 }
 
 
