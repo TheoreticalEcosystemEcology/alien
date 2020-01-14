@@ -38,7 +38,7 @@
 #' @export
 
 
-fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE) {
+fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE, seed = 1) {
   # General check
   stopifnot(d >= 1)
   stopifnot(class(data) == "alienData")
