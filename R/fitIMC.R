@@ -87,7 +87,7 @@ fitIMC <- function(data, d = 1, mxt = 10, verbose = TRUE, seed = 1) {
   ## Simulated Annealing
   tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L,
       ], control = list(verbose = TRUE, max.time = mxt, smooth = FALSE), netObs = netObs,
-      nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
+      nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2, seed = seed)
   #
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
   out <- IMCPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
