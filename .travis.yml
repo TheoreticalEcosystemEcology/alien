@@ -1,7 +1,7 @@
 language: r
-dist: trusty
-cache: packages
+warnings_are_errors: true
 sudo: required
+cache: packages
 warnings_are_errors: false
 notifications:
   email:
@@ -9,19 +9,31 @@ notifications:
       - s.vissault@yahoo.fr
       - kevin.cazelles@gmail.com
       - Guillaume.Blanchet@USherbrooke.ca
+    on_success: never 
   slack: insileco:We4RUIQpzZ8vcazD9FIRt3Me
 
-
-r_packages:
-  - covr
-
-r_github_packages:
-  - jimhester/covr
-
-before_install:
-  - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install libgsl-dev
-
-after_success:
-  - Rscript -e 'covr::codecov()'
-  # - Rscript -e 'covr::coverall()'
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      r: oldrel
+      env: NOT_CRAN=false
+      addons:
+        apt:
+          packages:
+            - libgsl-dev
+    - os: osx
+      r: release
+      env: NOT_CRAN=true
+    - os: linux
+      dist: bionic
+      r: devel
+      env: NOT_CRAN=false
+      addons:
+        apt:
+          packages:
+            - libgsl-dev
+      r_github_packages:
+        - r-lib/covr
+      after_success:
+        - Rscript -e 'covr::codecov()'
