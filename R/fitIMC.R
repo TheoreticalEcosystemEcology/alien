@@ -38,7 +38,10 @@
 #' @export
 
 
-fitIMC <- function(data, d = 1, mxt, verbose = TRUE, seed, temp) {
+fitIMC <- function(data, d = 1, verbose = TRUE, mxt, seed, temp) {
+
+  set.seed(seed)
+  
   # General check
   stopifnot(d >= 1)
   stopifnot(class(data) == "alienData")
@@ -86,7 +89,7 @@ fitIMC <- function(data, d = 1, mxt, verbose = TRUE, seed, temp) {
   B2 <- getNullOne(nset2)
   ## Simulated Annealing
   tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L,
-      ], control = list(verbose = TRUE, maxit = mxt, temperature = temp, smooth = FALSE, seed = seed), netObs = netObs,
+      ], control = list(verbose = TRUE, smooth = FALSE, maxit = mxt, temperature = temp, seed = seed), netObs = netObs,
       nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
   #
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
@@ -112,7 +115,7 @@ fitIMC <- function(data, d = 1, mxt, verbose = TRUE, seed, temp) {
 }
 
 
-## tidy parameters and return the likelyhood
+## tidy parameters and return the likelihood
 coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
     out <- NULL
     ## get parameters to be used in likelihoodMC
