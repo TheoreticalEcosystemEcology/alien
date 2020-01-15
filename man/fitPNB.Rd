@@ -4,8 +4,17 @@
 \alias{fitPNB}
 \title{Fit using Probabilistic niche model}
 \usage{
-fitPNB(data, type, optimum, optimumMin, optimumMax, range, rangeMin,
-  rangeMax, verbose = TRUE)
+fitPNB(
+  data,
+  type,
+  optimum,
+  optimumMin,
+  optimumMax,
+  range,
+  rangeMin,
+  rangeMax,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{An object of the class alienData, see \code{\link{alienData}}.}

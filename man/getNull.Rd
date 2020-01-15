@@ -18,7 +18,7 @@ prodNorm(nbsp, B, V)
 \item{nbsp}{an integer (from an ecological standpoint, a number
 of species).}
 
-\item{B}{a matrix (it should actually be a orthogonal basis).}
+\item{B}{a matrix (it should actually be a orthogonal basis of A).}
 
 \item{V}{a vector.}
 }
@@ -26,7 +26,7 @@ of species).}
 The null basis.
 }
 \description{
-A wrapper around the \code{null} function of Armadillo library
+Wrapper around the \code{null} function of Armadillo library
 that finds the orthonormal basis of the null space of matrix A. Note that
 this wrapper do not allow the user to use any other parameters the
 original function can.
@@ -36,8 +36,8 @@ original function can.
 \item \code{getNullOne}: Special case of \code{getNull} for which the orthonormal
 basis of the unit vector is required.
 
-\item \code{prodNorm}: A repeated matrix produc in \code{fitIMC} that requires
-to normalise one vector.
+\item \code{prodNorm}: Matrix product that requires to normalise one vector
+(see \code{\link[=fitIMC]{fitIMC()}}).
 }}
 
 \author{

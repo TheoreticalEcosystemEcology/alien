@@ -30,6 +30,7 @@
 #' @keywords adjacency matrix
 #' @export
 
+
 getAdjacencyMatrix <- function(object, bipartite = FALSE,
                                binary = FALSE) {
   

@@ -8,14 +8,13 @@
 #'
 #' @param data an object of the class alienData.
 #' @param d dimensionnality.
-#' @param mxt Numeric. Maximum running time in seconds.
 #' @param verbose Logical. Should extra information be reported on progress?
-#'
+#' @param control list that can be used to control the behavior of the algorithm including the value for initial temperature and maximum runiing time(see [GenSA::GenSA()] for more details).
 #' @author
 #' Kevin Cazelles
 #'
 #' @details
-#' \code{fitIMC} implements the indirect matching-centrality method as described in
+#' `fitIMC` implements the indirect matching-centrality method as described in
 #' Rohr 2014 and Rohr 2016. Briefly, the method uses latent traits to fit
 #' interactions. The first step requires the definition of two sets of interacting
 #' species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
@@ -27,7 +26,6 @@
 #'
 #'
 #' @return
-#' 
 #' An object of class alienFit.
 #'
 #' @references
@@ -38,59 +36,52 @@
 #' @export
 
 
-fitIMC <- function(data, d = 1, verbose = TRUE, mxt, seed, temp) {
-
-  set.seed(seed)
+fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   
   # General check
   stopifnot(d >= 1)
   stopifnot(class(data) == "alienData")
 
   netObs <- getAdjacencyMatrix(data, binary = TRUE, bipartite = TRUE)
+  # number of species in the two sets of species
   nset1 <- nrow(netObs)
   nset2 <- ncol(netObs)
+  nsp <- nset1 + nset2
   if (verbose) {
-      cat("set1 has ", nset1, " elements \n")
-      cat("set2 has ", nset2, " elements \n")
+      cat("set1 has", nset1, "elements \n")
+      cat("set2 has", nset2, "elements \n")
   }
-  ##-- Number of parameters
-  # Centrality latent traits:
-  nbc <- nset1 + nset2 - 2
-  # Matching latent traits: NB: Given the constrains on vector's orthogonality, the
-  # dimension of the linear subspace where a new vector is drawn decreases.
-  nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
-  # number of 'fixed' parameters (lambda, delta and m)
+  # Parameters 
+  ## Centrality latent traits: 1 per species 
+  ## IIRC -2 => cause we can set 1 value aand adjust the other values
+  nbc <- nsp - 2
+  ## Matching latent traits
+  ## Given the constrains on vector's orthogonality, dimension of the linear 
+  ## subspace where a new vector is drawn decreases.
+  nbm <- d * nsp - 2 * sum(1:d)
+  ## number of 'fixed' parameters (d lambda(s), delta1, delta2 and m), 
+  ## see eq (2.1) in 2016 paper for more details
   npr <- 3 + d
-  ## check if fitIMC is available => 2 be added check the number of parameters
+  ## total number of paramters 
   npar <- nbc + nbm + npr
-  if (verbose)
-      cat("total number of parameters to be fitted: ", npar, "\n")
+  ## overfit check
   stopifnot(npar < prod(dim(netObs)))
-  ##--
-  latpar <- paste0("lat_", 1:(nbc + nbm))
-  lam <- paste0("lambda_", 1:d)
-  ##
-  pars <- matrix(0, 3, npar)
-  rownames(pars) <- c("start", "lower", "upper")
-  colnames(pars) <- c(latpar, lam, "delta1", "delta2", "m")
-  ## m
-  pars[, 1L] <- c(1000 * stats::runif(1), -1000, 1000)
-  ## delta and lambda are positive
-  pars[1L, 2:(3 + d)] <- 10 * stats::runif(2 + d)
-  pars[2L, 2:(3 + d)] <- 0
-  pars[3L, 2:(3 + d)] <- 1000
-  ##
-  pars[1L, (4 + d):npar] <- -1 + 2 * stats::runif(nbc + nbm)
-  pars[2L, (4 + d):npar] <- -1
-  pars[3L, (4 + d):npar] <- 1
+  if (verbose) cat(npar, "parameters to be fitted \n")
+  ## parameters order: m, delta1 (>0), delta2(>0), d lambda values (>0), 
+  ## latent traits for centrality and matching
+  ## lower boundary of paramter values
+  low_bound <- c(-1000, rep(0, 2+d), rep(-1, nbm + nbc))
+  ## upper boundary
+  upp_bound <- c(1000, rep(1000, 2+d), rep(1, nbm + nbc))
   ## Total number of latent traits Get orthogonal basis (prevents from keeping
   ## computing them more than once).
   B1 <- getNullOne(nset1)
   B2 <- getNullOne(nset2)
   ## Simulated Annealing
-  tmp <- GenSA::GenSA(par = pars[1L, ], fn = coreMC, lower = pars[2L, ], upper = pars[3L,
-      ], control = list(verbose = TRUE, smooth = FALSE, maxit = mxt, temperature = temp, seed = seed), netObs = netObs,
-      nset1 = nset1, nset2 = nset2, d = d, B1 = B1, B2 = B2)
+  tmp <- GenSA(lower = low_bound, upper = upp_bound, fn = coreMC, 
+    netObs = netObs, nset1 = nset1, nset2 = nset2, B1 = B1, B2 = B2, 
+    d =d, control = control)
+    print(tmp$value)
   #
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
   out <- IMCPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
@@ -102,53 +93,55 @@ fitIMC <- function(data, d = 1, verbose = TRUE, mxt, seed, temp) {
   # Format results attributes
   baseAttr <- attributes(res)
   
-  attributes(res) <- list(dim = baseAttr$dim,
-                          dimnames = baseAttr$dimnames,
-                          model = out$methodsSpecific$params,
-                          adjMat = netObs)
-  
   # Define object class
+  attributes(res) <- list(dim = baseAttr$dim, dimnames = baseAttr$dimnames,
+                          model = out$methodsSpecific$params, adjMat = netObs)
   class(res) <- "alienFit"
-  
-  # Return result
-  return(res)
+  res
+}
+
+mysum <- function(...) {
+    args <- list(...)
+    print(length(args[[2]]))
+    print(args[[1]][1])
+    sum(...)
 }
 
 
 ## tidy parameters and return the likelihood
-coreMC <- function(netObs, nset1, nset2, d = 1, B1, B2, ...) {
-    out <- NULL
-    ## get parameters to be used in likelihoodMC
+coreMC <- function(..., netObs, nset1, nset2, B1, B2, d) {
+    ## parsing parameters (values passed as ...)
     tmp <- tidyParamMC(nset1, nset2, B1, B2, d, ...)
-    ## compute the likelyhood
-    out <- -likelihoodMC(netObs, tmp$M1, tmp$M2, tmp$c1, tmp$c2, tmp$Lambda, tmp$delta1,
-        tmp$delta2, tmp$m)
-    # print(out)
-    out
+    
+    # ## compute likelihood
+    -likelihoodMC(netObs, tmp$M1, tmp$M2, tmp$c1, tmp$c2, tmp$Lambda, 
+        tmp$delta1, tmp$delta2, tmp$m)
+
 }
 
 
 ## tidy parameters
-tidyParamMC <- function(nset1, nset2, B1, B2, d = 1, ...) {
-    args <- list(...)[[1L]]  # a vector
+tidyParamMC <- function(nset1, nset2, B1, B2, d, ...) {
+    args <- list(...)[[1L]] # vector of latent parameter
     tmp <- list()
-    ##--
-    nbc <- nset1 + nset2 - 2
-    nbm <- d * (nset1 + nset2) - 2 * sum(1:d)
+    ## number of parameter 
+    nsp <- nset1 + nset2
+    nbc <- nsp - 2
+    nbm <- d * nsp - 2 * sum(1:d)
     npr <- 3 + d
     ##-- 'fixed parameters'
     tmp$m <- args[1L]
     tmp$delta1 <- args[2L]
     tmp$delta2 <- args[3L]
     tmp$Lambda <- unlist(args[4:npr])
-    ##-- get c1 and c2
+    ##-- get c1 and c2 using the nbc centrality traits 
     args2 <- args[npr + (1:nbc)]
     tmp$c1 <- prodNorm(nset1, B1, args2[1:(nset1 - 1)])
-    tmp$c2 <- prodNorm(nset2, B2, utils::tail(args2, nset2 - 1))
-    ## get Matching vectors
-    args3 <- utils::tail(args, nbm)
+    tmp$c2 <- prodNorm(nset2, B2, tail(args2, nset2 - 1))
+    # ## get Matching vectors using the ncm macting traits
+    args3 <- tail(args, nbm)
     tmp$M1 <- getMiMC(B1, nset1, d, args3[1:(d * nset1 - sum(1:d))])
-    tmp$M2 <- getMiMC(B2, nset2, d, utils::tail(args3, d * nset2 - sum(1:d)))
+    tmp$M2 <- getMiMC(B2, nset2, d, tail(args3, d * nset2 - sum(1:d)))
     ##
     tmp
 }
@@ -228,15 +221,17 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     ij = expand.grid(seq_len(nrow(netObs)),seq_len(ncol(netObs)))
     netObs_vec = stack(as.data.frame(netObs))[,1]
     tmp = numeric(nrow(ij))
-    for (k in seq_len(nrow(M1))) tmp = tmp + Lambda[k]*(M1[k, ij[,1]] - M2[k, ij[,2]])*(M1[k, ij[,1]] - M2[k, ij[,2]])
+    for (k in seq_len(nrow(M1))) 
+        tmp = tmp + Lambda[k] * (M1[k, ij[,1]] - M2[k, ij[,2]])*(
+            M1[k, ij[,1]] - M2[k, ij[,2]])
     logit = tmp + cent1[ij[,1]] + cent2[ij[,2]] + m
     p = 1/(1+exp(-logit))
     LL = netObs_vec*log(p) + (1-netObs_vec)*log(1-p)
-    sum(LL,na.rm=T)
-
-
+    out <- sum(LL, na.rm = TRUE)
+    if (is.infinite(out)) {
+       - 1e20
+    } else sum(LL, na.rm = TRUE)
 }
-
 
 ## return a network of probabilities
 estimateMC <- function(netObs, lsArgs) {

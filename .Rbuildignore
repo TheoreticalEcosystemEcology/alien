@@ -13,3 +13,4 @@
 ^CONTRIBUTING
 ^\.DS_Store
 ^beforeInstall.sh
+^tmp

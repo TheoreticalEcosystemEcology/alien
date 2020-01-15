@@ -21,6 +21,8 @@ vignettes/*.pdf
 /*_cache/
 /cache/
 *.Rproj
+# tmp files 
+tmp/
 
 # Rcpp files
 src/*.o

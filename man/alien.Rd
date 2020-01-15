@@ -3,7 +3,6 @@
 \docType{package}
 \name{alien}
 \alias{alien}
-\alias{alien-package}
 \title{alien}
 \description{
 This should predict interactions!

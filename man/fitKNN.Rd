@@ -4,9 +4,16 @@
 \alias{fitKNN}
 \title{Fit using K-nearest neighbour}
 \usage{
-fitKNN(data, binary = TRUE, distFrom = "jaccard", distTo = "jaccard",
-  distTraitFrom = "euclidean", distTraitTo = "euclidean", traitWeight,
-  nNeig)
+fitKNN(
+  data,
+  binary = TRUE,
+  distFrom = "jaccard",
+  distTo = "jaccard",
+  distTraitFrom = "euclidean",
+  distTraitTo = "euclidean",
+  traitWeight,
+  nNeig
+)
 }
 \arguments{
 \item{data}{An object of the class alienData, see \code{\link{alienData}}.}

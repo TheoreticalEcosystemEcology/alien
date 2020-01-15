@@ -4,9 +4,17 @@
 \alias{fit4corner}
 \title{Fit fourth corner prediction model}
 \usage{
-fit4corner(data, formulaFrom = "~ .", formulaTo = "~ .",
-  binary = TRUE, type = "HMSC", family = NULL, priors = NULL,
-  iniParam = NULL, ...)
+fit4corner(
+  data,
+  formulaFrom = "~ .",
+  formulaTo = "~ .",
+  binary = TRUE,
+  type = "HMSC",
+  family = NULL,
+  priors = NULL,
+  iniParam = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{an object of the class alienData, see as.alienData function.}

@@ -4,8 +4,14 @@
 \alias{alienData}
 \title{Formatting data and return an \code{alienData} object}
 \usage{
-alienData(node, edge, trait = NULL, phylo = NULL, directed = TRUE,
-  verbose = TRUE)
+alienData(
+  node,
+  edge,
+  trait = NULL,
+  phylo = NULL,
+  directed = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{node}{A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).}
