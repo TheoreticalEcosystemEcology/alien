@@ -106,7 +106,6 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
   baseAttr <- attributes(res)
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
-                          model = model,
                           adjMat = adjMat)
   
   # Define object class

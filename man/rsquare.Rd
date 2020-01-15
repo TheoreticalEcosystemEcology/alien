@@ -7,10 +7,10 @@
 rsquare(alienFit)
 }
 \arguments{
-\item{alientFit}{An object of class \code{alienFit}.}
+\item{alienFit}{An object of class \code{alienFit}.}
 }
 \description{
-Pseudo-\eqn{R^2}{R2}
+Calculates Efron's pseudo-\eqn{R^2}{R2} for \code{alienFit} objects
 }
 \details{
 Efron's pseudo-\eqn{R^2}{R2} is calculated as:

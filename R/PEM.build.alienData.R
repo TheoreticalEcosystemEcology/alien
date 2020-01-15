@@ -38,7 +38,7 @@ PEM.build.alienData <- function(x, ...){
     graph <- MPSEM::Phylo2DirectedGraph(x$phylo[[1]])
     PEM[[i]] <- as.data.frame(MPSEM::PEM.build(graph, ...))
     colnames(PEM[[i]]) <- paste0("PEM_",names(x$phylo)[i],"_",1:ncol(PEM[[i]]))
-    PEMLong <- rbind(PEMLong,melt(as.matrix(PEM[[i]])))
+    PEMLong <- rbind(PEMLong, reshape2::melt(as.matrix(PEM[[i]])))
   }
   
   # Format data

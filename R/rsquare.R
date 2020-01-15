@@ -2,9 +2,10 @@
 #' 
 #' @title Pseudo-\eqn{R^2}{R2}
 #'
-#' @ Calculates Efron's pseudo-\eqn{R^2}{R2} for \code{alienFit} objects
+#' @description
+#' Calculates Efron's pseudo-\eqn{R^2}{R2} for `alienFit` objects
 #' 
-#' @param alientFit An object of class \code{alienFit}.
+#' @param alienFit An object of class `alienFit`.
 #'
 #' @details 
 #' 
@@ -16,12 +17,12 @@
 #'
 #' This version of pseudo-\eqn{R^2}{R2} was chosen over the others because it can be calculated for all types of models implemented in this package.
 #'
-#' @references
 #'
+#' @references
 #' Efron, B. (1978) Regression and ANOVA with Zero-One Data: Measures of Residual Variation., \emph{Journal of the American Statistical Association} \strong{73}, 113-121.
 #'
 #' @export
-rsquare <- function(alienFit){
+rsquare <- function(alienFit) {
   # General check
   stopifnot(class(alienFit) == "alienFit")
   

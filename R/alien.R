@@ -4,7 +4,7 @@
 #' @docType package
 #' @description This should predict interactions!
 #' @useDynLib alien
-#' @importFrom utils tail
-#' @importFrom stats runif 
+#' @importFrom utils tail stack 
+#' @importFrom stats runif as.formula model.matrix predict
 #' @importFrom GenSA GenSA
 NULL
