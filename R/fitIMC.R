@@ -227,7 +227,7 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     logit = tmp + cent1[ij[,1]] + cent2[ij[,2]] + m
     p = 1/(1+exp(-logit))
     LL = netObs_vec*log(p) + (1-netObs_vec)*log(1-p)
-    LL[is.infinite(LL)] = - 1e308
+#    LL[is.infinite(LL)] = - 1e308
     -sum(LL, na.rm = TRUE)
 }
 
