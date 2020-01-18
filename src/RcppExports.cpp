@@ -41,6 +41,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// likelihoodMC_core
+double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M2, NumericVector cent1, NumericVector cent2, NumericVector Lambda, double m);
+RcppExport SEXP _alien_likelihoodMC_core(SEXP netObsSEXP, SEXP M1SEXP, SEXP M2SEXP, SEXP cent1SEXP, SEXP cent2SEXP, SEXP LambdaSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type netObs(netObsSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cent1(cent1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cent2(cent2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Lambda(LambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodMC_core(netObs, M1, M2, cent1, cent2, Lambda, m));
+    return rcpp_result_gen;
+END_RCPP
+}
 // webFromNicheModel
 LogicalMatrix webFromNicheModel(int nbsp, double connec, bool connect_all, bool unbias, Nullable<NumericVector> niche);
 RcppExport SEXP _alien_webFromNicheModel(SEXP nbspSEXP, SEXP connecSEXP, SEXP connect_allSEXP, SEXP unbiasSEXP, SEXP nicheSEXP) {
@@ -61,6 +78,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_alien_getNull", (DL_FUNC) &_alien_getNull, 1},
     {"_alien_getNullOne", (DL_FUNC) &_alien_getNullOne, 1},
     {"_alien_prodNorm", (DL_FUNC) &_alien_prodNorm, 3},
+    {"_alien_likelihoodMC_core", (DL_FUNC) &_alien_likelihoodMC_core, 7},
     {"_alien_webFromNicheModel", (DL_FUNC) &_alien_webFromNicheModel, 5},
     {NULL, NULL, 0}
 };

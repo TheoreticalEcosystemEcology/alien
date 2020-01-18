@@ -1,5 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
+#include <Rcpp.h>
+using namespace Rcpp;
 //' @name getNull
 //' @title getNull
 //'
@@ -41,3 +43,28 @@ arma::mat getNullOne(int nbsp) {
 arma::vec prodNorm(int nbsp, arma::mat B, arma::vec V) {
   return sqrt(nbsp)*B*arma::normalise(V);
 }
+
+
+// [[Rcpp::export]]
+double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M2, NumericVector cent1, NumericVector cent2, NumericVector Lambda, double m) {
+
+    double ll = 0;
+    double val, tmp;
+    int i, j, k;
+    //logit values
+    for (i=0; i<netObs.nrow(); i++) {
+      for (j=0; j<netObs.ncol(); j++) {
+        if (!NumericMatrix::is_na(netObs(i, j))) {
+          val = cent1(i) + cent2(j) + m;
+          for (k=0; k< M1.nrow(); k++) {
+              tmp = M1(k, i) - M2(k, j);
+              val -= Lambda(k) * tmp * tmp;
+          }
+          tmp = 1/(1 + exp(-val));
+          ll += netObs(i, j) ? log(tmp) : log(1 - tmp);
+          // Rcout << ll << std::endl;
+        }
+      }
+    }
+    return ll;
+  }

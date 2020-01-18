@@ -2,8 +2,7 @@
 % Please edit documentation in R/fitIMC.R
 \name{fitIMC}
 \alias{fitIMC}
-\title{Estimation of interaction probabilities using the indirect matching centrality approach.
-approach.}
+\title{Estimation of interaction probabilities using the indirect matching centrality approach.}
 \usage{
 fitIMC(data, d = 1, verbose = TRUE, control = list())
 }
@@ -31,8 +30,10 @@ species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
 The first category of latent trait are the matching traits. (to be developped)
 The second category include the centrality terms. (to be developped).
 Latents traits are buitl under certain topological constraints:
-1- all vectors belongs to the orthogonal basis of the unit vector.
-2- all matching vector of a particluar set of specues are orthogonal to each other.
+\itemize{
+\item 1- all vectors belongs to the orthogonal basis of the unit vector.
+\item 2- all matching vector of a particluar set of specues are orthogonal to each other.
+}
 }
 \references{
 Rohr, R. P. & Bascompte, J. Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564 (2014).

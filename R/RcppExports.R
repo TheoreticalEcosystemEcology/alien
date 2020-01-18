@@ -37,6 +37,10 @@ prodNorm <- function(nbsp, B, V) {
     .Call('_alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
 }
 
+likelihoodMC_core <- function(netObs, M1, M2, cent1, cent2, Lambda, m) {
+    .Call('_alien_likelihoodMC_core', PACKAGE = 'alien', netObs, M1, M2, cent1, cent2, Lambda, m)
+}
+
 #' @name webFromNicheModel
 #'
 #' @title Generate a web using the niche model.
