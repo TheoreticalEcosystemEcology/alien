@@ -176,7 +176,6 @@ getMiMC <- function(B, nset, d, args) {
     M
 }
 
-
 ## Compute likelihood
 likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     #### test size ensures M1, M2 and Lambda use the same dimension d)
@@ -227,7 +226,7 @@ likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     logit = tmp + cent1[ij[,1]] + cent2[ij[,2]] + m
     p = 1/(1+exp(-logit))
     LL = netObs_vec*log(p) + (1-netObs_vec)*log(1-p)
-    LL[is.infinite(LL)] = - 1e100
+    #LL[is.infinite(LL)] = - 1e100
     sum(LL, na.rm = TRUE)
 }
 
