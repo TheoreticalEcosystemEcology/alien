@@ -68,9 +68,9 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   ## parameters order: m, delta1 (>0), delta2(>0), d lambda values (>0), 
   ## latent traits for centrality and matching
   ## lower boundary of paramter values
-  low_bound <- c(-10, rep(-10, 2+d), rep(-10, nbm + nbc))
+  low_bound <- c(-2.5, rep(-2.5, 2+d), rep(-2.5, nbm + nbc))
   ## upper boundary
-  upp_bound <- c(10, rep(10, 2+d), rep(10, nbm + nbc))
+  upp_bound <- c(2.5, rep(2.5, 2+d), rep(2.5, nbm + nbc))
   ## Get orthogonal basis (needs to be calculated only once).
   B1 <- getNullOne(nset1)
   B2 <- getNullOne(nset2)
