@@ -5,10 +5,11 @@
 #' @description Esimation of iteractions probability using the indirect matching centrality
 #' approach as described in Rohr (2014) and Rohr (2016).
 #'
-#' @param data an object of the class alienData.
+#' @param data an object of the class `alienData`.
 #' @param d dimensionnality.
-#' @param verbose Logical. Should extra information be reported on progress?
+#' @param verbose a logical, should extra information be reported on progress?
 #' @param control list that can be used to control the behavior of the algorithm including the value for initial temperature and maximum runiing time(see [GenSA::GenSA()] for more details).
+#'
 #' @author
 #' Kevin Cazelles
 #'
@@ -22,7 +23,6 @@
 #' Latents traits are buitl under certain topological constraints:
 #' * 1- all vectors belongs to the orthogonal basis of the unit vector.
 #' * 2- all matching vector of a particluar set of specues are orthogonal to each other.
-#'
 #'
 #' @return
 #' An object of class alienFit.
@@ -68,9 +68,9 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   ## parameters order: m, delta1 (>0), delta2(>0), d lambda values (>0), 
   ## latent traits for centrality and matching
   ## lower boundary of paramter values
-  low_bound <- c(-2.5, rep(-2.5, 2+d), rep(-2.5, nbm + nbc))
+  low_bound <- c(-10, rep(0, 2+d), rep(-1, nbm + nbc))
   ## upper boundary
-  upp_bound <- c(2.5, rep(2.5, 2+d), rep(2.5, nbm + nbc))
+  upp_bound <- c(10, rep(20, 2+d), rep(1, nbm + nbc))
   ## Get orthogonal basis (needs to be calculated only once).
   B1 <- getNullOne(nset1)
   B2 <- getNullOne(nset2)
@@ -82,8 +82,6 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
   out <- IMCPredict(-tmp$value, estimateMC(netObs, params), netObs = netObs,
       params = params)
-    print(out$logLik)
-    print(out$methodsSpecific$params[c("m", "delta1", "delta2", "Lambda")])
   
   # Standardize results
   res <- out$netEstim
