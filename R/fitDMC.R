@@ -69,7 +69,7 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
     model <- stats::glm(Formula, data = dat, family = family, ...)
 
     # Prediction
-    pred <- predict(model, type = "response")
+    pred <- predict(model, newdata = dat, type = "response")
     
     # Organise result into a matrix
     res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
@@ -80,16 +80,17 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
     if(binary){
       dat$adjVec <- as.factor(dat$adjVec)
     }
-    model <- randomForest::randomForest(Formula, data = dat, ...)
+    
+    model <- randomForest::randomForest(Formula, data = dat, na.action = na.omit, ...)
 
     # Prediction
     if(binary){
-      pred <- predict(model, type = "prob")
+      pred <- predict(model, newdata = dat, type = "prob")
       
       # Organise result into a matrix
       res <- matrix(pred[,2], nrow = nToSp, ncol = nFromSp) # Focuses only on 1s
     }else{
-      pred <- predict(model, type = "response")
+      pred <- predict(model, newdata = dat, type = "response")
       
       # Organise result into a matrix
       res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
