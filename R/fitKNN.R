@@ -19,7 +19,9 @@
 #'
 #' The argument \code{traitWeight} defines the important of traits in the analysis. If a weight of 0 is given, the traits are assumes to have no importance. Conversely, if \code{traitWeight} is 1 the traits are given their full importance in the analysis.
 #'
-#' When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument   \code{tie.method} in the \code{\link{rank}} function is set to "first".
+#' When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument \code{tie.method} in the \code{\link{rank}} function is set to "first". Also, when ranking the species, it is assumed that the species is not a neighbour of itself.
+#'
+#' NAs were removed in the calculation of the distances whenever they were present, but also in the calculation of the interaction probability. For species where all distance values are NAs, the returned interactions probability will be 0.
 #'
 #' @author
 #' 
@@ -54,12 +56,12 @@ fitKNN <- function(data, binary = TRUE, distFrom = "jaccard",
   traitsTo <- stats::model.matrix(~ -1 +., data = traits$to)
 
   # Distance species
-  distFromSp <- as.matrix(vegan::vegdist(t(adjMat), method = distFrom))
-  distToSp <- as.matrix(vegan::vegdist(adjMat, method = distTo))
+  distFromSp <- as.matrix(vegan::vegdist(t(adjMat), method = distFrom, na.rm = TRUE))
+  distToSp <- as.matrix(vegan::vegdist(adjMat, method = distTo, na.rm = TRUE))
 
   # Distance traits
-  distFromTr <- as.matrix(vegan::vegdist(traitsFrom, method = distTraitFrom))
-  distToTr <- as.matrix(vegan::vegdist(traitsTo, method = distTraitTo))
+  distFromTr <- as.matrix(vegan::vegdist(traitsFrom, method = distTraitFrom, na.rm = TRUE))
+  distToTr <- as.matrix(vegan::vegdist(traitsTo, method = distTraitTo, na.rm = TRUE))
 
   # Trait weighted distance
   wDistFromSp <- (1 - traitWeight) * distFromSp + traitWeight * distFromTr
@@ -71,15 +73,39 @@ fitKNN <- function(data, binary = TRUE, distFrom = "jaccard",
 
   for(i in 1:nFromSp) {
     for(j in 1:nToSp) {
-      # Find the most "nNeig" similar species for the To species
-      KNNFromSp <- which(rank(wDistFromSp[,i], ties.method = "first") <= nNeig)
+      # Order species distance for the focal species
+      KNNFromSpOrd <- order(wDistFromSp[,i])[-1]
+      KNNToSpOrd <- order(wDistToSp[,j])[-1]
 
-      # Find the most "nNeig" similar species for the From species
-      KNNToSp <- which(rank(wDistToSp[,j], ties.method = "first") <= nNeig)
-
-      # Compute the interaction probability
-      res[i, j] <- sum(adjMat[KNNToSp, i]) / nNeig / 2 +
-                   sum(adjMat[j, KNNFromSp])/ nNeig / 2
+      # Sort all the interacting species
+      interFrom <- adjMat[KNNToSpOrd, i]
+      interTo <- adjMat[j, KNNFromSpOrd]
+      
+      # From the sorted interacting species (that are not NAs), select the nNeig ones
+      interFromNeig <- which(!is.na(interFrom))[1:nNeig]
+      interToNeig <- which(!is.na(interTo))[1:nNeig]
+      
+      # Check in there are nNeig species interacting
+      interFromNeigNA <- is.na(interFromNeig)
+      interToNeigNA <- is.na(interToNeig)
+      
+      # Send warning if there are less than nNeig species interacting
+      if(any(interFromNeigNA)){
+        warning(paste("There are not", nNeig, "neighbours for",
+                      colnames(adjMat)[i],
+                      " - Calculation were done with", 
+                      sum(!interFromNeigNA), "neighbours"))
+      }
+      if(any(interToNeigNA)){
+        warning(paste("There are not", nNeig, "neighbours for",
+                      rownames(adjMat)[j],
+                      " - Calculation were done with", 
+                      sum(!interToNeigNA), "neighbours"))
+      }
+      
+      # Calculate KNN values
+      res[i, j] <- sum(interFrom[interFromNeig], na.rm = TRUE) / nNeig / 2 +
+                   sum(interTo[interToNeig], na.rm = TRUE)/ nNeig / 2
     }
   }
   
