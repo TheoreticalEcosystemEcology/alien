@@ -1,7 +1,7 @@
 Package: alien
 Title: Comparative analysis of interaction inference methods
 Version: 0.0.1.9000
-Date: 2020-01-15
+Date: 2020-02-07
 Author: person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000-0001-7893-4389")),
     person("David", "Beauchesne", role = c("ctb")),
     person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),

@@ -41,6 +41,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// interaction_proba
+double interaction_proba(NumericVector M1_i, NumericVector M2_j, double cent1_i, double cent2_j, NumericVector Lambda, double m);
+RcppExport SEXP _alien_interaction_proba(SEXP M1_iSEXP, SEXP M2_jSEXP, SEXP cent1_iSEXP, SEXP cent2_jSEXP, SEXP LambdaSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type M1_i(M1_iSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type M2_j(M2_jSEXP);
+    Rcpp::traits::input_parameter< double >::type cent1_i(cent1_iSEXP);
+    Rcpp::traits::input_parameter< double >::type cent2_j(cent2_jSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Lambda(LambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(interaction_proba(M1_i, M2_j, cent1_i, cent2_j, Lambda, m));
+    return rcpp_result_gen;
+END_RCPP
+}
 // likelihoodMC_core
 double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M2, NumericVector cent1, NumericVector cent2, NumericVector Lambda, double m);
 RcppExport SEXP _alien_likelihoodMC_core(SEXP netObsSEXP, SEXP M1SEXP, SEXP M2SEXP, SEXP cent1SEXP, SEXP cent2SEXP, SEXP LambdaSEXP, SEXP mSEXP) {
@@ -78,6 +94,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_alien_getNull", (DL_FUNC) &_alien_getNull, 1},
     {"_alien_getNullOne", (DL_FUNC) &_alien_getNullOne, 1},
     {"_alien_prodNorm", (DL_FUNC) &_alien_prodNorm, 3},
+    {"_alien_interaction_proba", (DL_FUNC) &_alien_interaction_proba, 6},
     {"_alien_likelihoodMC_core", (DL_FUNC) &_alien_likelihoodMC_core, 7},
     {"_alien_webFromNicheModel", (DL_FUNC) &_alien_webFromNicheModel, 5},
     {NULL, NULL, 0}

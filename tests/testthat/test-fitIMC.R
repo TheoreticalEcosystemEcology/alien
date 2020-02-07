@@ -1,4 +1,2 @@
 context("fitIMC function")
 
-
-

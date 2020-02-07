@@ -68,9 +68,9 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   ## parameters order: m, delta1 (>0), delta2(>0), d lambda values (>0), 
   ## latent traits for centrality and matching
   ## lower boundary of paramter values
-  low_bound <- c(-10, rep(0, 2+d), rep(-1, nbm + nbc))
+  low_bound <- c(-2.5, rep(-2.5, 2+d), rep(-2.5, nbm + nbc))
   ## upper boundary
-  upp_bound <- c(10, rep(20, 2+d), rep(1, nbm + nbc))
+  upp_bound <- c(2.5, rep(2.5, 2+d), rep(2.5, nbm + nbc))
   ## Get orthogonal basis (needs to be calculated only once).
   B1 <- getNullOne(nset1)
   B2 <- getNullOne(nset2)
@@ -145,7 +145,7 @@ getMiMC <- function(B, nset, d, args) {
     k <- 0
     for (i in seq_len(d)) {
         inc <- nset - i
-        ls_vec[[i]] <- args[k + (1:inc)]
+        ls_vec[[i]] <- args[k + seq_len(inc)]
         k <- k + inc
     }
     ##
@@ -192,14 +192,8 @@ estimateMC <- function(netObs, lsArgs) {
     ## logit values
     for (i in seq_len(nrow(netObs))) {
         for (j in seq_len(ncol(netObs))) {
-            val <- 0
-            for (k in seq_len(nrow(lsArgs$M1))) {
-                tmp <- lsArgs$M1[k, i] - lsArgs$M2[k, j]
-                val <- val + lsArgs$Lambda[k] * tmp * tmp
-            }
-            val <- val + cent1[i] + cent2[j] + lsArgs$m
-            ## get the inverse logit
-            out[i, j] <- 1/(1 + exp(-val))
+            out[i, j] <- interaction_proba(lsArgs$M1[, i], lsArgs$M2[, j], 
+                cent1[i], cent2[j], lsArgs$Lambda, lsArgs$m)
         }
     }
     out

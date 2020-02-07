@@ -44,26 +44,34 @@ arma::vec prodNorm(int nbsp, arma::mat B, arma::vec V) {
   return sqrt(nbsp)*B*arma::normalise(V);
 }
 
+// [[Rcpp::export]]
+double interaction_proba(NumericVector M1_i, NumericVector M2_j, double cent1_i, double cent2_j, NumericVector Lambda, double m) {
+  int k;
+  double val = cent1_i + cent2_j + m;
+  double tmp;
+  for (k=0; k<M1_i.size(); k++) {
+      tmp = M1_i(k) - M2_j(k);
+      val -= Lambda(k) * tmp * tmp;
+  }
+  return 1/(1 + exp(-val));
+}
 
 // [[Rcpp::export]]
 double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M2, NumericVector cent1, NumericVector cent2, NumericVector Lambda, double m) {
 
     double ll = 0;
-    double val, tmp;
-    int i, j, k;
+    double tmp;
+    int i, j;
     // logit values
     for (i=0; i<netObs.nrow(); i++) {
       for (j=0; j<netObs.ncol(); j++) {
         if (!NumericMatrix::is_na(netObs(i, j))) {
-          val = cent1(i) + cent2(j) + m;
-          for (k=0; k< M1.nrow(); k++) {
-              tmp = M1(k, i) - M2(k, j);
-              val -= Lambda(k) * tmp * tmp;
-          }
-          tmp = 1/(1 + exp(-val));
+          tmp = interaction_proba(M1(_,i), M2(_,j), cent1(i), cent2(j), Lambda, 
+            m);
           ll += netObs(i, j) ? log(tmp) : log(1 - tmp);
         }
       }
     }
     return ll;
   }
+
