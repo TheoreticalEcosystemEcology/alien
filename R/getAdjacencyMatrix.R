@@ -8,7 +8,8 @@
 #' bipartite network? Default is `FALSE`.
 #' @param binary Logical. Should the interactions be binary (see details)?
 #' Otherwise the `value` column of `edge` is used. Default is `FALSE`.
-#'
+#' @param threshold A positive-real number used to determine binary interactions (ignored if `binary` is `FALSE`).
+#' 
 #' @details
 #' By default `getAdjacencyMatrix` creates a square matrix including all
 #' nodes found in the `node` data frame of `object`. Then, it reads
@@ -30,9 +31,10 @@
 
 
 getAdjacencyMatrix <- function(object, bipartite = FALSE,
-                               binary = FALSE) {
+                               binary = FALSE, threshold = 0) {
   
   stopifnot(class(object) == "alienData")
+  stopifnot(threshold >= 0)
     
   # Basic objects
   nNode <- nrow(object$node)
@@ -59,8 +61,7 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE,
   }
   
   if (binary) {
-    out <- ifelse(out < 1, 0, 1)
-  }
-  
-  return(out)
+    ifelse(out>threshold, 1, 0)
+  } else out 
+
 }

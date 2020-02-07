@@ -4,7 +4,7 @@
 \alias{getAdjacencyMatrix}
 \title{Compute the adjacency matrix for a given alienData object}
 \usage{
-getAdjacencyMatrix(object, bipartite = FALSE, binary = FALSE)
+getAdjacencyMatrix(object, bipartite = FALSE, binary = FALSE, threshold = 0)
 }
 \arguments{
 \item{object}{An object of class \code{alienData}.}
@@ -14,6 +14,8 @@ bipartite network? Default is \code{FALSE}.}
 
 \item{binary}{Logical. Should the interactions be binary (see details)?
 Otherwise the \code{value} column of \code{edge} is used. Default is \code{FALSE}.}
+
+\item{threshold}{A positive-real number used to determine binary interactions (ignored if \code{binary} is \code{FALSE}).}
 }
 \value{
 An adjacency matrix of class \code{matrix}.

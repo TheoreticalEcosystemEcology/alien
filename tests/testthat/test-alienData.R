@@ -20,3 +20,9 @@ test_that("Expect output", {
   expect_identical(edge2, al2$edge)
 })
 
+
+test_that("test Adjancy matrix", {
+  expect_equal(sum(getAdjacencyMatrix(al2)), 1)
+  expect_true(all(getAdjacencyMatrix(al2, threshold = .5, binary = TRUE) == 0)) 
+  expect_equal(sum(getAdjacencyMatrix(al2, threshold = .49, binary = TRUE)), 2) 
+})
