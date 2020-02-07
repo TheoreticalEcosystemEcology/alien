@@ -165,7 +165,6 @@ getMiMC <- function(B, nset, d, args) {
     M
 }
 
-
 ## Compute likelihood
 likelihoodMC <- function(netObs, M1, M2, c1, c2, Lambda, delta1, delta2, m) {
     #### test size ensures M1, M2 and Lambda use the same dimension d)
