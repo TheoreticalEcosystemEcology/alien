@@ -2,36 +2,36 @@
 print.alienData <- function(x, ...){
   # Node information
   if(all(x$node$idInd == x$node$idSp)){
-    print(paste(length(unique(x$node$idSp)),"Species"))
+    cat(length(unique(x$node$idSp)), "Species\n")
   }else{
-    print(paste(length(x$node$idInd),"Individuals"))
-    print(paste(length(unique(x$node$idSp)),"Species"))
+    cat_info(length(x$node$idInd), "Individuals")
+    cat_info(length(unique(x$node$idSp)), "Species")
   }
 
-  print("-----------")
+  cat_sep()
   
   # Edges information
   if(x$info$directed){
-    print(paste(nrow(x$edge),"directed edges"))
+    cat_info(nrow(x$edge), "directed edges")
   }else{
-    print(paste(nrow(x$edge),"undirected edges"))
+    cat_info(nrow(x$edge), "undirected edges")
   }
   
-  print("-----------")
+  cat_sep()
   
   # Traits information
   if(is.null(x$trait)){
-    print("No traits")
+    cat_info("No traits")
   }else{
-    print(paste(length(unique(x$trait$trait)),"traits"))
+    cat_info(length(unique(x$trait$trait)), "traits")
   }
   
-  print("-----------")
+  cat_sep()
   
   # Phylogeny information
   if(is.null(x$phylo)){
-    print("No phylogeny")
+    cat_info("No phylogeny")
   }else{
-    print("Phylogenies are available")
+    cat_info("Phylogenies are available")
   }
 }

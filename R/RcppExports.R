@@ -13,12 +13,12 @@
 #' original function can.
 #'
 #' @param A a matrix.
-#' @param B a matrix (it should actually be a orthogonal basis of A).
+#' @param B a matrix (an orthogonal basis of A).
 #' @param V a vector.
 #' @param nbsp an integer (from an ecological standpoint, a number
 #' of species).
 #'
-#' @return The null basis.
+#' @return The null basis of `A`.
 #'
 #' @importFrom Rcpp evalCpp
 getNull <- function(A) {

@@ -20,7 +20,7 @@ An adjacency matrix of class \code{matrix}.
 }
 \description{
 Computes the adjacency matrix based on
-the \code{edge} par of an alienData object.
+the \code{edge} par of an \code{alienData} object.
 }
 \details{
 By default \code{getAdjacencyMatrix} creates a square matrix including all

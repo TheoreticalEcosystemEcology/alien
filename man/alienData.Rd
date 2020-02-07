@@ -35,7 +35,7 @@ set to 1) and the identifier of the site where the interaction has been observed
 \value{
 An object of class \code{alienData} is returned.
 
-Because an  \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
+Because an \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
 }
 \description{
 \code{alienData} is used to check and format data, if correct

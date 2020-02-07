@@ -43,7 +43,9 @@ This function should only be used for bipartite adjency matrice.
 
 The argument \code{traitWeight} defines the important of traits in the analysis. If a weight of 0 is given, the traits are assumes to have no importance. Conversely, if \code{traitWeight} is 1 the traits are given their full importance in the analysis.
 
-When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument   \code{tie.method} in the \code{\link{rank}} function is set to "first".
+When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument \code{tie.method} in the \code{\link{rank}} function is set to "first". Also, when ranking the species, it is assumed that the species is not a neighbour of itself.
+
+NAs were removed in the calculation of the distances whenever they were present, but also in the calculation of the interaction probability. For species where all distance values are NAs, the returned interactions probability will be 0.
 }
 \author{
 F. Guillaume Blanchet and Dominique Gravel

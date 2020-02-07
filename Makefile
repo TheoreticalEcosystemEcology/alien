@@ -2,13 +2,9 @@ rfun := $(wildcard R/*.R)
 rman := $(wildcard man/)
 rcpp := $(wildcard src/*.cpp)
 rtes := $(wildcard tests/testthat/*.R)
-rscr = ../pkg2date.R
 
 regular:
 	Rscript --no-init-file $(rscr) 1
-
-readme:
-	Rscript --no-init-file $(rscr) 0
 
 check:
 	Rscript --no-init-file -e "devtools::check('.')"

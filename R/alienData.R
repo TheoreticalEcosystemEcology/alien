@@ -1,4 +1,4 @@
-#' @title  Formatting data and return an \code{alienData} object
+#' @title Formatting data and return an \code{alienData} object
 #'
 #' @description \code{alienData} is used to check and format data, if correct
 #' it returns an object of class \code{alienData}.
@@ -29,7 +29,7 @@
 #' @return
 #' An object of class \code{alienData} is returned. 
 #' 
-#' Because an  \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
+#' Because an \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
 #'
 #' @author F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 #'
@@ -127,11 +127,11 @@ alienData <- function(node, edge, trait = NULL, phylo = NULL,
         stop("'phylo' needs to be an object of class phylo")
       }
     }else{
-      for(i in 1:length(phylo)){
+      for(i in seq_along(phylo)){
         stopifnot(all(phylo[[i]]$tip.label %in% node$idSp))
         
         # Find phylo for from species
-        if(all(phylo[[1]]$tip.label  %in% edge$from)){
+        if(all(phylo[[1]]$tip.label %in% edge$from)){
           names(phylo) <- c("from", "to")
         }else{
           names(phylo) <- c("to", "from")

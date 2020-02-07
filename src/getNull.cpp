@@ -14,12 +14,12 @@ using namespace Rcpp;
 //' original function can.
 //'
 //' @param A a matrix.
-//' @param B a matrix (it should actually be a orthogonal basis of A).
+//' @param B a matrix (an orthogonal basis of A).
 //' @param V a vector.
 //' @param nbsp an integer (from an ecological standpoint, a number
 //' of species).
 //'
-//' @return The null basis.
+//' @return The null basis of `A`.
 //'
 //' @importFrom Rcpp evalCpp
 // [[Rcpp::export]]
@@ -51,7 +51,7 @@ double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M
     double ll = 0;
     double val, tmp;
     int i, j, k;
-    //logit values
+    // logit values
     for (i=0; i<netObs.nrow(); i++) {
       for (j=0; j<netObs.ncol(); j++) {
         if (!NumericMatrix::is_na(netObs(i, j))) {
@@ -62,7 +62,6 @@ double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M
           }
           tmp = 1/(1 + exp(-val));
           ll += netObs(i, j) ? log(tmp) : log(1 - tmp);
-          // Rcout << ll << std::endl;
         }
       }
     }

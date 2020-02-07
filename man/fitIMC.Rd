@@ -7,11 +7,11 @@
 fitIMC(data, d = 1, verbose = TRUE, control = list())
 }
 \arguments{
-\item{data}{an object of the class alienData.}
+\item{data}{an object of the class \code{alienData}.}
 
 \item{d}{dimensionnality.}
 
-\item{verbose}{Logical. Should extra information be reported on progress?}
+\item{verbose}{a logical, should extra information be reported on progress?}
 
 \item{control}{list that can be used to control the behavior of the algorithm including the value for initial temperature and maximum runiing time(see \code{\link[GenSA:GenSA]{GenSA::GenSA()}} for more details).}
 }
