@@ -29,7 +29,6 @@
 #' @author
 #' F. Guillaume Blanchet
 #' 
-#'
 #' @export
 
 

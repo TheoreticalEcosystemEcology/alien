@@ -18,12 +18,12 @@ prodNorm(nbsp, B, V)
 \item{nbsp}{an integer (from an ecological standpoint, a number
 of species).}
 
-\item{B}{a matrix (it should actually be a orthogonal basis of A).}
+\item{B}{a matrix (an orthogonal basis of A).}
 
 \item{V}{a vector.}
 }
 \value{
-The null basis.
+The null basis of \code{A}.
 }
 \description{
 Wrapper around the \code{null} function of Armadillo library

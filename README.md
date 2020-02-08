@@ -1,18 +1,13 @@
-Status
-------
-
-**Version**: 0.1
-
-[![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien)
-[![Build status](https://ci.appveyor.com/api/projects/status/al10lmlky7se4wa6/branch/master?svg=true)](https://ci.appveyor.com/project/SteveViss/alien/branch/master) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
-
-
 ALIEN: The aim of the package is to predict All Links In Ecological Networks
 ----------------------------------------------------------------------------
+[![Build Status](https://travis-ci.org/TheoreticalEcosystemEcology/alien.svg?branch=master)](https://travis-ci.org/TheoreticalEcosystemEcology/alien)
+[![Build status](https://ci.appveyor.com/api/projects/status/al10lmlky7se4wa6/branch/master?svg=true)](https://ci.appveyor.com/project/SteveViss/alien/branch/master) [![codecov](https://codecov.io/gh/TheoreticalEcosystemEcology/alien/branch/master/graph/badge.svg)](https://codecov.io/gh/TheoreticalEcosystemEcology/alien)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
+
 
 Incoming content
 ----------------
-
 
 ### Methods
 
@@ -34,52 +29,39 @@ Incoming content
 - Simulate communities data
 -  [ ] Ives' phylo (2006, Amnat see package `picante`) (GB)
 
+
+
+Installation
+------------
+
+``` r
+install.packages("remotes")
+remotes::install_github("TheoreticalEcosystemEcology/alien")
+``` 
+
+
 Generate package metadata
 -------------------------
 
+To build the metadata files (i.e. NAMESPACE, DESCRIPTION), 
+[`devtools`](https://cran.r-project.org/web/packages/devtools/index.html)
+must be installed, then follow the three following steps (assuming your
+working diretory is the folder containing this package):
 
-To build the metadata files (i.e. README, NAMESPACE, DESCRIPTION):
 
 ``` r
-ipak <- function(pkg){
-    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-    if (length(new.pkg))
-        install.packages(new.pkg, dependencies = TRUE)
-    sapply(pkg, require, character.only = TRUE)
-}
-
-## Install packages
-pkgs = c('devtools','roxygen2','testthat','formatR','rmarkdown')
-ipak(pkgs)
-
-## Make sure you're working directory is set at path/to/alien/folder
-getwd()
-
-## Create README file
-rmarkdown::render("README.Rmd", "all", quiet=TRUE)
-
-## Format the R code (e.g. indentation, assignment, etc.)
-formatR::tidy_dir("./R",arrow = getOption("formatR.arrow",TRUE))
-formatR::tidy_dir("./tests/test_that", arrow = getOption("formatR.arrow",TRUE))
-
 ## Load your current version of the package
-devtools::load_all(".")
+devtools::load_all()
 
 ## Create man pages
-devtools::document(".")
+devtools::document()
 
 ## Testing the code with testthat package
 devtools::test()
 ```
 
-### Only for the developers on Mac OSX and linux
 
-All of the previous steps can be done with:
 
-``` bash
-cd path/to/alien
-make
-```
 
 Contribute to this package
 --------------------------
@@ -106,10 +88,11 @@ Have a look at <http://adv-r.had.co.nz/Style.html>
 
 For further details on namespaces: <http://r-pkgs.had.co.nz/namespace.html>
 
+
 License
 -------
 
-Copyright (c) 2016 IELab research group
+Copyright (c) 2016-2020 IELab research group
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

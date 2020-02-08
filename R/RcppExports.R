@@ -13,12 +13,12 @@
 #' original function can.
 #'
 #' @param A a matrix.
-#' @param B a matrix (it should actually be a orthogonal basis of A).
+#' @param B a matrix (an orthogonal basis of A).
 #' @param V a vector.
 #' @param nbsp an integer (from an ecological standpoint, a number
 #' of species).
 #'
-#' @return The null basis.
+#' @return The null basis of `A`.
 #'
 #' @importFrom Rcpp evalCpp
 getNull <- function(A) {
@@ -35,6 +35,14 @@ getNullOne <- function(nbsp) {
 #' (see [fitIMC()]).
 prodNorm <- function(nbsp, B, V) {
     .Call('_alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
+}
+
+interaction_proba <- function(M1_i, M2_j, cent1_i, cent2_j, Lambda, m) {
+    .Call('_alien_interaction_proba', PACKAGE = 'alien', M1_i, M2_j, cent1_i, cent2_j, Lambda, m)
+}
+
+likelihoodMC_core <- function(netObs, M1, M2, cent1, cent2, Lambda, m) {
+    .Call('_alien_likelihoodMC_core', PACKAGE = 'alien', netObs, M1, M2, cent1, cent2, Lambda, m)
 }
 
 #' @name webFromNicheModel

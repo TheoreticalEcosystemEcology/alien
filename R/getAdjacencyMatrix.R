@@ -1,40 +1,40 @@
 #' @title Compute the adjacency matrix for a given alienData object
 #'
 #' @description Computes the adjacency matrix based on
-#' the \code{edge} par of an alienData object.
+#' the `edge` par of an `alienData` object.
 #'
-#' @param object An object of class \code{alienData}.
+#' @param object An object of class `alienData`.
 #' @param bipartite Logical. Whether the adjacency matrix should be constructed for a associated with a
-#' bipartite network? Default is \code{FALSE}.
+#' bipartite network? Default is `FALSE`.
 #' @param binary Logical. Should the interactions be binary (see details)?
-#' Otherwise the \code{value} column of \code{edge} is used. Default is \code{FALSE}.
-#'
+#' Otherwise the `value` column of `edge` is used. Default is `FALSE`.
+#' @param threshold A positive-real number used to determine binary interactions (ignored if `binary` is `FALSE`).
+#' 
 #' @details
-#' By default \code{getAdjacencyMatrix} creates a square matrix including all
-#' nodes found in the \code{node} data frame of \code{object}. Then, it reads
-#' \code{edge} to fill the matrix out. If bipartite is \code{TRUE} then only the
-#' nodes found in the \code{from} column of \code{edge} are used to name
-#' the rows of the adjacency matrix. Similarly, the \code{to} nodes become the
+#' By default `getAdjacencyMatrix` creates a square matrix including all
+#' nodes found in the `node` data frame of `object`. Then, it reads
+#' `edge` to fill the matrix out. If bipartite is `TRUE` then only the
+#' nodes found in the `from` column of `edge` are used to name
+#' the rows of the adjacency matrix. Similarly, the `to` nodes become the
 #' columns names.
 #' 
 #' Currently if there are several values for the same interaction
-#' \code{getAdjacencyMatrix} sums them unless \code{binary} is \code{TRUE}.
+#' `getAdjacencyMatrix` sums them unless `binary` is `TRUE`.
 #'
 #' @return
-#' An adjacency matrix of class \code{matrix}.
+#' An adjacency matrix of class `matrix`.
 #'
 #' @author Kevin Cazelles, F. Guillaume Blanchet
-#'
-#' @importFrom magrittr %>%
 #'
 #' @keywords adjacency matrix
 #' @export
 
 
 getAdjacencyMatrix <- function(object, bipartite = FALSE,
-                               binary = FALSE) {
+                               binary = FALSE, threshold = 0) {
   
   stopifnot(class(object) == "alienData")
+  stopifnot(threshold >= 0)
     
   # Basic objects
   nNode <- nrow(object$node)
@@ -45,15 +45,15 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE,
                                     object$node$idInd))
   } else {
       ## "to" as rows
-      uit <- unique(object$edge$to) %>% sort
+      uit <- sort(unique(object$edge$to)) 
       ## "from" as columns
-      uif <- unique(object$edge$from) %>% sort
-      
+      uif <- sort(unique(object$edge$from))
+      ##
       out <- matrix(0, length(uit), length(uif),
                     dimnames = list(uit, uif))
   }
   
-  for (i in 1:nrow(object$edge)) {
+  for (i in seq_len(nrow(object$edge))) {
       out[object$edge[i, 2L],
           object$edge[i, 1L]] <- out[object$edge[i, 2L],
                                      object$edge[i, 1L]] +
@@ -61,8 +61,7 @@ getAdjacencyMatrix <- function(object, bipartite = FALSE,
   }
   
   if (binary) {
-    out <- ifelse(out < 1, 0, 1)
-  }
-  
-  return(out)
+    ifelse(out>threshold, 1, 0)
+  } else out 
+
 }
