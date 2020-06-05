@@ -5,50 +5,45 @@
 \title{Formatting data and return an \code{alienData} object}
 \usage{
 alienData(
-  node,
-  edge,
-  trait = NULL,
-  phylo = NULL,
-  directed = TRUE,
-  verbose = TRUE
+  adjMat,
+  traitFrom = NULL,
+  traitTo = NULL,
+  phyloFrom = NULL,
+  phyloTo = NULL,
+  traitDistFrom = NULL,
+  traitDistTo = NULL,
+  phyloDistFrom = NULL,
+  phyloDistTo = NULL
 )
 }
 \arguments{
-\item{node}{A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).}
+\item{adjMat}{An adjancency matrix. The rows (From) species are influencing the column (To) species.}
 
-\item{edge}{A data frame with two columns: \code{from} and \code{to}
-describing the set of edges (links between nodes). If \code{directed} is set
-to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer.
-The presence of a \code{value} and \code{site}
-which respectively provide the values associated with edges (if absent, they are
-set to 1) and the identifier of the site where the interaction has been observed.
-(See details).}
+\item{traitFrom}{A data.frame containing the traits of the row (From) species.}
 
-\item{trait}{A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "trait" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).}
+\item{traitTo}{A data.frame containing the traits of the column (To) species.}
 
-\item{phylo}{An object (or a list of objects) of class \code{\link[ape]{phylo}} .}
+\item{phyloFrom}{An object of class \code{\link[ape]{phylo}} for the row (From) species.}
 
-\item{directed}{Logical. If \code{TRUE} (default value) the network is considered directed. (See details).}
+\item{phyloTo}{An object of class \code{\link[ape]{phylo}} for the column (To) species.}
 
-\item{verbose}{Logical. Should extra information be reported on progress?}
+\item{traitDistFrom}{A dist object containing the distance between pairs of traits of the row (From) species.}
+
+\item{traitDistTo}{A dist object containing the distance between pairs of traits of the column (To) species.}
+
+\item{phyloDistFrom}{A dist object containing phylogenetic distance between pairs of row (From) species.}
+
+\item{phyloDistTo}{A dist object containing phylogenetic distance between pairs of column (To) species.}
 }
 \value{
 An object of class \code{alienData} is returned.
-
-Because an \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
 }
 \description{
-\code{alienData} is used to check and format data, if correct
+\code{alienData} is used to check the data, if correct
 it returns an object of class \code{alienData}.
 }
 \details{
-In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
-
-If the data available is at the species level, the species as well as the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
-
-It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the \code{\link[=getTrait]{getTrait()}} function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the \code{\link[=getTrait]{getTrait()}} function.
-
-The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
+This function is essentially designed to make sure the names of all components match. The output of this function is at the basis of all the analyses implemented in this package.
 }
 \author{
 F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault

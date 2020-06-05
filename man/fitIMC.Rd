@@ -7,11 +7,11 @@
 fitIMC(data, d = 1, verbose = TRUE, control = list())
 }
 \arguments{
-\item{data}{an object of the class \code{alienData}.}
+\item{data}{An object of the class \code{alienData}.}
 
-\item{d}{dimensionnality.}
+\item{d}{Numeric defining the dimensionnality of the model.}
 
-\item{verbose}{a logical, should extra information be reported on progress?}
+\item{verbose}{Logical. Whether information on the progress of the analysis is reported in the console.}
 
 \item{control}{list that can be used to control the behavior of the algorithm including the value for initial temperature and maximum runiing time(see \code{\link[GenSA:GenSA]{GenSA::GenSA()}} for more details).}
 }
@@ -23,16 +23,16 @@ Esimation of iteractions probability using the indirect matching centrality
 approach as described in Rohr (2014) and Rohr (2016).
 }
 \details{
-\code{fitIMC} implements the indirect matching-centrality method as described in
-Rohr 2014 and Rohr 2016. Briefly, the method uses latent traits to fit
+This function implements indirect matching-centrality as described by
+Rohr et al. (2014, 2016). Briefly, the method uses latent traits to fit
 interactions. The first step requires the definition of two sets of interacting
 species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
 The first category of latent trait are the matching traits. (to be developped)
 The second category include the centrality terms. (to be developped).
-Latents traits are buitl under certain topological constraints:
+Latents traits are built under specific topological constraints:
 \itemize{
 \item 1- all vectors belongs to the orthogonal basis of the unit vector.
-\item 2- all matching vector of a particluar set of specues are orthogonal to each other.
+\item 2- all matching vector of a particular set of species are orthogonal to each other.
 }
 }
 \references{

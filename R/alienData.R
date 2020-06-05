@@ -1,152 +1,247 @@
 #' @title Formatting data and return an \code{alienData} object
 #'
-#' @description \code{alienData} is used to check and format data, if correct
+#' @description \code{alienData} is used to check the data, if correct
 #' it returns an object of class \code{alienData}.
 #'
-#' @param node A data.frame with two columns. The first column includes unique individual identifications and needs to be defined as "idInd" while the second columns presents species identification and needs to be defined as "idSp". (See details).
-#' @param edge A data frame with two columns: \code{from} and \code{to}
-#' describing the set of edges (links between nodes). If \code{directed} is set
-#' to \code{TRUE} then the interaction is directed \code{from} a resource \code{to} a consumer.
-#' The presence of a \code{value} and \code{site}
-#' which respectively provide the values associated with edges (if absent, they are
-#' set to 1) and the identifier of the site where the interaction has been observed.
-#' (See details).
-#' @param trait A data.frame with three columns. The first column is the individual identifier and needs to be defined as "idInd", the second column is the trait names and needs to be defined as "trait" while the third column is the trait characteristic, which could be a numeric or a character string and needs to be called "value". (See details).
-#' @param phylo An object (or a list of objects) of class \code{\link[ape]{phylo}} .
-#' @param directed Logical. If \code{TRUE} (default value) the network is considered directed. (See details).
-#' @param verbose Logical. Should extra information be reported on progress?
+#' @param adjMat An adjancency matrix. The rows (From) species are influencing the column (To) species.
+#' @param traitFrom A data.frame containing the traits of the row (From) species.
+#' @param traitTo A data.frame containing the traits of the column (To) species.
+#' @param phyloFrom An object of class \code{\link[ape]{phylo}} for the row (From) species.
+#' @param phyloTo An object of class \code{\link[ape]{phylo}} for the column (To) species.
+#' @param traitDistFrom A dist object containing the distance between pairs of traits of the row (From) species.
+#' @param traitDistTo A dist object containing the distance between pairs of traits of the column (To) species.
+#' @param phyloDistFrom A dist object containing phylogenetic distance between pairs of row (From) species.
+#' @param phyloDistTo A dist object containing phylogenetic distance between pairs of column (To) species.
 #'
 #' @details
 #'
-#' In the \code{nodes} argument, the first columns (individual identification) should have unique (non-repetitive) identifiers for each lines while the species identifier (usually a species code or a the species name) can be repeted.
+#' This function is essentially designed to make sure the names of all components match. The output of this function is at the basis of all the analyses implemented in this package.
 #'
-#' If the data available is at the species level, the species as well as the individual identifiers will not independently repeat. In this case, the individual identifier \code{idInd} will be replaced by the species identifier \code{idSp} in \code{node}, thus allowing \code{edges} and \code{trait} to present relations using species identifier. An error will be sent if multiple individuals were measured for each species.
-#'
-#' It is from the \code{trait} argument that an individual (or a species) by trait matrix is constructed using the [getTrait()] function. Because, many of the models considered in this package do not handle NAs, it becomes important to make sure all combinations of individuals (or species) by traits are defined in the trait matrix resulting from the [getTrait()] function. 
-#'
-#' The check on the \code{phylo} argument assumes that the phylogeny is at the species level.
 #'
 #' @return
 #' An object of class \code{alienData} is returned. 
 #' 
-#' Because an \code{alienData} object is organized for data processing rather than for presentation. When printed on screen, only a summary of the data is presented.
-#'
 #' @author F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault
 #'
 #' @keywords manip
 #' @keywords classes
 #' @export
-alienData <- function(node, edge, trait = NULL, phylo = NULL,
-                      directed = TRUE, verbose = TRUE) {
+alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
+                      phyloFrom = NULL, phyloTo = NULL, 
+                      traitDistFrom = NULL, traitDistTo = NULL,
+                      phyloDistFrom = NULL, phyloDistTo = NULL) {
 
-  ######
-  # node
-  ######
-  if(ncol(node) != 2){
-    stop("'node' must have two columns")
+  ##################
+  # Adjacency matrix
+  ##################
+  if(!is.matrix(adjMat)){
+    stop("'adjMat' should be a matrix")
   }
-
-  nIndID <- length(unique(node$idInd))
-  nSpID <- length(unique(node$idSp))
-  nSample <- nrow(node)
-
-  if(nIndID != nSample){
-    stop("The number of identifier in the first column should be unique")
+  
+  # row names adjMat
+  adjMatFromNames <- rownames(adjMat)
+  
+  if(is.null(adjMatFromNames)){
+    stop("'adjMat' needs to have row names")
   }
-
-  nodeName <- colnames(node)
-
-  if(nodeName[1] != "idInd"){
-    stop("The first column name of 'node' should be 'idInd'")
+  
+  # column names adjMat
+  adjMatToNames <- colnames(adjMat)
+  
+  if(is.null(adjMatToNames)){
+    stop("'adjMat' needs to have column names")
   }
-
-  if(nodeName[2] != "idSp"){
-    stop("The second column name of 'node' should be 'idSp'")
-  }
-
-  if(nIndID == nSpID){
-    node$idInd <- node$idSp
-  }
-
-  ######
-  # edge
-  ######
-  stopifnot(all(edge$from %in% node$idInd))
-  stopifnot(all(edge$to %in% node$idInd))
-
-  idn <- which(!node$idInd %in% c(edge$from, edge$to))
-  if (length(idn)){
-    warning(paste0("Unlinked nodes: ", paste(node$idInd, collapse = ", ")))
-  }
-
-  if (!"value" %in% names(edge)) {
-    if (verbose){
-      message("==> No Edges' value detected, values are set to 1")
-    }
-    edge$value <- 1
-  }
-
+  
+  #-#-#-#-#-
+  # Raw data
+  #-#-#-#-#-
   #######
-  # trait
+  # Trait
   #######
-  if(!is.null(trait)){
-    stopifnot(all(trait$idInd %in% node$idInd))
-
-    if(ncol(trait) != 3){
-      stop("'trait' must have three columns")
+  #-----------
+  # Trait from 
+  #-----------
+  if(!is.null(traitFrom)){
+    # Check object class
+    if(!is.data.frame(traitFrom)){
+      stop("'traitFrom' should be a data.frame")
     }
-
-    traitName <- colnames(trait)
-
-    if(traitName[1] != "idInd"){
-      stop("The first column name of 'trait' should be 'idInd'")
-    }
-
-    if(traitName[2] != "trait"){
-      stop("The second column name of 'trait' should be 'trait'")
-    }
-
-    if(traitName[3] != "value"){
-      stop("The third column name of 'trait' should be 'value'")
-    }
-
-    # Make sure "value" is a character string
-    trait$value <- as.character(trait$value)
-  }
-
-
-  #######
-  # phylo
-  #######
-  if(!is.null(phylo)){
     
-    if(!is.list(phylo)){
-      stopifnot(all(phylo$tip.label %in% node$idSp))
-      
-      if(class(phylo) != "phylo"){
-        stop("'phylo' needs to be an object of class phylo")
-      }
-    }else{
-      for(i in seq_along(phylo)){
-        stopifnot(all(phylo[[i]]$tip.label %in% node$idSp))
-        
-        # Find phylo for from species
-        if(all(phylo[[1]]$tip.label %in% edge$from)){
-          names(phylo) <- c("from", "to")
-        }else{
-          names(phylo) <- c("to", "from")
-        }
-        
-        if(class(phylo[[i]]) != "phylo"){
-          stop("Each part of 'phylo' needs to be an object of class phylo")
-        }
-      }
+    # Names
+    traitFromNames <- rownames(traitFrom)
+    
+    # Check variable class
+    traitFromVarClass <- sapply(traitFrom,
+                                function(x) is.numeric(x) | is.factor(x))
+    
+    if(!all(traitFromVarClass)){
+      stop("Variables in 'traitFrom' need to be a 'numeric' or a 'factor'")
+    }
+   
+    # Check if species name match
+    if(!all(adjMatFromNames %in% traitFromNames)){
+      stop("traitFrom and the rows of adjMat do not have the same species.")
+    }
+  }
+  
+  #---------
+  # Trait to
+  #---------
+  if(!is.null(traitTo)){
+    # Check object class
+    if(!is.data.frame(traitTo)){
+      stop("'traitTo' should be a data.frame")
+    }
+    
+    # Names
+    traitToNames <- rownames(traitTo)
+    
+    # Check variable class
+    traitToVarClass <- sapply(traitTo,
+                                function(x) is.numeric(x) | is.factor(x))
+    
+    if(!all(traitToVarClass)){
+      stop("Variables in 'traitTo' need to be a 'numeric' or a 'factor'")
+    }
+
+    # Check if species name match
+    if(!all(adjMatToNames %in% traitToNames)){
+      stop("traitTo and the columns of adjMat do not have the same species.")
     }
   }
 
+  ###########
+  # Phylogeny
+  ###########
+  #-----------
+  # Phylo from 
+  #-----------
+  if(!is.null(phyloFrom)){
+    # Check object class
+    if(class(phyloFrom) != "phylo"){
+      stop("'phyloFrom' should be an object of class phylo")
+    }
+    
+    # Species names
+    phyloFromNames <- phyloFrom$tip.label
+    
+    # Check if species name match
+    if(!all(adjMatFromNames %in% phyloFromNames)){
+      stop("phyloFrom and the rows of adjMat do not have the same species.")
+    }
+  }
+
+  #---------
+  # Phylo to 
+  #---------
+  if(!is.null(phyloTo)){
+    # Check object class
+    if(class(phyloTo) != "phylo"){
+      stop("'phyloTo' should be an object of class phylo")
+    }
+    
+    # Species names
+    phyloToNames <- phyloTo$tip.label
+    
+    # Check if species name match
+    if(!all(adjMatToNames %in% phyloToNames)){
+      stop("phyloTo and the column of adjMat do not have the same species.")
+    }
+  }
+  
+  #-#-#-#-#-#-#-#
+  # Distance data
+  #-#-#-#-#-#-#-#
+  ########
+  # Traits
+  ########
+  #--------------
+  # traitDistFrom
+  #--------------
+  if(!is.null(traitDistFrom)){
+    # Check object class
+    if(class(traitDistFrom) != "dist"){
+      stop("'traitDistFrom' needs to be of class dist")
+    }
+    
+    # Extract labels
+    traitDistFromNames <- attributes(traitDistFrom)$Labels
+    
+    # Check if species name match
+    if(!all(adjMatFromNames %in% traitDistFromNames)){
+      stop("Labels of traitDistFrom and the column of adjMat do not have the same species.")
+    }
+  }
+  
+  #------------
+  # traitDistTo
+  #------------
+  if(!is.null(traitDistTo)){
+    # Check object class
+    if(class(traitDistTo) != "dist"){
+      stop("'traitDistTo' needs to be of class dist")
+    }
+    
+    # Extract labels
+    traitDistToNames <- attributes(traitDistTo)$Labels
+    
+    # Check if species name match
+    if(!all(adjMatToNames %in% traitDistToNames)){
+      stop("Labels of traitDistTo and the column of adjMat do not have the same species.")
+    }
+  }
+
+  ###########
+  # Phylogeny
+  ###########
+  #--------------
+  # phyloDistFrom
+  #--------------
+  if(!is.null(phyloDistFrom)){
+    # Check object class
+    if(class(phyloDistFrom) != "dist"){
+      stop("'phyloDistFrom' needs to be of class dist")
+    }
+    
+    # Extract labels
+    phyloDistFromNames <- attributes(phyloDistFrom)$Labels
+    
+    # Check if species name match
+    if(!all(adjMatFromNames %in% phyloDistFromNames)){
+      stop("Labels of phyloDistFrom and the column of adjMat do not have the same species.")
+    }
+  }
+  
+  #------------
+  # phyloDistTo
+  #------------
+  if(!is.null(phyloDistTo)){
+    # Check object class
+    if(class(phyloDistTo) != "dist"){
+      stop("'phyloDistTo' needs to be of class dist")
+    }
+    
+    # Extract labels
+    phyloDistToNames <- attributes(phyloDistTo)$Labels
+    
+    # Check if species name match
+    if(!all(adjMatToNames %in% phyloDistToNames)){
+      stop("Labels of phyloDistTo and the column of adjMat do not have the same species.")
+    }
+  }
+  
   # Results
-  res <- list(node = node, edge = edge, trait = trait,
-              phylo = phylo, info = list(directed = directed))
+  res <- list(adjMat = adjMat,
+              traitFrom = traitFrom,
+              traitTo = traitTo,
+              phyloFrom = phyloFrom,
+              phyloTo = phyloTo,
+              traitDistFrom = traitDistFrom,
+              traitDistTo = traitDistTo,
+              phyloDistFrom = phyloDistFrom,
+              phyloDistTo = phyloDistTo)
+  
   class(res) <- "alienData"
-  res
+  
+  return(res)
 }

@@ -4,7 +4,9 @@
 \name{bogus}
 \alias{bogus}
 \title{data name}
-\format{2beadded}
+\format{
+2beadded
+}
 \usage{
 bogus
 }

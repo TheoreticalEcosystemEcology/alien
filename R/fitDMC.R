@@ -4,9 +4,8 @@
 #'
 #' @description Fit direct matching centrality model
 #'
-#' @param formula A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.
 #' @param data an object of the class \code{\link{alienData}}
-#' @param binary Logical. Whether the adjacency matrix is binary or not. Default is TRUE.
+#' @param formula A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. Default is to include all terms additively, with quadratics for quantitative terms, and all From-by-To traits interactions.
 #' @param type Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}). 
 #' @param family The family of the response variable. See \link[stats]{family}, or the choices available. This is argument is only active when type = "glm".
 #' @param \dots Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.
@@ -15,11 +14,11 @@
 #' 
 #' The direct matching centrality models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
 #' 
-#' This function builds the adjacency matrix, unfold it and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
+#' This function unfold the adjacency matrix and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
 #' 
 #' @return 
 #' 
-#' An object of class alienFit.
+#' An object with a class alienFit and a class fitDMC. If the type of model used to perform the fitting is "glm", a class "glm" is also given to the object. Similarly, if the type of model used to perform the fitting is "randomForest", a class "randomForest" is also given to the object.
 #' 
 #' @author
 #' 
@@ -27,42 +26,60 @@
 #'
 #' @export
 
-fitDMC <- function(formula, data, binary = TRUE, type = NULL,
+fitDMC <- function(data, formula = NULL, type = NULL,
                    family = NULL, ...) {
 
   stopifnot(class(data) == "alienData")
 
-  # Construct adjencency matrix
-  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE, binary = TRUE)
+  # Adjacency matrix
+  adjMat <- data$adjMat
   nFromSp <- ncol(adjMat)
   nToSp <- nrow(adjMat)
   
-  # Construct trait matrix
-  traits <- getTrait(data, bipartite = TRUE)
+  # Check if adjMat is a binary or not
+  if(all(unique(as.vector(adjMat)) %in% c(0,1))){
+    binary <- TRUE
+  }else{
+    binary <- FALSE
+  }
+  
+  # Trait matrix
+  traitFromBase <- data$traitFrom
+  traitToBase <- data$traitTo
   
   # Check for NAs in traits
-  if(any(sapply(traits, function(x) any(is.na(x))))){
-    stop("There is at least one NA in the traits. Use getTrait() to investigate.")
+  if(any(is.na(traitFromBase))){
+    stop("There is at least one NA in the data$traitFrom.")
+  }
+  
+  if(any(is.na(traitToBase))){
+    stop("There is at least one NA in the data$traitTo.")
   }
   
   # Unfold adjMat into a vector
   adjVec <- as.vector(adjMat)
   
   # Organize trait$to to match the size and organization of adjMat
-  traitsTo <- as.data.frame(traits$to[rep(seq_len(nToSp), nFromSp),])
-  colnames(traitsTo) <- colnames(traits$to)
+  traitTo <- as.data.frame(traitToBase[rep(seq_len(nToSp),
+                                           nFromSp),])
+  colnames(traitTo) <- colnames(traitToBase)
   
   # Organize trait$from to match the size and organization of adjMat
-  traitsFrom <- as.data.frame(traits$from[rep(seq_len(nFromSp), each = nToSp),])
-  colnames(traitsFrom) <- colnames(traits$from)
+  traitFrom <- as.data.frame(traitFromBase[rep(seq_len(nFromSp),
+                                             each = nToSp),])
+  colnames(traitFrom) <- colnames(traitFromBase)
   
   # Organize data into a single object
-  dat <- cbind(adjVec, traitsTo, traitsFrom)
+  dat <- cbind(adjVec, traitTo, traitFrom)
   
   # Reorganize formula
-  Formula <- adjVec ~ x + y # Bogus formula
-  Formula[[1]] <- formula[[1]]
-  Formula[[3]] <- formula[[2]]
+  if(is.null(formula)){
+    mvabund:::get.polys()
+  }else{
+    Formula <- adjVec ~ x + y # Bogus formula
+    Formula[[1]] <- formula[[1]]
+    Formula[[3]] <- formula[[2]]
+  }
   
   # GLM
   if(type == "glm"){
@@ -81,14 +98,19 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
       dat$adjVec <- as.factor(dat$adjVec)
     }
     
-    model <- randomForest::randomForest(Formula, data = dat, na.action = na.omit, ...)
+    model <- randomForest::randomForest(Formula,
+                                        data = dat,
+                                        na.action = na.omit,
+                                        ...)
 
     # Prediction
     if(binary){
       pred <- predict(model, newdata = dat, type = "prob")
       
       # Organise result into a matrix
-      res <- matrix(pred[,2], nrow = nToSp, ncol = nFromSp) # Focuses only on 1s
+      res <- matrix(pred[,2],
+                    nrow = nToSp,
+                    ncol = nFromSp) # Focuses only on 1s
     }else{
       pred <- predict(model, newdata = dat, type = "response")
       
@@ -96,6 +118,7 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
       res <- matrix(pred, nrow = nToSp, ncol = nFromSp)
     }
   }
+  
   rownames(res) <- rownames(adjMat)
   colnames(res) <- colnames(adjMat)
   
@@ -103,11 +126,16 @@ fitDMC <- function(formula, data, binary = TRUE, type = NULL,
   baseAttr <- attributes(res)
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
-                          model = model,
-                          adjMat = adjMat)
+                          model = model)
   
   # Define object class
-  class(res) <- "alienFit"
+  if(type == "glm"){
+    class(res) <- c("alienFit", "fitDMC", "glm")
+  }
+  
+  if(type == "randomForest"){
+    class(res) <- c("alienFit", "fitDMC", "randomForest")
+  }
   
   # Return results
   return(res)

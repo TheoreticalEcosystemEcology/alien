@@ -4,14 +4,12 @@
 \alias{fitDMC}
 \title{Fit direct matching centrality}
 \usage{
-fitDMC(formula, data, binary = TRUE, type = NULL, family = NULL, ...)
+fitDMC(formula, data, type = NULL, family = NULL, ...)
 }
 \arguments{
 \item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.}
 
 \item{data}{an object of the class \code{\link{alienData}}}
-
-\item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
 
 \item{type}{Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}).}
 
@@ -28,7 +26,7 @@ Fit direct matching centrality model
 \details{
 The direct matching centrality models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
 
-This function builds the adjacency matrix, unfold it and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
+This function unfold the adjacency matrix and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
 }
 \author{
 Dominique Gravel, Steve Vissault, F. Guillaume Blanchet

@@ -6,31 +6,31 @@
 \usage{
 fitKNN(
   data,
-  binary = TRUE,
   distFrom = "jaccard",
   distTo = "jaccard",
-  distTraitFrom = "euclidean",
-  distTraitTo = "euclidean",
-  traitWeight,
-  nNeig
+  distTraitFrom = NULL,
+  distTraitTo = NULL,
+  weight = 0.5,
+  nNeig,
+  phylo = FALSE
 )
 }
 \arguments{
 \item{data}{An object of the class alienData, see \code{\link{alienData}}.}
 
-\item{binary}{Logical. Whether the adjacency matrix is binary or not. Default is TRUE.}
-
 \item{distFrom}{Character string defining which distance (or dissimilarity) to apply on the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "jaccard".}
 
 \item{distTo}{Character string defining which distance (or dissimilarity) to apply on the "To" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "jaccard".}
 
-\item{distTraitFrom}{Character string defining which distance (or dissimilarity) to apply on traits of the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "euclidean".}
+\item{distTraitFrom}{Character string defining which distance (or dissimilarity) to apply on the traits of the "From" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. If the value is left to NULL, \code{traitDistFrom} (or \code{phyloDistFrom}) in the data (\code{\link{alienData}}) is used directly. Default is NULL.}
 
-\item{distTraitTo}{Character string defining which distance (or dissimilarity) to apply on traits of the "To" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. Default is "euclidean".}
+\item{distTraitTo}{Character string defining which distance (or dissimilarity) to apply on the "To" species. Check \code{\link[vegan]{vegdist}} for the distances to choose from. If the value is left to NULL, \code{traitDistTo} (or \code{phyloDistTo}) in the data (\code{\link{alienData}}) is used directly. Default is NULL.}
 
-\item{traitWeight}{Numeric. Defines the contribution of the traits in the analysis. Must be between 0 and 1. Default is 0.5.}
+\item{weight}{Numeric. Defines the contribution of the traits (or phylogeny) in the analysis. Must be between 0 and 1. Default is 0.5.}
 
-\item{nNeig}{Integer defining how many neighbours to consider.}
+\item{nNeig}{Integer  defining how many neighbours to consider.}
+
+\item{phylo}{Logical. Whether phylogenetic information should be used instead of traits to measure neighbourhood. Default is FALSE.}
 }
 \value{
 An object of class alienFit.
@@ -41,7 +41,9 @@ Model adegency matrix using K-nearest neighbour approach
 \details{
 This function should only be used for bipartite adjency matrice.
 
-The argument \code{traitWeight} defines the important of traits in the analysis. If a weight of 0 is given, the traits are assumes to have no importance. Conversely, if \code{traitWeight} is 1 the traits are given their full importance in the analysis.
+The argument \code{weight} defines the important of traits (or phylogeny) in the analysis. If a weight of 0 is given, the traits (or phylogeny) are assumed to have no importance. Conversely, if \code{weight} is 1 the traits (or phylogeny) are given their full importance in the analysis.
+
+If \code{phylo} is TRUE, the cophenetic distance is used to calculate the distance between pairs of species.
 
 When ranking the species to find the \code{nNeig} nearest neighbour, in case of ties the argument \code{tie.method} in the \code{\link{rank}} function is set to "first". Also, when ranking the species, it is assumed that the species is not a neighbour of itself.
 

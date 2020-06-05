@@ -3,13 +3,13 @@ Title: Comparative analysis of interaction inference methods
 Version: 0.0.1.9000
 Date: 2020-02-07
 Author: person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000-0001-7893-4389")),
-    person("David", "Beauchesne", role = c("ctb")),
-    person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),
-    person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
-    person("Dominique", "Gravel", role = c("aut")),
-    person("Timothée", "Poisot", role = c("ctb")),
-    person("Steve", "Vissault", role = c("aut")),
-    person("Ben", "Weinstein", role = c("ctb")),
+        person("David", "Beauchesne", role = c("ctb")),
+        person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),
+        person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
+        person("Dominique", "Gravel", role = c("aut")),
+        person("Timothée", "Poisot", role = c("ctb")),
+        person("Steve", "Vissault", role = c("aut")),
+        person("Ben", "Weinstein", role = c("ctb")),
 Depends:
     R (>= 3.1.0)
 Maintainer: F. Guillaume Blanchet <guillaume.blanchet@usherbrooke.ca>
@@ -28,7 +28,6 @@ Imports:
     GenSA,
     igraph,
     mvabund,
-    HMSC,
     vegan,
     MPSEM 
 Remotes: guiblanchet/HMSC
@@ -39,5 +38,5 @@ BugReports: https://github.com/TheoreticalEcosystemEcology/alien/issues
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)

@@ -1,21 +1,97 @@
-context("alienData")
+# Set seed
+set.seed(43)
 
-node1 <- data.frame(cbind(idInd = c(1,2,3,4), idSp = c(2,1,3,3)))
-edge1 <- data.frame(cbind(from = c(1,2), to = c(3,4)))
-edge2 <- data.frame(cbind(from = c(1,2), to = c(3,4), value = .5))
-##
-al1 <- alienData(node = node1, edge = edge1)
-al2 <- alienData(node = node1, edge = edge2)
+#######################
+# Generate bogus adjMat
+#######################
+bipart <- matrix(rbinom(n = 20, prob = 0.6, size = 1),
+                 nrow = 5, ncol = 4)
 
-test_that("Expect output", {
-  expect_identical(node1, al1$node)
-  expect_identical(cbind(edge1, value = 1), al1$edge)
-  expect_identical(edge2, al2$edge)
-})
+# Add row an column names
+rownames(bipart) <- letters[1:5]
+colnames(bipart) <- LETTERS[1:4]
 
+##########################
+# Generate bogus traitFrom
+##########################
+# Convert TraitF to data.frame 
+TraitFDF <- data.frame(tr1 = rnorm(5),
+                       tr2 = rnorm(5),
+                       tr3 = as.factor(c("red", "red",
+                                         "blue", "green",
+                                         "green")))
 
-test_that("test Adjancy matrix", {
-  expect_equal(sum(getAdjacencyMatrix(al2)), 1)
-  expect_true(all(getAdjacencyMatrix(al2, threshold = .5, binary = TRUE) == 0)) 
-  expect_equal(sum(getAdjacencyMatrix(al2, binary = TRUE)), 2) 
+rownames(TraitFDF) <- letters[1:5]
+
+########################
+# Generate bogus traitTo
+########################
+# Convert TraitT to data.frame 
+TraitTDF <- data.frame(Tr1 = rnorm(4),
+                       Tr2 = as.factor(c("red", "red",
+                                         "blue","blue")),
+                       Tr3 = rnorm(4))
+
+rownames(TraitTDF) <- LETTERS[1:4]
+
+##########################
+# Generate bogus phyloFrom
+##########################
+phyloF <- ape::rtree(n = 5, tip.label = letters[1:5])
+
+##########################
+# Generate bogus phyloFrom
+##########################
+phyloT <- ape::rtree(n = 4, tip.label = LETTERS[1:4])
+
+##############################
+# Generate bogus traitDistFrom
+##############################
+TraitFDist <- dist(rnorm(5))
+attributes(TraitFDist)$Labels <- letters[1:5]
+
+############################
+# Generate bogus traitDistTo
+############################
+TraitTDist <- dist(rnorm(4))
+attributes(TraitTDist)$Labels <- LETTERS[1:4]
+
+##############################
+# Generate bogus phyloDistFrom
+##############################
+phyloFDist <- dist(rnorm(5))
+attributes(phyloFDist)$Labels <- letters[1:5]
+
+############################
+# Generate bogus phyloDistTo
+############################
+phyloTDist <- dist(rnorm(4))
+attributes(phyloTDist)$Labels <- LETTERS[1:4]
+
+#################
+# Build alienData
+#################
+AllData <- alienData(adjMat = bipart,
+                     traitFrom = TraitFDF,
+                     traitTo = TraitTDF,
+                     phyloFrom = phyloF,
+                     phyloTo = phyloT,
+                     traitDistFrom = TraitFDist,
+                     traitDistTo = TraitTDist,
+                     phyloDistFrom = phyloFDist, 
+                     phyloDistTo = phyloTDist)
+
+######
+# Test
+######
+test_that("alienData expected output", {
+  expect_identical(bipart, AllData$adjMat)
+  expect_identical(TraitFDF, AllData$traitFrom)
+  expect_identical(TraitTDF, AllData$traitTo)
+  expect_identical(phyloF, AllData$phyloFrom)
+  expect_identical(phyloT, AllData$phyloTo)
+  expect_identical(TraitFDist, AllData$traitDistFrom)
+  expect_identical(TraitTDist, AllData$traitDistTo)
+  expect_identical(phyloFDist, AllData$phyloDistFrom)
+  expect_identical(phyloTDist, AllData$phyloDistTo)
 })

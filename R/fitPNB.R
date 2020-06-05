@@ -2,7 +2,7 @@
 #'
 #' @title Fit using Probabilistic niche model
 #'
-#' @description Model adegency matrix using K-nearest neighbour approach
+#' @description Model adegency matrix using probabilistic niche model
 #'
 #' @param data An object of the class alienData, see \code{\link{alienData}}.
 #' @param type Method to be used to estimate the model. Either 'P' (presence-only) or 'PA' (presence-absence), respectively.
@@ -16,7 +16,9 @@
 #'
 #' @details
 #'
-#' For now this function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
+#' This function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
+#' 
+#' If there are any NAs in the species interaction data (the adjacency matrix), they will be automatically removed to estimate the presence-absence (PA) model parameters. If there are NAs in the traits, an error message will be sent.
 #'
 #' @author
 #' 
@@ -28,7 +30,7 @@
 #'
 #' @export
 fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
-                   range, rangeMin, rangeMax, verbose = TRUE){
+                   range, rangeMin, rangeMax, na.rm = TRUE, verbose = TRUE){
 
   stopifnot(class(data) == "alienData")
   
@@ -85,6 +87,11 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
                               traitsFrom = dat$From, traitsTo = dat$To)
   }
   if(type == "PA"){
+    # Remove NAs in adjVec and the associated trait data
+    noNALoc <- which(!is.na(adjVec))
+    adjVecNoNA <- adjVec[noNALoc]
+
+    # Define the function to use
     minFunc <- nicheFuncPresAbs
 
     # Estimate parameters using simulated annealing
@@ -93,7 +100,7 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
                               upper = c(optimumMax, rangeMax), 
                               control = list(verbose = verbose, smooth=FALSE), 
                               traitsFrom = traitsFrom, traitsTo = traitsTo,
-                              adjVec = adjVec)
+                              adjVec = adjVecNoNA)
   }
   
   # Prediction
@@ -139,11 +146,11 @@ nicheFuncPres <- function(pars, traitsFrom, traitsTo) {
 }
 
 # Presence-absence data
-nicheFuncPresAbs <- function(pars, traitsFrom, traitsTo, adjVec) {
+nicheFuncPresAbs <- function(pars, traitsFrom, traitsTo, adjVec, na.rm = TRUE) {
   
   # Optimum and range
-  Optimum = pars[1] + pars[2]*traitsTo  
-  Range = pars[3] + pars[4]*traitsTo
+  Optimum <- pars[1] + pars[2] * traitsTo  
+  Range <- pars[3] + pars[4] * traitsTo
   
   # Compute the interaction probility
   pL <- exp(-(Optimum - traitsFrom)^2 / ( 2 * Range^2))

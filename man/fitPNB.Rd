@@ -13,6 +13,7 @@ fitPNB(
   range,
   rangeMin,
   rangeMax,
+  na.rm = TRUE,
   verbose = TRUE
 )
 }
@@ -39,10 +40,12 @@ fitPNB(
 An object of class alienFit.
 }
 \description{
-Model adegency matrix using K-nearest neighbour approach
+Model adegency matrix using probabilistic niche model
 }
 \details{
-For now this function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
+This function is only designed to handle presence-only and presence-absence data. In addition, the function can only handle a single continuous trait for each species.
+
+If there are any NAs in the species interaction data (the adjacency matrix), they will be automatically removed to estimate the presence-absence (PA) model parameters. If there are NAs in the traits, an error message will be sent.
 }
 \author{
 Dominique Gravel and F. Guillaume Blanchet
