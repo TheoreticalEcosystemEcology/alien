@@ -17,7 +17,7 @@
 #' 
 #' @return
 #' 
-#' An object with a class alienFit and a class fit4corner.
+#' An object with a class alienFit and a class fit4corner. 
 #' 
 #' @author
 #' F. Guillaume Blanchet

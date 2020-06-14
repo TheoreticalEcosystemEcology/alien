@@ -33,13 +33,15 @@ fitKNN(
 \item{phylo}{Logical. Whether phylogenetic information should be used instead of traits to measure neighbourhood. Default is FALSE.}
 }
 \value{
-An object of class alienFit.
+An object with a class alienFit and a class fit4corner.
 }
 \description{
 Model adegency matrix using K-nearest neighbour approach
 }
 \details{
 This function should only be used for bipartite adjency matrice.
+
+The function is designed in such a way that if the argument \code{distTraitFrom} is defined it will build a distance matrix using \code{traitFrom} in the \code{\link{alienData}} object even if \code{distTraitFrom} is available in \code{\link{alienData}} object. The same is true for the argument \code{distTraitTo}.
 
 The argument \code{weight} defines the important of traits (or phylogeny) in the analysis. If a weight of 0 is given, the traits (or phylogeny) are assumed to have no importance. Conversely, if \code{weight} is 1 the traits (or phylogeny) are given their full importance in the analysis.
 

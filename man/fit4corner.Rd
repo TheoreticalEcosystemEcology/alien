@@ -16,15 +16,15 @@ fit4corner(data, formula = NULL, family = NULL, ...)
 \item{\dots}{Other parameters passed to \code{\link[mvabund]{traitglm}}.}
 }
 \value{
-An object of class alienFit.
+An object with a class alienFit and a class fit4corner.
 }
 \description{
-Fit fourth corner prediction model using the approach proposed by Brown et al. (2014).
+Fit fourth corner prediction model using the approach proposed by Brown et al. (2014). This function is essentially a wrapper around \code{\link[mvabund]{traitglm}} for it to be used in the context of species interaction data.
 }
 \details{
-The fourth corner models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It can not be used otherwise.
+Fourth corner models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It can not be used otherwise.
 
-The fourth corner models assume that adjacency matrix (species by species matrix) used to perform the analysis has as rows the "From" species and as columns the "To" species.
+Fourth corner models assume that adjacency matrix (species by species matrix) used to perform the analysis has as rows the "From" species and as columns the "To" species.
 }
 \author{
 F. Guillaume Blanchet

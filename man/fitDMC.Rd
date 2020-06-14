@@ -4,21 +4,23 @@
 \alias{fitDMC}
 \title{Fit direct matching centrality}
 \usage{
-fitDMC(formula, data, type = NULL, family = NULL, ...)
+fitDMC(data, formula = NULL, type = NULL, family = NULL, spRandom = FALSE, ...)
 }
 \arguments{
-\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.}
-
 \item{data}{an object of the class \code{\link{alienData}}}
+
+\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. Default is to include all terms additively, with quadratics for quantitative terms, and all From-by-To traits interactions.}
 
 \item{type}{Method to use to estimate the model. Either "randomForest" (\link[randomForest]{randomForest}) or "glm" (\code{\link[stats]{glm}}).}
 
 \item{family}{The family of the response variable. See \link[stats]{family}, or the choices available. This is argument is only active when type = "glm".}
 
+\item{spRandom}{Logical. Whether species are used as a random effect. This argument is only active when \code{type = "glm"}. Default is FALSE.}
+
 \item{\dots}{Other parameters passed to either \link[randomForest]{randomForest} or \link[stats]{glm}.}
 }
 \value{
-An object of class alienFit.
+An object with a class alienFit and a class fitDMC. If the type of model used to perform the fitting is "glm", a class "glm" is also given to the object. Similarly, if the type of model used to perform the fitting is "randomForest", a class "randomForest" is also given to the object.
 }
 \description{
 Fit direct matching centrality model
@@ -27,6 +29,8 @@ Fit direct matching centrality model
 The direct matching centrality models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
 
 This function unfold the adjacency matrix and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
+
+Also, the default \code{formula} option results in many explanatory variables being constructed, which may result in overparamerisation for \code{type = "glm"}. In this respect, the default option is complete but often too much.
 }
 \author{
 Dominique Gravel, Steve Vissault, F. Guillaume Blanchet
