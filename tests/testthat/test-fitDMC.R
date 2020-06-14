@@ -41,3 +41,93 @@ AllData <- alienData(adjMat = bipart,
                      traitFrom = TraitFDF,
                      traitTo = TraitTDF)
 
+#############################
+# Test overfitted model - glm
+#############################
+# Function
+options(warn = -1) # To remove warning
+fitGLMRes <- fitDMC(data = AllData,
+                    type = "glm",
+                    family = binomial(link = "logit"))
+options(warn = 0) # Back to default
+
+# Trick to compare the result obtained from fit
+fitGLMResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitGLMResMat[,1:4] <- fitGLMRes[,1:4]
+
+# Test
+test_that("fitDMC overfitting glm expected output", 
+          expect_equivalent(AllData$adjMat, fitGLMResMat))
+
+#######################
+# Test if formula works
+#######################
+# Overly simple formula
+fitGLMBasicRes <- fitDMC(data = AllData,
+                         formula = ~ -1 + tr1,
+                         type = "glm",
+                         family = binomial(link = "logit"))
+
+# Trick to compare the result obtained from fit
+fitGLMBasicResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitGLMBasicResMat[,1:4] <- fitGLMBasicRes[,1:4]
+
+
+# Test
+test_that("fitDMC formula", 
+          expect_false(isTRUE(all.equal(fitGLMBasicResMat,
+                                        fitGLMResMat))))
+
+# Overly simple formula with species as random effect 
+fitGLMRandomRes <- fitDMC(data = AllData,
+                          formula = ~ -1 + scale(tr1),
+                          type = "glm",
+                          family = binomial(link = "logit"),
+                          spRandom = TRUE)
+
+fitGLMnoRandomRes <- fitDMC(data = AllData,
+                          formula = ~ -1 + scale(tr1),
+                          type = "glm",
+                          family = binomial(link = "logit"),
+                          spRandom = FALSE)
+
+# Trick to compare the result obtained from fit
+fitGLMRandomResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitGLMRandomResMat[,1:4] <- fitGLMRandomRes[,1:4]
+
+fitGLMnoRandomResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitGLMnoRandomResMat[,1:4] <- fitGLMnoRandomRes[,1:4]
+
+# Test
+test_that("fitDMC formula", 
+          expect_false(isTRUE(all.equal(fitGLMRandomResMat,
+                                        fitGLMnoRandomResMat))))
+
+#########################
+# Test randomForest model
+#########################
+# Function
+fitRFComplexRes <- fitDMC(data = AllData,
+                          type = "randomForest",
+                          ntree = 500,
+                          nodesize = 3)
+
+
+fitRFSimpleRes <- fitDMC(data = AllData,
+                         formula = ~ -1 + tr1,
+                         type = "randomForest",
+                         ntree = 500,
+                         nodesize = 3)
+
+# Trick to compare the result obtained from fit
+fitRFComplexResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitRFComplexResMat[,1:4] <- fitRFComplexRes[,1:4]
+
+fitRFSimpleResMat <- matrix(NA, nrow = 5, ncol = 4)
+fitRFSimpleResMat[,1:4] <- fitRFSimpleRes[,1:4]
+
+# Test
+test_that("fitDMC randomForest expected output",
+  expect_false(isTRUE(all.equal(fitRFSimpleResMat,
+                                fitRFComplexResMat))))
+
