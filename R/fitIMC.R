@@ -1,9 +1,8 @@
 #' @name fitIMC
 #'
-#' @title Estimation of interaction probabilities using indirect matching centrality
+#' @title Fit indirect matching centrality model
 #'
-#' @description Esimation of iteractions probability using the indirect matching centrality
-#' approach described by Rohr et al. (2014) and Rohr et al. (2016).
+#' @description This method estimate latent traits to model interactions in an adjacency matrix. 
 #'
 #' @param data An object of the class \code{\link{alienData}}.
 #' @param d Numeric. The dimension to the latent traits.
@@ -28,7 +27,7 @@
 #' * 2- all matching vector of a particular set of species are orthogonal to each other.
 #'
 #' @return
-#' An object with a class alienFit and a class fit4corner.
+#' An object with a class alienFit and a class fitIMC.
 #'
 #' @references
 #' Rohr, R. P. & Bascompte, J. (2014) Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564.
@@ -36,7 +35,7 @@
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. (2016) Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702.
 #'
 #' @export
-fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
+fitIMC <- function(data, d = 1, verbose = TRUE, control = list()){
 
   # General check
   stopifnot(d >= 1)
@@ -90,7 +89,7 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   ## latent traits for centrality and matching
 
   ## lower boundary of paramter values
-  low_bound <- c(-2.5, rep(-2.5, 2+d), rep(-2.5, nbm + nbc)) # Does this need to be at least 0 ?
+  low_bound <- c(-2.5, rep(-2.5, 2+d), rep(-2.5, nbm + nbc)) 
 
   ## upper boundary
   upp_bound <- c(2.5, rep(2.5, 2+d), rep(2.5, nbm + nbc))
@@ -100,14 +99,15 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   B2 <- getNullOne(nset2)
 
   ## Simulated Annealing
-  tmp <- GenSA(lower = low_bound, upper = upp_bound, fn = coreMC,
-    adjMat = adjMat, nset1 = nset1, nset2 = nset2, B1 = B1,
-    B2 = B2, d = d, control = control)
+  genSARes <- GenSA(lower = low_bound, upper = upp_bound,
+                    fn = coreMC, adjMat = adjMat, nset1 = nset1,
+                    nset2 = nset2, B1 = B1, B2 = B2, d = d,
+                    control = control)
 
   #
-  params <- tidyParamMC(nset1, nset2, B1, B2, d, tmp$par)
-  out <- IMCPredict(-tmp$value, estimateMC(adjMat, params), adjMat = adjMat,
-      params = params)
+  params <- tidyParamMC(nset1, nset2, B1, B2, d, genSARes$par)
+  out <- IMCPredict(-genSARes$value, estimateMC(adjMat, params),
+                    adjMat = adjMat, params = params)
 
   # Standardize results
   res <- out$netEstim
@@ -118,13 +118,11 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()) {
   # Define object class
   attributes(res) <- list(dim = baseAttr$dim, dimnames = baseAttr$dimnames,
                           model = out$methodsSpecific$params, adjMat = adjMat,
-                          LL = tmp$value)
+                          LL = genSARes$value)
 
   class(res) <- c("alienFit", "fitIMC")
   res
 }
-
-
 
 ## tidy parameters and return the likelihood
 coreMC <- function(adjMat, nset1, nset2, B1, B2, d, ...) {
@@ -224,4 +222,19 @@ estimateMC <- function(adjMat, lsArgs) {
         }
     }
     out
+}
+
+IMCPredict <- function(logLik, netEstim, ...) {
+  out <- list()
+  out$logLik <- logLik
+  ##--
+  stopifnot(all(netEstim <= 1) & all(netEstim >= 0))
+  out$netEstim <- netEstim
+  out$connec <- list(expectation = sum(netEstim),
+                     variance = sum(netEstim * (1 - netEstim)))
+  ##--
+  out$methodsSpecific <- list(...)
+  ##--
+  class(out) <- "IMCPredict"
+  out
 }

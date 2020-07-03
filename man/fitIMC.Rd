@@ -2,30 +2,31 @@
 % Please edit documentation in R/fitIMC.R
 \name{fitIMC}
 \alias{fitIMC}
-\title{Estimation of interaction probabilities using the indirect matching centrality approach.}
+\title{Fit indirect matching centrality model}
 \usage{
 fitIMC(data, d = 1, verbose = TRUE, control = list())
 }
 \arguments{
-\item{data}{An object of the class \code{alienData}.}
+\item{data}{An object of the class \code{\link{alienData}}.}
 
-\item{d}{Numeric defining the dimensionnality of the model.}
+\item{d}{Numeric. The dimension to the latent traits.}
 
 \item{verbose}{Logical. Whether information on the progress of the analysis is reported in the console.}
 
-\item{control}{list that can be used to control the behavior of the algorithm including the value for initial temperature and maximum runiing time(see \code{\link[GenSA:GenSA]{GenSA::GenSA()}} for more details).}
+\item{control}{List passed to \code{\link[GenSA]{GenSA}} to control the behavior of the algorithm.}
 }
 \value{
-An object of class alienFit.
+An object with a class alienFit and a class fitIMC.
 }
 \description{
-Esimation of iteractions probability using the indirect matching centrality
-approach as described in Rohr (2014) and Rohr (2016).
+This method estimate latent traits to model interactions in an adjacency matrix.
 }
 \details{
-This function implements indirect matching-centrality as described by
-Rohr et al. (2014, 2016). Briefly, the method uses latent traits to fit
-interactions. The first step requires the definition of two sets of interacting
+WRITE MORE AND BETTER STUFF
+WRITE MORE AND BETTER STUFF
+WRITE MORE AND BETTER STUFF
+
+This method uses latent traits to model interactions in an adjacency matrix. The first step requires the definition of two sets of interacting
 species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
 The first category of latent trait are the matching traits. (to be developped)
 The second category include the centrality terms. (to be developped).
@@ -36,10 +37,10 @@ Latents traits are built under specific topological constraints:
 }
 }
 \references{
-Rohr, R. P. & Bascompte, J. Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564 (2014).
+Rohr, R. P. & Bascompte, J. (2014) Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564.
 
-Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702 (2016).
+Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. (2016) Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702.
 }
 \author{
-Kevin Cazelles
+Kevin Cazelles, Dominique Gravel and F. Guillaume Blanchet
 }

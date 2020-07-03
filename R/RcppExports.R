@@ -21,26 +21,31 @@
 #' @return The null basis of `A`.
 #'
 #' @importFrom Rcpp evalCpp
+#' @export
 getNull <- function(A) {
     .Call('_alien_getNull', PACKAGE = 'alien', A)
 }
 
 #' @describeIn getNull Special case of `getNull` for which the orthonormal
 #' basis of the unit vector is required.
+#' @export
 getNullOne <- function(nbsp) {
     .Call('_alien_getNullOne', PACKAGE = 'alien', nbsp)
 }
 
 #' @describeIn getNull Matrix product that requires to normalise one vector 
 #' (see [fitIMC()]).
+#' @export
 prodNorm <- function(nbsp, B, V) {
     .Call('_alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
 }
 
+#' @export
 interaction_proba <- function(M1_i, M2_j, cent1_i, cent2_j, Lambda, m) {
     .Call('_alien_interaction_proba', PACKAGE = 'alien', M1_i, M2_j, cent1_i, cent2_j, Lambda, m)
 }
 
+#' @export
 likelihoodMC_core <- function(netObs, M1, M2, cent1, cent2, Lambda, m) {
     .Call('_alien_likelihoodMC_core', PACKAGE = 'alien', netObs, M1, M2, cent1, cent2, Lambda, m)
 }

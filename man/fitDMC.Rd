@@ -30,8 +30,10 @@ The direct matching centrality models are designed to be used on bipartite netwo
 
 This function unfold the adjacency matrix and uses it as the response variables. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
 
+If there are NAs in the adjacency matrix, the function will omit these values in the estimation of the model.
+
 Also, the default \code{formula} option results in many explanatory variables being constructed, which may result in overparamerisation for \code{type = "glm"}. In this respect, the default option is complete but often too much.
 }
 \author{
-Dominique Gravel, Steve Vissault, F. Guillaume Blanchet
+F. Guillaume Blanchet, Dominique Gravel, Steve Vissault
 }
