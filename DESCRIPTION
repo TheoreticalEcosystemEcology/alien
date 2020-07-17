@@ -6,10 +6,8 @@ Author: person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000
         person("David", "Beauchesne", role = c("ctb")),
         person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),
         person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
-        person("Dominique", "Gravel", role = c("aut")),
-        person("Timothée", "Poisot", role = c("ctb")),
-        person("Steve", "Vissault", role = c("aut")),
-        person("Ben", "Weinstein", role = c("ctb")),
+        person("Dominique", "Gravel", role = c("aut"), comment = c(ORCID = "0000-0002-4498-7076")),
+        person("Steve", "Vissault", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
 Depends:
     R (>= 3.1.0)
 Maintainer: F. Guillaume Blanchet <guillaume.blanchet@usherbrooke.ca>
@@ -29,7 +27,7 @@ Imports:
     igraph,
     mvabund,
     vegan,
-    MPSEM 
+    MPSEM
 Remotes: guiblanchet/HMSC
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
