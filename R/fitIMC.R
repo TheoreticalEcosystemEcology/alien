@@ -26,6 +26,8 @@
 #'
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. (2016) Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702.
 #'
+#' @importFrom GenSA GenSA
+#'
 #' @export
 fitIMC <- function(data, d = 2, verbose = TRUE, control = list()){
 
@@ -130,6 +132,7 @@ coreMC <- function(adjMat, nset1, nset2, B1, B2, d, ...) {
 
 
 ## tidy parameters
+#' @importFrom utils tail
 tidyParamMC <- function(nset1, nset2, B1, B2, d, ...) {
     args <- list(...)[[1L]] # vector of latent parameter
     tmp <- list()

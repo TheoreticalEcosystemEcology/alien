@@ -47,7 +47,7 @@ arma::vec prodNorm(int nbsp, arma::mat B, arma::vec V) {
   return sqrt(nbsp)*B*arma::normalise(V);
 }
 
-//' @export
+// @export
 // [[Rcpp::export]]
 double interaction_proba(NumericVector M1_i, NumericVector M2_j, double cent1_i, double cent2_j, NumericVector Lambda, double m) {
   int k;
@@ -60,7 +60,7 @@ double interaction_proba(NumericVector M1_i, NumericVector M2_j, double cent1_i,
   return 1/(1 + exp(-val));
 }
 
-//' @export
+// @export
 // [[Rcpp::export]]
 double likelihoodMC_core(NumericMatrix netObs, NumericMatrix M1, NumericMatrix M2, NumericVector cent1, NumericVector cent2, NumericVector Lambda, double m) {
 

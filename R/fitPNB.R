@@ -26,46 +26,55 @@
 #'
 #' @return
 #'
-#' An object of class alienFit.
+#' An object with a class alienFit and a class fitPNB.
 #'
+#' @importFrom GenSA GenSA
+#' 
 #' @export
 fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
-                   range, rangeMin, rangeMax, na.rm = TRUE, verbose = TRUE){
+                   range, rangeMin, rangeMax, verbose = TRUE){
 
   stopifnot(class(data) == "alienData")
   
   # Construct adjencency matrix
-  adjMat <- getAdjacencyMatrix(data, bipartite = TRUE, binary = TRUE)
+  adjMat <- data$adjMat
   nFromSp <- ncol(adjMat)
   nToSp <- nrow(adjMat)
   
-  # Construct trait matrix
-  traits <- getTrait(data, bipartite = TRUE)
-  
+  # Trait matrix
+  traitFromBase <- data$traitFrom
+  traitToBase <- data$traitTo
+
   # Check for NAs in traits
-  if(any(sapply(traits, function(x) any(is.na(x))))){
-    stop("There is at least one NA in the traits. Use getTrait() to investigate.")
+  if(any(is.na(traitFromBase))){
+    stop("There is at least one NA in the data$traitFrom.")
+  }
+  
+  if(any(is.na(traitToBase))){
+    stop("There is at least one NA in the data$traitTo.")
   }
   
   # Unfold adjMat into a vector
   adjVec <- as.vector(adjMat)
   
-  # Organize trait$to to match the size and organization of adjMat
-  traitsTo <- as.data.frame(traits$to[rep(seq_len(nToSp), nFromSp),])
-  traitsTo <- model.matrix(~ -1 + ., data = traitsTo)
-  
   # Organize trait$from to match the size and organization of adjMat
-  traitsFrom <- as.data.frame(traits$from[rep(seq_len(nFromSp), each = nToSp),])
-  traitsFrom <- model.matrix(~ -1 + ., data = traitsFrom)
+  traitFrom <- as.data.frame(traitFromBase[rep(seq_len(nFromSp),
+                                               each = nToSp),])
+  colnames(traitFrom) <- colnames(traitFromBase)
+  
+  # Organize trait$to to match the size and organization of adjMat
+  traitTo <- as.data.frame(traitToBase[rep(seq_len(nToSp),
+                                           nFromSp),])
+  colnames(traitTo) <- colnames(traitToBase)
   
   # Check number of traits for From and To
   if(ncol(traitsTo) > 1){
-    stop("There should be only a single 'To' trait")
+    stop("For this analysis there should be only a single 'To' trait")
   }
   colnames(traitsTo) <- "To"
   
   if(ncol(traitsFrom) > 1){
-    stop("There should be only a single 'From' trait")
+    stop("For this analysis there should be only a single 'From' trait")
   }
   colnames(traitsFrom) <- "From"
   
@@ -116,7 +125,7 @@ fitPNB <- function(data, type, optimum, optimumMin, optimumMax,
                           adjMat = adjMat)
   
   # Define object class
-  class(res) <- "alienFit"
+  class(res) <- c("alienFit", "fitPNB")
   
   # Return result
   return(res)

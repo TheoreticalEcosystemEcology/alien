@@ -33,7 +33,7 @@ fitKNN(
 \item{phylo}{Logical. Whether phylogenetic information should be used instead of traits to measure neighbourhood. Default is FALSE.}
 }
 \value{
-An object with a class alienFit and a class fit4corner.
+An object with a class alienFit and a class fitKNN.
 }
 \description{
 Model adegency matrix using K-nearest neighbour approach

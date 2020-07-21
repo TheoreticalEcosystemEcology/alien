@@ -13,7 +13,6 @@ fitPNB(
   range,
   rangeMin,
   rangeMax,
-  na.rm = TRUE,
   verbose = TRUE
 )
 }
@@ -37,7 +36,7 @@ fitPNB(
 \item{verbose}{Logical. Whether messages from the algorithm are shown (TRUE) or not (FALSE). Default is TRUE.}
 }
 \value{
-An object of class alienFit.
+An object with a class alienFit and a class fitPNB.
 }
 \description{
 Model adegency matrix using probabilistic niche model

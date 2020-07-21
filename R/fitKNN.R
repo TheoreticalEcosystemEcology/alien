@@ -33,7 +33,11 @@
 #'
 #' @return
 #'
-#' An object with a class alienFit and a class fit4corner.
+#' An object with a class alienFit and a class fitKNN.
+#'
+#' @importFrom vegan vegdist
+#' @importFrom stats model.matrix as.dist
+#' @importFrom ape cophenetic.phylo
 #'
 #' @export
 

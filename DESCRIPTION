@@ -18,15 +18,15 @@ Suggests:
     rmarkdown
 Imports:
     Rcpp (>= 0.12.9),
-    magrittr,
-    reshape2,
     randomForest,
+    reshape2,
     utils,
     stats,
     GenSA,
-    igraph,
     mvabund,
     vegan,
+    lme4,
+    ape,
     MPSEM
 Remotes: guiblanchet/HMSC
 LinkingTo: Rcpp, RcppArmadillo

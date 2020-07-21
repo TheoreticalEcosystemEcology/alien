@@ -40,12 +40,10 @@ prodNorm <- function(nbsp, B, V) {
     .Call('_alien_prodNorm', PACKAGE = 'alien', nbsp, B, V)
 }
 
-#' @export
 interaction_proba <- function(M1_i, M2_j, cent1_i, cent2_j, Lambda, m) {
     .Call('_alien_interaction_proba', PACKAGE = 'alien', M1_i, M2_j, cent1_i, cent2_j, Lambda, m)
 }
 
-#' @export
 likelihoodMC_core <- function(netObs, M1, M2, cent1, cent2, Lambda, m) {
     .Call('_alien_likelihoodMC_core', PACKAGE = 'alien', netObs, M1, M2, cent1, cent2, Lambda, m)
 }
