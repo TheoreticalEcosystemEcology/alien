@@ -2,10 +2,10 @@
 #'
 #' @title Fit indirect matching centrality model
 #'
-#' @description This method estimate latent traits to model interactions in an adjacency matrix. 
+#' @description This method estimate matching and centrality latent traits to model the interactions in an adjacency matrix. 
 #'
 #' @param data An object of the class \code{\link{alienData}}.
-#' @param d Numeric. The dimension to the latent traits.
+#' @param d Numeric. The dimension of the latent traits. Default is 2. 
 #' @param verbose Logical. Whether information on the progress of the analysis is reported in the console.
 #' @param control List passed to \code{\link[GenSA]{GenSA}} to control the behavior of the algorithm.
 #'
@@ -13,18 +13,10 @@
 #' Kevin Cazelles, Dominique Gravel and F. Guillaume Blanchet
 #'
 #' @details
-#'
-#' WRITE MORE AND BETTER STUFF
-#' WRITE MORE AND BETTER STUFF
-#' WRITE MORE AND BETTER STUFF
-#'
-#' This method uses latent traits to model interactions in an adjacency matrix. The first step requires the definition of two sets of interacting
-#' species: set1 and set2 (respectively of size `nset1` and `nset2`).
-#' The first category of latent trait are the matching traits. (to be developped)
-#' The second category include the centrality terms. (to be developped).
-#' Latents traits are built under specific topological constraints:
-#' * 1- all vectors belongs to the orthogonal basis of the unit vector.
-#' * 2- all matching vector of a particular set of species are orthogonal to each other.
+#' 
+#'  As can be hinted by the name of the method, there are two types of latent traits.  : (1) matching latent traits that are designed to quantify the strength of the interaction between two species and (2) centrality latent traits, which quantify the number of relations a species has with other species. Mathematically, these latent traits (both matching and centrality) are all orthonormal with each other, within and outside of their category.
+#' 
+#' When deciding on the dimension of the lantent traits, aside from technical issues (i.e. the number of parameters to estimate and the size of the data) it is important to also consider what is gained (or loss) from increasing (or decreasing) the dimension of the latent traits. The default was set to 2 because it is often of interest to study latent traits in pairs in an ordination-type graphic. 
 #'
 #' @return
 #' An object with a class alienFit and a class fitIMC.
@@ -35,7 +27,7 @@
 #' Rohr, R. P., Naisbit, R. E., Mazza, C. & Bersier, L.-F. (2016) Matching-centrality decomposition and the forecasting of new links in networks. Proc. R. Soc. B Biol. Sci. 283, 20152702.
 #'
 #' @export
-fitIMC <- function(data, d = 1, verbose = TRUE, control = list()){
+fitIMC <- function(data, d = 2, verbose = TRUE, control = list()){
 
   # General check
   stopifnot(d >= 1)
@@ -99,7 +91,7 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()){
   B2 <- getNullOne(nset2)
 
   ## Simulated Annealing
-  genSARes <- GenSA(lower = low_bound, upper = upp_bound,
+  genSARes <- GenSA::GenSA(lower = low_bound, upper = upp_bound,
                     fn = coreMC, adjMat = adjMat, nset1 = nset1,
                     nset2 = nset2, B1 = B1, B2 = B2, d = d,
                     control = control)
@@ -116,9 +108,11 @@ fitIMC <- function(data, d = 1, verbose = TRUE, control = list()){
   baseAttr <- attributes(res)
 
   # Define object class
-  attributes(res) <- list(dim = baseAttr$dim, dimnames = baseAttr$dimnames,
-                          model = out$methodsSpecific$params, adjMat = adjMat,
-                          LL = genSARes$value)
+  attributes(res) <- list(dim = baseAttr$dim,
+                          dimnames = baseAttr$dimnames,
+                          model = out$methodsSpecific$params,
+                          adjMat = adjMat,
+                          logLike = -genSARes$value)
 
   class(res) <- c("alienFit", "fitIMC")
   res

@@ -4,12 +4,12 @@
 \alias{fitIMC}
 \title{Fit indirect matching centrality model}
 \usage{
-fitIMC(data, d = 1, verbose = TRUE, control = list())
+fitIMC(data, d = 2, verbose = TRUE, control = list())
 }
 \arguments{
 \item{data}{An object of the class \code{\link{alienData}}.}
 
-\item{d}{Numeric. The dimension to the latent traits.}
+\item{d}{Numeric. The dimension of the latent traits. Default is 2.}
 
 \item{verbose}{Logical. Whether information on the progress of the analysis is reported in the console.}
 
@@ -19,22 +19,12 @@ fitIMC(data, d = 1, verbose = TRUE, control = list())
 An object with a class alienFit and a class fitIMC.
 }
 \description{
-This method estimate latent traits to model interactions in an adjacency matrix.
+This method estimate matching and centrality latent traits to model the interactions in an adjacency matrix.
 }
 \details{
-WRITE MORE AND BETTER STUFF
-WRITE MORE AND BETTER STUFF
-WRITE MORE AND BETTER STUFF
+As can be hinted by the name of the method, there are two types of latent traits.  : (1) matching latent traits that are designed to quantify the strength of the interaction between two species and (2) centrality latent traits, which quantify the number of relations a species has with other species. Mathematically, these latent traits (both matching and centrality) are all orthonormal with each other, within and outside of their category.
 
-This method uses latent traits to model interactions in an adjacency matrix. The first step requires the definition of two sets of interacting
-species: set1 and set2 (respectively of size \code{nset1} and \code{nset2}).
-The first category of latent trait are the matching traits. (to be developped)
-The second category include the centrality terms. (to be developped).
-Latents traits are built under specific topological constraints:
-\itemize{
-\item 1- all vectors belongs to the orthogonal basis of the unit vector.
-\item 2- all matching vector of a particular set of species are orthogonal to each other.
-}
+When deciding on the dimension of the lantent traits, aside from technical issues (i.e. the number of parameters to estimate and the size of the data) it is important to also consider what is gained (or loss) from increasing (or decreasing) the dimension of the latent traits. The default was set to 2 because it is often of interest to study latent traits in pairs in an ordination-type graphic.
 }
 \references{
 Rohr, R. P. & Bascompte, J. (2014) Components of Phylogenetic Signal in Antagonistic and Mutualistic Networks. Am. Nat. 184, 556--564.
