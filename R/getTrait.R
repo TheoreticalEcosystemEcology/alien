@@ -18,7 +18,7 @@
 #'
 #' @importFrom reshape2 dcast
 #'
-#' @export
+# @export
 getTrait <- function(object, bipartite = TRUE){
 
   # General check

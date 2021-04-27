@@ -20,7 +20,7 @@
 #' Guénard, G., Legendre, P., and Peres-Neto, P. 2013. Phylogenetic eigenvector maps (PEM): a framework to model and predict species traits. \emph{Methods in Ecology and Evolution} \strong{4} 1120-1131.
 #' 
 #' @method PEM.build alienData
-#' @export
+# @export
 #' @importFrom MPSEM PEM.build
 #' 
 PEM.build.alienData <- function(x, ...){

@@ -23,7 +23,7 @@
 #' F. Guillaume Blanchet
 #'
 # @importFrom mvabund traitglm
-#' @export
+# @export
 
 fit4corner <- function(data, formula = NULL, family = NULL, ...){
   # General check
