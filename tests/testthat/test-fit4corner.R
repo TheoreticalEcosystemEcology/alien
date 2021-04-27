@@ -84,17 +84,17 @@ cornerFormModel <- mvabund::traitglm(L = AllData$adjMat,
 cornerFormPred <- predict(cornerFormModel)
 
 # Function
-#fit4cornerFormRes <- fit4corner(data = AllData,
-#                            formula = ~tr1:Tr3,
-#                            family =  binomial(link = "logit"))
+fit4cornerFormRes <- fit4corner(data = AllData,
+                            formula = ~tr1:Tr3,
+                            family =  binomial(link = "logit"))
 
 # Trick to compare the result obtained from fitKNN
-#fit4cornerFormResMat <- matrix(NA, nrow = 5, ncol = 4)
-#fit4cornerFormResMat[,1:4] <- fit4cornerFormRes[,1:4]
+fit4cornerFormResMat <- matrix(NA, nrow = 5, ncol = 4)
+fit4cornerFormResMat[,1:4] <- fit4cornerFormRes[,1:4]
 
 #-----
 # Test
 #-----
-#test_that("fit4corner formula expected output", 
-#          expect_equivalent(cornerFormPred, fit4cornerFormResMat))
+test_that("fit4corner formula expected output", 
+          expect_equivalent(cornerFormPred, fit4cornerFormResMat))
 

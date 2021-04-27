@@ -71,15 +71,6 @@ fitRF <- function(data, formula, ...) {
                                            nFromSp),])
   colnames(traitTo) <- colnames(traitToBase)
 
-  # Reorganize data for the formula
-#  if(is.null(formula)){
-#    traitFromGP <- mvabund:::get.polys(traitFrom)
-#    traitFrom <-  cbind(traitFromGP$X, traitFromGP$X.squ)
-#
-#    traitToGP <- mvabund:::get.polys(traitTo)
-#    traitTo <-  cbind(traitToGP$X, traitToGP$X.squ)
-#  }
-
   # Organize data into a single object
   dat <- cbind(adjVec, traitTo, traitFrom)
 
@@ -92,22 +83,14 @@ fitRF <- function(data, formula, ...) {
   colnames(dat)[1] <- c("adj")
 
   # Organize formula
-#  if(is.null(formula)){
-#    # Terms
-#    formTerm <- terms(adj ~ .*., data = dat)
-#
-#    # formula
-#    Formula <- update(formTerm, ~ .)
-#  }else{
-    formulaBase <- update(formula, adj ~ .)
-
-    # Terms
-    formTerm <- terms(formulaBase, data = dat)
-
-    # formula
-    Formula <- update(formTerm, ~ .)
-#  }
-
+  formulaBase <- update(formula, adj ~ ., data = dat)
+  
+  # Terms
+  formTerm <- terms(formulaBase, data = dat)
+  
+  # formula
+  Formula <- update(formTerm, ~ .)
+  
   # Random forest
   if(binary){
     dat$adj <- as.factor(dat$adj)

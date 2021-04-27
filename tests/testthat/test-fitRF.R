@@ -46,6 +46,7 @@ AllData <- alienData(adjMat = bipart,
 #########################
 # Function
 fitRFComplexRes <- fitRF(data = AllData,
+                         formula = ~ tr1 + tr2 + tr3 + Tr1 + Tr2 + Tr3,
                          ntree = 500,
                          nodesize = 3)
 

@@ -13,20 +13,16 @@ Incoming content
 
 #### Predictions
 
--  [X] Direct matching centrality (DG)
+-  [X] Direct matching centrality
 -  [X] Indirect matching centrality (latent ~ traits)
--  [X] 4th corner (Brown et al. MEE 2014) (GB)
--  [ ] JSDM (GB)
--  [X] Niche binary (DG)
--  [X] Niche probabilistic (DG)
--  [X] KNN as a minimal iEat (KC)
+-  [X] 4th corner (Brown et al. MEE 2014)
+-  [X] Niche binary
+-  [X] Niche probabilistic
+-  [X] KNN
 
 
 ##### To be implemented
 
--  [ ] iEat's similarity and data retrieving in a specific package (DB)
--  [ ] Multinomial (somebody?)
-- Simulate communities data
 -  [ ] Ives' phylo (2006, Amnat see package `picante`) (GB)
 
 

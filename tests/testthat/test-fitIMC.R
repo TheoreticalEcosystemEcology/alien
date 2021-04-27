@@ -80,6 +80,3 @@ SSBetter <- sum((bipart - fitIMCBetter)^2)
 # Test
 test_that("fitIMC control", 
           expect_gt(SSBad ,SSBetter))
-
-
-

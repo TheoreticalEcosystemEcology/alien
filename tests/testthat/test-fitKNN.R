@@ -291,6 +291,8 @@ fitKNNNARes <-fitKNN(AllDataNA,
                      nNeig = 3, 
                      phylo = FALSE)
 
+# *Warnings are OK
+
 #----------------------
 # Calculate KNN by hand
 #----------------------
@@ -336,4 +338,3 @@ expect_equal(KNNres, fitKNNResMat)
 ######
 test_that("fitKNN NA expected output", 
           expect_equivalent(KNNres, fitKNNResMat))
-
