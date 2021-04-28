@@ -5,11 +5,8 @@ cache: packages
 notifications:
   email:
     recipients:
-      - s.vissault@yahoo.fr
-      - kevin.cazelles@gmail.com
       - Guillaume.Blanchet@USherbrooke.ca
     on_success: never 
-  slack: insileco:We4RUIQpzZ8vcazD9FIRt3Me
 
 matrix:
   include:

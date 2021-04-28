@@ -3,8 +3,6 @@
 notifications:
   - provider: Email
     to:
-      - s.vissault@yahoo.fr
-      - kevin.cazelles@gmail.com
       - Guillaume.Blanchet@USherbrooke.ca
     on_build_success: true
     on_build_failure: true
