@@ -1,13 +1,13 @@
 Package: alien
 Title: Comparative analysis of interaction inference methods
-Version: 0.0.1.9000
-Date: 2020-08-03
-Author: person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000-0001-7893-4389")),
-        person("David", "Beauchesne", role = c("ctb")),
-        person("F. Guillaume", "Blanchet", role = c("aut"), comment = c(ORCID = "0000-0001-5149-2488")),
-        person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
-        person("Dominique", "Gravel", role = c("aut"), comment = c(ORCID = "0000-0002-4498-7076")),
-        person("Steve", "Vissault", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
+Version: 1.0-0
+Date: 2021-04-27
+Authors@R: c(person("F. Guillaume", "Blanchet", email = "guillaume.blanchet@usherbrooke.ca" , role = c("aut","cre"), comment = c(ORCID = "0000-0001-5149-2488")),
+             person("Ignasi", "Bartomeus", role = c("ctb"), comment = c(ORCID = "0000-0001-7893-4389")),
+             person("David", "Beauchesne", role = c("ctb")),
+             person("Kevin", "Cazelles", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")),
+             person("Dominique", "Gravel", role = c("aut"), comment = c(ORCID = "0000-0002-4498-7076")),
+             person("Steve", "Vissault", role = c("aut"), comment = c(ORCID = "0000-0001-6619-9874")))
 Depends:
     R (>= 3.1.0)
 Maintainer: F. Guillaume Blanchet <guillaume.blanchet@usherbrooke.ca>

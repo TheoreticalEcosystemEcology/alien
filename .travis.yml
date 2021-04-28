@@ -13,15 +13,8 @@ notifications:
 
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      r: oldrel
-      env: NOT_CRAN=false
-      addons:
-        apt:
-          packages:
-            - libgsl-dev
     - os: osx
+      osx_image: xcode12.2
       r: release
       env: NOT_CRAN=true
     - os: linux
