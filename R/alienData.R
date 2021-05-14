@@ -80,7 +80,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
    
     # Check if species name match
     if(!all(adjMatFromNames %in% traitFromNames)){
-      stop("traitFrom and the rows of adjMat do not have the same species.")
+      stop("traitFrom and the rows of adjMat do not have the same labels")
     }
   }
   
@@ -106,7 +106,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
 
     # Check if species name match
     if(!all(adjMatToNames %in% traitToNames)){
-      stop("traitTo and the columns of adjMat do not have the same species.")
+      stop("traitTo and the columns of adjMat do not have the same labels")
     }
   }
 
@@ -127,7 +127,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatFromNames %in% phyloFromNames)){
-      stop("phyloFrom and the rows of adjMat do not have the same species.")
+      stop("phyloFrom and the rows of adjMat do not have the same labels")
     }
   }
 
@@ -145,7 +145,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatToNames %in% phyloToNames)){
-      stop("phyloTo and the column of adjMat do not have the same species.")
+      stop("phyloTo and the column of adjMat do not have the same labels")
     }
   }
   
@@ -169,7 +169,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatFromNames %in% traitDistFromNames)){
-      stop("Labels of traitDistFrom and the column of adjMat do not have the same species.")
+      stop("Labels of traitDistFrom and the column of adjMat do not match")
     }
   }
   
@@ -187,7 +187,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatToNames %in% traitDistToNames)){
-      stop("Labels of traitDistTo and the column of adjMat do not have the same species.")
+      stop("Labels of traitDistTo and the column of adjMat do not match")
     }
   }
 
@@ -208,7 +208,7 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatFromNames %in% phyloDistFromNames)){
-      stop("Labels of phyloDistFrom and the column of adjMat do not have the same species.")
+      stop("Labels of phyloDistFrom and the column of adjMat do not match")
     }
   }
   
@@ -226,7 +226,66 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     
     # Check if species name match
     if(!all(adjMatToNames %in% phyloDistToNames)){
-      stop("Labels of phyloDistTo and the column of adjMat do not have the same species.")
+      stop("Labels of phyloDistTo and the column of adjMat do not match")
+    }
+  }
+  
+  #########################################
+  # Check to ensure number of species match
+  #########################################
+  # traitFrom
+  if(!is.null(traitFrom)){
+    if(nrow(adjMat) != nrow(traitFrom)){
+      stop("The number of rows in adjMat should match the number of rows in traitFrom")
+    }
+  }
+  
+  # traitTo
+  if(!is.null(traitTo)){
+    if(ncol(adjMat) != nrow(traitTo)){
+      stop("The number of columns in adjMat should match the number of rows in traitTo")
+    }
+  }
+  
+  # phyloFrom
+  if(!is.null(phyloFrom)){
+    if(nrow(adjMat) != ape::Ntip(phyloFrom)){
+      stop("The number of rows in adjMat should match the number of tips in phyloFrom")
+    }
+  }
+  
+  # phyloTo
+  if(!is.null(phyloTo)){
+    if(ncol(adjMat) != ape::Ntip(phyloTo)){
+      stop("The number of columns in adjMat should match the number of tips in phyloTo")
+    }
+  }
+  
+  # traitDistFrom
+  if(!is.null(traitDistFrom)){
+    if(nrow(adjMat) != attributes(traitDistFrom)$Size){
+      stop("The number of rows in adjMat should match the size of traitDistFrom")
+    }
+  }
+  
+  # traitDistTo
+  if(!is.null(traitDistTo)){
+    if(ncol(adjMat) != attributes(traitDistTo)$Size){
+      stop("The number of columns in adjMat should match the size of traitDistTo")
+    }
+  }
+  
+  # phyloDistFrom
+  if(!is.null(phyloDistFrom)){
+    if(nrow(adjMat) != attributes(phyloDistFrom)$Size){
+      stop("The number of rows in adjMat should match the size of phyloDistFrom")
+    }
+  }
+  
+  # phyloDistTo
+  if(!is.null(phyloDistTo)){
+    if(ncol(adjMat) != attributes(phyloDistTo)$Size){
+      stop("The number of columns in adjMat should match the size of phyloDistTo")
     }
   }
   
