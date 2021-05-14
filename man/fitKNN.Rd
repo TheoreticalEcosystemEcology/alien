@@ -39,7 +39,7 @@ An object with a class alienFit and a class fitKNN.
 Model adegency matrix using K-nearest neighbour approach
 }
 \details{
-This function should only be used for bipartite adjency matrice.
+This function should only be used for bipartite adjacency matrices.
 
 The function is designed in such a way that if the argument \code{distTraitFrom} is defined it will build a distance matrix using \code{traitFrom} in the \code{\link{alienData}} object even if \code{distTraitFrom} is available in \code{\link{alienData}} object. The same is true for the argument \code{distTraitTo}.
 

@@ -9,7 +9,7 @@ fitRF(data, formula, ...)
 \arguments{
 \item{data}{an object of the class \code{\link{alienData}}}
 
-\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. Default is to include all terms additively, with quadratics for quantitative terms, and interactions between all pairs of traits.}
+\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.}
 
 \item{\dots}{Other parameters passed to \link[randomForest]{randomForest}.}
 }

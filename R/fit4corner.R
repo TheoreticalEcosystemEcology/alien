@@ -5,15 +5,13 @@
 #' @description Fit fourth corner prediction model using the approach proposed by Brown et al. (2014). This function is essentially a wrapper around \code{\link[mvabund]{traitglm}} for it to be used in the context of species interaction data.
 #'
 #' @param data an object of the class \code{\link{alienData}}.
-#' @param formula A one-sided formula specifying exactly how to model the adjacency matrix as a function of the "From" and "To" traits variables of both sets of species. Default is to include all terms additively, with quadratics for quantitative terms, and all From-by-To traits interactions.
+#' @param formula A one-sided formula specifying exactly how to model the adjacency matrix as a function of the "From" and "To" traits variables of both sets of species.
 #' @param family an object of class \code{\link[stats]{family}} with the caveat that the negative binomial with unknown overdispersion and a log-link can be specified as "negative.binomial", and it is the default..
 #' @param \dots Other parameters passed to \code{\link[mvabund]{traitglm}}.
 #'
 #' @details
 #'
-#' Fourth corner models are designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It can not be used otherwise.
-#'
-#' Fourth corner models assume that adjacency matrix (species by species matrix) used to perform the analysis has as rows the "From" species and as columns the "To" species.
+#' Although not specified by default here, in the ecological literature focusing on modeling species interactions, all variables are considered additively. In addition, quadratic relations are included for quantitative terms. Lastly, interactions between traits are considered across traits from different trophic levels.
 #'
 #' @return
 #'

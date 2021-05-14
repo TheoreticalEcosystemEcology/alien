@@ -5,7 +5,7 @@
 #' @description Fit direct matching centrality model using Random Forest
 #'
 #' @param data an object of the class \code{\link{alienData}}
-#' @param formula A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. Default is to include all terms additively, with quadratics for quantitative terms, and interactions between all pairs of traits.
+#' @param formula A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. 
 #' @param \dots Other parameters passed to \link[randomForest]{randomForest}.
 #'
 #' @details
@@ -39,7 +39,14 @@ fitRF <- function(data, formula, ...) {
   nToSp <- ncol(adjMat)
 
   # Check if adjMat is a binary or not
-  if(all(unique(as.vector(adjMat)) %in% c(0,1))){
+  adjMatUnique <- unique(as.vector(adjMat))
+  if(any(is.na(adjMatUnique))){
+    # Remove NAs for check
+    adjMatUnique <- adjMatUnique[-which(is.na(adjMatUnique))]
+  }
+  
+  # Check if binary
+  if(all(adjMatUnique) %in% c(0,1)){
     binary <- TRUE
   }else{
     binary <- FALSE

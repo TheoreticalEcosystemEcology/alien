@@ -15,7 +15,7 @@
 #'
 #' @details
 #'
-#' This function should only be used for bipartite adjency matrice.
+#' This function should only be used for bipartite adjacency matrices.
 #'
 #' The function is designed in such a way that if the argument \code{distTraitFrom} is defined it will build a distance matrix using \code{traitFrom} in the \code{\link{alienData}} object even if \code{distTraitFrom} is available in \code{\link{alienData}} object. The same is true for the argument \code{distTraitTo}.
 #' 
@@ -73,7 +73,9 @@ fitKNN <- function(data, distFrom = "jaccard",
     # From traits
     if(is.null(distTraitFrom)){
       if(is.null(data$traitDistFrom)){
-        stop("'traitDistFrom' should not be NULL in alienData.")
+        distFromTr <- matrix(0, nrow = nFromSp, ncol = nFromSp)
+        rownames(distFromTr) <- rownames(distFromSp)
+        colnames(distFromTr) <- colnames(distFromSp)
       }else{
         distFromTr <- data$traitDistFrom
       }
@@ -91,7 +93,9 @@ fitKNN <- function(data, distFrom = "jaccard",
     # To traits
     if(is.null(distTraitTo)){
       if(is.null(data$traitDistTo)){
-        stop("'traitDistTo' should not be NULL in alienData.")
+        distToTr <- matrix(0, nrow = nToSp, ncol = nToSp)
+        rownames(distToTr) <- rownames(distToSp)
+        colnames(distToTr) <- colnames(distToSp)
       }else{
         distToTr <- data$traitDistTo
       }
@@ -112,7 +116,9 @@ fitKNN <- function(data, distFrom = "jaccard",
     # From phylo
     if(is.null(data$phyloDistFrom)){
       if(is.null(data$phyloFrom)){
-        stop("'phyloFrom' or 'phyloDistFrom' need to be given")
+        distFromTr <- matrix(0, nrow = nFromSp, ncol = nFromSp)
+        rownames(distFromTr) <- rownames(distFromSp)
+        colnames(distFromTr) <- colnames(distFromSp)
       }else{
         distFromTr <- ape::cophenetic.phylo(data$phyloFrom)
       }
@@ -128,7 +134,9 @@ fitKNN <- function(data, distFrom = "jaccard",
     # To phylo
     if(is.null(data$phyloDistTo)){
       if(is.null(data$phyloTo)){
-        stop("'phyloTo' or 'phyloDistTo' need to be given")
+        distToTr <- matrix(0, nrow = nToSp, ncol = nToSp)
+        rownames(distToTr) <- rownames(distToSp)
+        colnames(distToTr) <- colnames(distToSp)
       }else{
         distToTr <- ape::cophenetic.phylo(data$phyloTo)
       }

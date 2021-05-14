@@ -9,7 +9,7 @@ fitGLM(data, formula, family = NULL, spRandom = FALSE, ...)
 \arguments{
 \item{data}{an object of the class \code{\link{alienData}}}
 
-\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions. Default is to include all terms additively, with quadratics for quantitative terms, and  interactions between all pairs of traits.}
+\item{formula}{A one-sided formula specifying how the different traits from both sets of species should be used to estimate species interactions.}
 
 \item{family}{The family of the response variable. See \link[stats]{family}, or the choices available.}
 
@@ -24,13 +24,11 @@ An object with a class alienFit and a class fitGLM.
 Fit direct matching centrality model using generalized linear model
 }
 \details{
-The generalized linear model is designed to be used on bipartite network where traits are available for both sets of species interacting in the network. It should not be used otherwise.
-
 This function unfold the adjacency matrix and uses it as the response variable. As explanatory variables, the traits for each sets of species are repeated to match the length of the unfolded adjacency matrix but also the position.
 
 If there are NAs in the adjacency matrix, the function will omit these values in the estimation of the model.
 
-Also, the default \code{formula} option results in many explanatory variables being constructed, which may result in overparamerisation. In this respect, the default option is complete but often too much for the data at hand.
+Although not specified by default formula is proposed here, in the ecological literature focusing on modeling species interactions, all variables are considered additively. In addition, quadratic relations are included for quantitative terms. Lastly, interactions between traits are considered across all traits within and across trophic levels. This is different than from the fourth corner approach where interactions is considered solely between traits of different trophic levels.
 }
 \author{
 F. Guillaume Blanchet, Dominique Gravel, Steve Vissault
