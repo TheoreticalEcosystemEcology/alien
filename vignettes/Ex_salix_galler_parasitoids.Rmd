@@ -1,0 +1,167 @@
+---
+title: "Salix_Galler_Parasitoids"
+author: "Guillaume Blanchet"
+date: "14/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This vignette was made to be an example of how the package can be applied to real-world data. As such, we focused on the *Salix*-galler-parasitoid data published by Kopelke et al. (2017) for which additional information on phylogeny was added. The full data was used to perform the analysis in Wooton et al. (2021).
+
+# Data
+
+The data is part of the `alien` R package and has already been formatted.
+
+```{r, echo=TRUE, eval=FALSE}
+data(salixGal)
+data(galPara)
+```
+
+#### To remove after everything works
+#### To remove after everything works
+#### To remove after everything works
+```{r, echo=FALSE, eval=TRUE}
+salixGal <- readRDS("~/Desktop/test/Kate/code/adat_sg.RDS")
+galPara <- readRDS("~/Desktop/test/Kate/code/adat_gp.RDS")
+```
+
+# `fitKNN`
+
+## Interaction data only
+```{r, warning=FALSE}
+# Salix-galler
+salixGalKNNInter <- fitKNN(salixGal,
+                           distFrom = "jaccard",
+                           distTo = "jaccard",
+                           nNeig = 3,
+                           weight = 0)
+
+# Galler-parasitoid
+galParaKNNInter <- fitKNN(galPara,
+                          distFrom = "jaccard",
+                          distTo = "jaccard",
+                          nNeig = 3,
+                          weight = 0)
+
+```
+
+## Interaction data with traits
+```{r, warning=FALSE}
+# Salix-galler
+salixGalKNNInterTrait <- fitKNN(salixGal,
+                                distFrom = "jaccard",
+                                distTo = "jaccard",
+                                distTraitFrom = "euclidean",
+                                distTraitTo = "euclidean",
+                                nNeig = 3,
+                                weight = 1)
+
+# Galler-parasitoid
+galParaKNNInterTrait <- fitKNN(galPara,
+                               distFrom = "jaccard",
+                               distTo = "jaccard",
+                               distTraitFrom = "euclidean",
+                               distTraitTo = "euclidean",
+                               nNeig = 3,
+                               weight = 1)
+
+```
+
+## Interaction data with phylogeny
+```{r, warning=FALSE}
+# Salix-galler
+salixGalKNNInterPhylo <- fitKNN(salixGal,
+                                distFrom = "jaccard",
+                                distTo = "jaccard",
+                                nNeig = 3,
+                                weight = 1,
+                                phylo=TRUE)
+
+# Galler-parasitoid
+galParaKNNInterPhylo <- fitKNN(galPara,
+                               distFrom = "jaccard",
+                               distTo = "jaccard",
+                               nNeig = 3,
+                               weight = 1,
+                               phylo = TRUE)
+
+```
+
+# `fitRF`
+
+## Traits
+```{r}
+# Base of formula
+salTraits <- paste(colnames(salixGal$traitFrom), collapse = "+")
+galTraits <- paste(colnames(salixGal$traitTo), collapse = "+")
+parTraits <- paste(colnames(galPara$traitTo), collapse = "+")
+
+# Salix-galler
+FormulaSalGal <- as.formula(paste("~", salTraits, "+", galTraits))
+salixGalRFTrait <- fitRF(salixGal,
+                         formula = FormulaSalGal,
+                         ntree = 2000,
+                         nodesize = 1)
+
+# Galler-parasitoid
+FormulaGalPara <- as.formula(paste("~", galTraits, "+", parTraits))
+galParaRFTrait <- fitRF(galPara,
+                        formula = FormulaGalPara,
+                        ntree=2000,
+                        nodesize = 1)
+```
+
+## Phylo
+This needs to be done after answers from Kate.
+
+# `fitGLM`
+
+```{r}
+# Salix-galler
+FormulaSalGal <- ~ GLUCOSIDES * LEAF.TOUGHN + 
+                   GLUCOSIDES * BODYLENGTH.GAL +
+                   GLUCOSIDES * DEVELOPMENT.TIME +
+                   LEAF.TOUGHN * BODYLENGTH.GAL +
+                   LEAF.TOUGHN * DEVELOPMENT.TIME +
+                   BODYLENGTH.GAL * DEVELOPMENT.TIME +
+                   I(GLUCOSIDES^2) + 
+                   I(LEAF.TOUGHN^2) + 
+                   I(BODYLENGTH.GAL^2) + 
+                   I(DEVELOPMENT.TIME^2)
+  
+salixGalGLMTrait <- fitGLM(salixGal,
+                           formula = FormulaSalGal,
+                           family = binomial(link = "logit"))
+```
+
+# `fit4corner`
+
+```{r}
+# Salix-galler
+FormulaSalGal <- ~ GLUCOSIDES * BODYLENGTH.GAL +
+                   GLUCOSIDES * DEVELOPMENT.TIME +
+                   LEAF.TOUGHN * BODYLENGTH.GAL +
+                   LEAF.TOUGHN * DEVELOPMENT.TIME +
+                   I(GLUCOSIDES^2) + 
+                   I(LEAF.TOUGHN^2) + 
+                   I(BODYLENGTH.GAL^2) + 
+                   I(DEVELOPMENT.TIME^2)
+  
+salixGal4cornerTrait <- fit4corner(salixGal,
+                                   formula = FormulaSalGal,
+                                   family = binomial(link = "logit"))
+```
+
+# `fitIMC` 
+
+This function take a long time to run.
+
+```{r}
+# Salix-galler
+salixGalIMC <- fitIMC(salixGal,
+                      d = 1)
+```
+
