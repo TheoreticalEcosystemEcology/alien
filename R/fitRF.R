@@ -46,7 +46,7 @@ fitRF <- function(data, formula, ...) {
   }
   
   # Check if binary
-  if(all(adjMatUnique) %in% c(0,1)){
+  if(all(adjMatUnique %in% c(0,1))){
     binary <- TRUE
   }else{
     binary <- FALSE

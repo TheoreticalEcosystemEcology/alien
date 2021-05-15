@@ -39,7 +39,13 @@ fitIMC <- function(data, d = 2, verbose = TRUE, control = list()){
   adjMat <- data$adjMat
 
   # Check if the data is presence-absence
-  if(!all(unique(as.vector(adjMat)) %in% c(0,1))){
+  adjMatUnique <- unique(as.vector(adjMat))
+  if(any(is.na(adjMatUnique))){
+    # Remove NAs for check
+    adjMatUnique <- adjMatUnique[-which(is.na(adjMatUnique))]
+  }
+  
+  if(!all(adjMatUnique %in% c(0,1))){
     stop("'fitIMC is only developped for presence-absence data'")
   }
 
