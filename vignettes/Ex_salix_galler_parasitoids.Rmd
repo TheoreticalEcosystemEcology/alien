@@ -88,6 +88,15 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                weight = 1,
                                phylo = TRUE)
 
+
+cor(as.vector(salixGalKNNInter), as.vector(salixGalKNNInterTrait))
+cor(as.vector(salixGalKNNInterTrait), as.vector(salixGalKNNInterPhylo))
+cor(as.vector(salixGalKNNInter), as.vector(salixGalKNNInterPhylo))
+
+cor(as.vector(galParaKNNInter), as.vector(galParaKNNInterPhylo))
+cor(as.vector(galParaKNNInter), as.vector(galParaKNNInterTrait))
+cor(as.vector(galParaKNNInterTrait), as.vector(galParaKNNInterPhylo))
+
 ```
 
 # `fitRF`
@@ -96,7 +105,7 @@ galParaKNNInterPhylo <- fitKNN(galPara,
 ```{r}
 # Base of formula
 salTraits <- paste(colnames(salixGal$traitFrom), collapse = "+")
-galTraits <- paste(colnames(salixGal$traitTo), collapse = "+")
+galTraits <- paste(colnames(salixGal$traitTo)[1:7], collapse = "+")
 parTraits <- paste(colnames(galPara$traitTo), collapse = "+")
 
 # Salix-galler
@@ -112,6 +121,9 @@ galParaRFTrait <- fitRF(galPara,
                         formula = FormulaGalPara,
                         ntree=2000,
                         nodesize = 1)
+
+cor(as.vector(salixGalRFTrait), as.vector(salixGalKNNInter))
+
 ```
 
 ## Phylo
