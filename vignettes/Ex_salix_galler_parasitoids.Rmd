@@ -20,14 +20,6 @@ data(salixGal)
 data(galPara)
 ```
 
-#### To remove after everything works
-#### To remove after everything works
-#### To remove after everything works
-```{r, echo=FALSE, eval=TRUE}
-salixGal <- readRDS("~/Desktop/test/Kate/code/adat_sg.RDS")
-galPara <- readRDS("~/Desktop/test/Kate/code/adat_gp.RDS")
-```
-
 # `fitKNN`
 
 ## Interaction data only
@@ -87,15 +79,6 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                nNeig = 3,
                                weight = 1,
                                phylo = TRUE)
-
-
-cor(as.vector(salixGalKNNInter), as.vector(salixGalKNNInterTrait))
-cor(as.vector(salixGalKNNInterTrait), as.vector(salixGalKNNInterPhylo))
-cor(as.vector(salixGalKNNInter), as.vector(salixGalKNNInterPhylo))
-
-cor(as.vector(galParaKNNInter), as.vector(galParaKNNInterPhylo))
-cor(as.vector(galParaKNNInter), as.vector(galParaKNNInterTrait))
-cor(as.vector(galParaKNNInterTrait), as.vector(galParaKNNInterPhylo))
 
 ```
 
