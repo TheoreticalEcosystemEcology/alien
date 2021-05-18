@@ -34,16 +34,6 @@ TraitTDF <- data.frame(Tr1 = rnorm(4),
 
 rownames(TraitTDF) <- LETTERS[1:4]
 
-##########################
-# Generate bogus phyloFrom
-##########################
-phyloF <- ape::rtree(n = 5, tip.label = letters[1:5])
-
-##########################
-# Generate bogus phyloFrom
-##########################
-phyloT <- ape::rtree(n = 4, tip.label = LETTERS[1:4])
-
 ##############################
 # Generate bogus traitDistFrom
 ##############################
@@ -74,8 +64,6 @@ attributes(phyloTDist)$Labels <- LETTERS[1:4]
 AllData <- alienData(adjMat = bipart,
                      traitFrom = TraitFDF,
                      traitTo = TraitTDF,
-                     phyloFrom = phyloF,
-                     phyloTo = phyloT,
                      traitDistFrom = TraitFDist,
                      traitDistTo = TraitTDist,
                      phyloDistFrom = phyloFDist, 
@@ -88,8 +76,6 @@ test_that("alienData expected output", {
   expect_identical(bipart, AllData$adjMat)
   expect_identical(TraitFDF, AllData$traitFrom)
   expect_identical(TraitTDF, AllData$traitTo)
-  expect_identical(phyloF, AllData$phyloFrom)
-  expect_identical(phyloT, AllData$phyloTo)
   expect_identical(TraitFDist, AllData$traitDistFrom)
   expect_identical(TraitTDist, AllData$traitDistTo)
   expect_identical(phyloFDist, AllData$phyloDistFrom)

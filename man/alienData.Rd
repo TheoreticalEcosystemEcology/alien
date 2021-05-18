@@ -8,8 +8,6 @@ alienData(
   adjMat,
   traitFrom = NULL,
   traitTo = NULL,
-  phyloFrom = NULL,
-  phyloTo = NULL,
   traitDistFrom = NULL,
   traitDistTo = NULL,
   phyloDistFrom = NULL,
@@ -22,10 +20,6 @@ alienData(
 \item{traitFrom}{A data.frame containing the traits of the row (From) species.}
 
 \item{traitTo}{A data.frame containing the traits of the column (To) species.}
-
-\item{phyloFrom}{An object of class \code{\link[ape]{phylo}} for the row (From) species.}
-
-\item{phyloTo}{An object of class \code{\link[ape]{phylo}} for the column (To) species.}
 
 \item{traitDistFrom}{A dist object containing the distance between pairs of traits of the row (From) species.}
 
@@ -43,7 +37,7 @@ An object of class \code{alienData} is returned.
 it returns an object of class \code{alienData}.
 }
 \details{
-This function is essentially designed to make sure the names of all components match. The output of this function is at the basis of all the analyses implemented in this package.
+This function is essentially designed to make sure the names of all components match in the right order. The output of this function is at the basis of all the analyses implemented in the alien package.
 }
 \author{
 F. Guillaume Blanchet, Kevin Cazelles & Steve Vissault

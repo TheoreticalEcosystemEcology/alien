@@ -34,16 +34,6 @@ TraitTDF <- data.frame(Tr1 = rnorm(4),
 
 rownames(TraitTDF) <- LETTERS[1:4]
 
-##########################
-# Generate bogus phyloFrom
-##########################
-phyloF <- ape::rtree(n = 5, tip.label = letters[1:5])
-
-##########################
-# Generate bogus phyloFrom
-##########################
-phyloT <- ape::rtree(n = 4, tip.label = LETTERS[1:4])
-
 ##############################
 # Generate bogus traitDistFrom
 ##############################
@@ -74,8 +64,6 @@ attributes(phyloTDist)$Labels <- LETTERS[1:4]
 AllData <- alienData(adjMat = bipart,
                      traitFrom = TraitFDF,
                      traitTo = TraitTDF,
-                     phyloFrom = phyloF,
-                     phyloTo = phyloT,
                      traitDistFrom = TraitFDist,
                      traitDistTo = TraitTDist,
                      phyloDistFrom = phyloFDist, 
@@ -142,8 +130,6 @@ expect_equivalent(traitDistToNum,
 phyloDistData <- alienData(adjMat = bipart,
                            traitFrom = TraitFDF,
                            traitTo = TraitTDF,
-                           phyloFrom = NULL,
-                           phyloTo = NULL,
                            traitDistFrom = TraitFDist,
                            traitDistTo = TraitTDist,
                            phyloDistFrom = phyloFDist, 
@@ -159,31 +145,6 @@ fitKNNDistPhyloRes <-fitKNN(phyloDistData,
                             nNeig = 3, 
                             phylo = TRUE)
 
-# Use phylo object
-phyloApeData <- alienData(adjMat = bipart,
-                          traitFrom = TraitFDF,
-                          traitTo = TraitTDF,
-                          phyloFrom = phyloF,
-                          phyloTo = phyloT,
-                          traitDistFrom = TraitFDist,
-                          traitDistTo = TraitTDist,
-                          phyloDistFrom = NULL, 
-                          phyloDistTo = NULL)
-
-# Construct distance matrices from raw traits in AllData
-fitKNNPhyloApeRes <-fitKNN(phyloApeData,
-                           distFrom = "jaccard",
-                           distTo = "bray",
-                           distTraitFrom = NULL,
-                           distTraitTo = NULL, 
-                           weight = 0.5,
-                           nNeig = 3, 
-                           phylo = TRUE)
-
-# Build cophenetic matrices
-cophenFrom <- as.dist(ape::cophenetic.phylo(phyloApeData$phyloFrom))
-cophenTo <- as.dist(ape::cophenetic.phylo(phyloApeData$phyloTo))
-
 #-----
 # Test
 #-----
@@ -192,15 +153,9 @@ test_that("fitKNN - phylo expected output", {
   expect_equivalent(AllData$phyloDistFrom,
                     attributes(fitKNNDistPhyloRes)$distTraitFrom)
   
-  expect_equivalent(cophenFrom,
-                    attributes(fitKNNPhyloApeRes)$distTraitFrom)
-  
   # Check To traits distance
   expect_equivalent(AllData$phyloDistTo,
                     attributes(fitKNNDistPhyloRes)$distTraitTo)
-  
-  expect_equivalent(cophenTo,
-                    attributes(fitKNNPhyloApeRes)$distTraitTo)
 })
 
 ################################
@@ -273,8 +228,6 @@ bipartNA[2,1]<-NA
 AllDataNA <- alienData(adjMat = bipartNA,
                      traitFrom = TraitFDF,
                      traitTo = TraitTDF,
-                     phyloFrom = phyloF,
-                     phyloTo = phyloT,
                      traitDistFrom = TraitFDist,
                      traitDistTo = TraitTDist,
                      phyloDistFrom = phyloFDist, 

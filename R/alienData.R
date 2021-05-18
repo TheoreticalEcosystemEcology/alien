@@ -6,8 +6,6 @@
 #' @param adjMat An adjancency matrix. The rows (From) species are influencing the column (To) species.
 #' @param traitFrom A data.frame containing the traits of the row (From) species.
 #' @param traitTo A data.frame containing the traits of the column (To) species.
-#' @param phyloFrom An object of class \code{\link[ape]{phylo}} for the row (From) species.
-#' @param phyloTo An object of class \code{\link[ape]{phylo}} for the column (To) species.
 #' @param traitDistFrom A dist object containing the distance between pairs of traits of the row (From) species.
 #' @param traitDistTo A dist object containing the distance between pairs of traits of the column (To) species.
 #' @param phyloDistFrom A dist object containing phylogenetic distance between pairs of row (From) species.
@@ -15,8 +13,7 @@
 #'
 #' @details
 #'
-#' This function is essentially designed to make sure the names of all components match. The output of this function is at the basis of all the analyses implemented in this package.
-#'
+#' This function is essentially designed to make sure the names of all components match in the right order. The output of this function is at the basis of all the analyses implemented in the alien package.
 #'
 #' @return
 #' An object of class \code{alienData} is returned. 
@@ -27,7 +24,6 @@
 #' @keywords classes
 #' @export
 alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
-                      phyloFrom = NULL, phyloTo = NULL, 
                       traitDistFrom = NULL, traitDistTo = NULL,
                       phyloDistFrom = NULL, phyloDistTo = NULL) {
 
@@ -82,6 +78,11 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     if(!all(adjMatFromNames %in% traitFromNames)){
       stop("traitFrom and the rows of adjMat do not have the same labels")
     }
+    
+    expOrd <- match(adjMatFromNames, traitFromNames)
+    if(!all(expOrd == 1:length(adjMatFromNames))){
+      stop("The row names of traitFrom and the row names of adjMat needs to have the same order")
+    }
   }
   
   #---------
@@ -108,47 +109,14 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     if(!all(adjMatToNames %in% traitToNames)){
       stop("traitTo and the columns of adjMat do not have the same labels")
     }
-  }
-
-  ###########
-  # Phylogeny
-  ###########
-  #-----------
-  # Phylo from 
-  #-----------
-  if(!is.null(phyloFrom)){
-    # Check object class
-    if(class(phyloFrom) != "phylo"){
-      stop("'phyloFrom' should be an object of class phylo")
-    }
     
-    # Species names
-    phyloFromNames <- phyloFrom$tip.label
-    
-    # Check if species name match
-    if(!all(adjMatFromNames %in% phyloFromNames)){
-      stop("phyloFrom and the rows of adjMat do not have the same labels")
+    # Check if the order of the species names match between the adjacency matrix and the cophenetic matrix
+    expOrd <- match(adjMatToNames, traitToNames)
+    if(!all(expOrd == 1:length(adjMatToNames))){
+      stop("The rownames of traitTo and the column names of adjMat needs to have the same order")
     }
   }
 
-  #---------
-  # Phylo to 
-  #---------
-  if(!is.null(phyloTo)){
-    # Check object class
-    if(class(phyloTo) != "phylo"){
-      stop("'phyloTo' should be an object of class phylo")
-    }
-    
-    # Species names
-    phyloToNames <- phyloTo$tip.label
-    
-    # Check if species name match
-    if(!all(adjMatToNames %in% phyloToNames)){
-      stop("phyloTo and the column of adjMat do not have the same labels")
-    }
-  }
-  
   #-#-#-#-#-#-#-#
   # Distance data
   #-#-#-#-#-#-#-#
@@ -171,6 +139,12 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     if(!all(adjMatFromNames %in% traitDistFromNames)){
       stop("Labels of traitDistFrom and the column of adjMat do not match")
     }
+    
+    # Check if the order of the species names match between the adjacency matrix and the cophenetic matrix
+    expOrd <- match(adjMatFromNames,traitDistFromNames)
+    if(!all(expOrd == 1:length(adjMatFromNames))){
+      stop("The labels of traitDistFrom and the row names of adjMat needs to have the same order")
+    }
   }
   
   #------------
@@ -188,6 +162,12 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     # Check if species name match
     if(!all(adjMatToNames %in% traitDistToNames)){
       stop("Labels of traitDistTo and the column of adjMat do not match")
+    }
+    
+    # Check if the order of the species names match between the adjacency matrix and the trait distance matrix
+    expOrd <- match(adjMatToNames,traitDistToNames)
+    if(!all(expOrd == 1:length(adjMatToNames))){
+      stop("The labels of traitDistTo and the column names of adjMat needs to have the same order")
     }
   }
 
@@ -210,6 +190,12 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     if(!all(adjMatFromNames %in% phyloDistFromNames)){
       stop("Labels of phyloDistFrom and the column of adjMat do not match")
     }
+
+    # Check if the order of the species names match between the adjacency matrix and the cophenetic matrix
+    expOrd <- match(adjMatFromNames,phyloDistFromNames)
+    if(!all(expOrd == 1:length(adjMatFromNames))){
+      stop("The labels of phyloDistFrom and the row names of adjMat needs to have the same order")
+    }
   }
   
   #------------
@@ -228,6 +214,12 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
     if(!all(adjMatToNames %in% phyloDistToNames)){
       stop("Labels of phyloDistTo and the column of adjMat do not match")
     }
+    
+    # Check if the order of the species names match between the adjacency matrix and the cophenetic matrix
+    expOrd <- match(adjMatToNames,phyloDistToNames)
+    if(!all(expOrd == 1:length(adjMatToNames))){
+      stop("The labels of phyloDistTo and the column names of adjMat needs to have the same order")
+    }
   }
   
   #########################################
@@ -244,20 +236,6 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
   if(!is.null(traitTo)){
     if(ncol(adjMat) != nrow(traitTo)){
       stop("The number of columns in adjMat should match the number of rows in traitTo")
-    }
-  }
-  
-  # phyloFrom
-  if(!is.null(phyloFrom)){
-    if(nrow(adjMat) != ape::Ntip(phyloFrom)){
-      stop("The number of rows in adjMat should match the number of tips in phyloFrom")
-    }
-  }
-  
-  # phyloTo
-  if(!is.null(phyloTo)){
-    if(ncol(adjMat) != ape::Ntip(phyloTo)){
-      stop("The number of columns in adjMat should match the number of tips in phyloTo")
     }
   }
   
@@ -293,8 +271,6 @@ alienData <- function(adjMat, traitFrom = NULL, traitTo = NULL,
   res <- list(adjMat = adjMat,
               traitFrom = traitFrom,
               traitTo = traitTo,
-              phyloFrom = phyloFrom,
-              phyloTo = phyloTo,
               traitDistFrom = traitDistFrom,
               traitDistTo = traitDistTo,
               phyloDistFrom = phyloDistFrom,
