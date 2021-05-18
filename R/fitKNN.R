@@ -115,38 +115,22 @@ fitKNN <- function(data, distFrom = "jaccard",
   }else{
     # From phylo
     if(is.null(data$phyloDistFrom)){
-      if(is.null(data$phyloFrom)){
-        distFromTr <- matrix(0, nrow = nFromSp, ncol = nFromSp)
-        rownames(distFromTr) <- rownames(distFromSp)
-        colnames(distFromTr) <- colnames(distFromSp)
-      }else{
-        distFromTr <- ape::cophenetic.phylo(data$phyloFrom)
-      }
+      distFromTr <- matrix(0, nrow = nFromSp, ncol = nFromSp)
+      rownames(distFromTr) <- rownames(distFromSp)
+      colnames(distFromTr) <- colnames(distFromSp)
     }else{
-      if(!is.null(data$phyloFrom)){
-        stop("Either 'phyloFrom' or 'phyloDistFrom' need to be given not both")
-      }else{
-        # Cophenetic phylogenetic distance
-        distFromTr <- data$phyloDistFrom
-      }
+      # Cophenetic phylogenetic distance
+      distFromTr <- data$phyloDistFrom
     }
 
     # To phylo
     if(is.null(data$phyloDistTo)){
-      if(is.null(data$phyloTo)){
-        distToTr <- matrix(0, nrow = nToSp, ncol = nToSp)
-        rownames(distToTr) <- rownames(distToSp)
-        colnames(distToTr) <- colnames(distToSp)
-      }else{
-        distToTr <- ape::cophenetic.phylo(data$phyloTo)
-      }
+      distToTr <- matrix(0, nrow = nToSp, ncol = nToSp)
+      rownames(distToTr) <- rownames(distToSp)
+      colnames(distToTr) <- colnames(distToSp)
     }else{
-      if(!is.null(data$phyloTo)){
-        stop("Either 'phyloTo' or 'phyloDistTo' need to be given not both")
-      }else{
-        # Cophenetic phylogenetic distance
-        distToTr <- data$phyloDistTo
-      }
+      # Cophenetic phylogenetic distance
+      distToTr <- data$phyloDistTo
     }
   }
   
