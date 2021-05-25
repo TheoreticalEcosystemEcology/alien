@@ -32,6 +32,7 @@ salixGalKNNInter <- fitKNN(salixGal,
                            weight = 0)
 
 ll_fn(salixGal$adjMat,salixGalKNNInter)
+tjur_D(salixGal$adjMat, salixGalKNNInter) 
 # OK
 
 # Galler-parasitoid
@@ -42,6 +43,7 @@ galParaKNNInter <- fitKNN(galPara,
                           weight = 0)
 
 ll_fn(galPara$adjMat,galParaKNNInter)
+tjur_D(galPara$adjMat, galParaKNNInter) 
 # OK
 ```
 
@@ -57,6 +59,7 @@ salixGalKNNInterTrait <- fitKNN(salixGal,
                                 weight = 1)
 
 ll_fn(salixGal$adjMat,salixGalKNNInterTrait)
+tjur_D(salixGal$adjMat, salixGalKNNInterTrait) 
 # OK
 
 # Galler-parasitoid
@@ -69,6 +72,7 @@ galParaKNNInterTrait <- fitKNN(galPara,
                                weight = 1)
 
 ll_fn(galPara$adjMat,galParaKNNInterTrait)
+tjur_D(galPara$adjMat, galParaKNNInterTrait) 
 # OK
 ```
 
@@ -83,6 +87,7 @@ salixGalKNNInterPhylo <- fitKNN(salixGal,
                                 phylo=TRUE)
 
 ll_fn(salixGal$adjMat,salixGalKNNInterPhylo)
+tjur_D(salixGal$adjMat, salixGalKNNInterPhylo)
 # Not OK
 
 # Galler-parasitoid
@@ -94,6 +99,7 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                phylo = TRUE)
 
 ll_fn(galPara$adjMat,galParaKNNInterPhylo)
+tjur_D(galPara$adjMat, galParaKNNInterPhylo)
 # Not OK
 ```
 
