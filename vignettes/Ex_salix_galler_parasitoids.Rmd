@@ -31,6 +31,9 @@ salixGalKNNInter <- fitKNN(salixGal,
                            nNeig = 3,
                            weight = 0)
 
+ll_fn(salixGal$adjMat,salixGalKNNInter)
+# OK
+
 # Galler-parasitoid
 galParaKNNInter <- fitKNN(galPara,
                           distFrom = "jaccard",
@@ -38,6 +41,8 @@ galParaKNNInter <- fitKNN(galPara,
                           nNeig = 3,
                           weight = 0)
 
+ll_fn(galPara$adjMat,galParaKNNInter)
+# OK
 ```
 
 ## Interaction data with traits
@@ -51,6 +56,9 @@ salixGalKNNInterTrait <- fitKNN(salixGal,
                                 nNeig = 3,
                                 weight = 1)
 
+ll_fn(salixGal$adjMat,salixGalKNNInterTrait)
+# OK
+
 # Galler-parasitoid
 galParaKNNInterTrait <- fitKNN(galPara,
                                distFrom = "jaccard",
@@ -60,6 +68,8 @@ galParaKNNInterTrait <- fitKNN(galPara,
                                nNeig = 3,
                                weight = 1)
 
+ll_fn(galPara$adjMat,galParaKNNInterTrait)
+# OK
 ```
 
 ## Interaction data with phylogeny
@@ -72,6 +82,9 @@ salixGalKNNInterPhylo <- fitKNN(salixGal,
                                 weight = 1,
                                 phylo=TRUE)
 
+ll_fn(salixGal$adjMat,salixGalKNNInterPhylo)
+# Not OK
+
 # Galler-parasitoid
 galParaKNNInterPhylo <- fitKNN(galPara,
                                distFrom = "jaccard",
@@ -80,6 +93,8 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                weight = 1,
                                phylo = TRUE)
 
+ll_fn(galPara$adjMat,galParaKNNInterPhylo)
+# Not OK
 ```
 
 # `fitRF`
@@ -98,6 +113,9 @@ salixGalRFTrait <- fitRF(salixGal,
                          ntree = 2000,
                          nodesize = 1)
 
+ll_fn(salixGal$adjMat,salixGalRFTrait)
+# OK Small variation is OK because of the stochastic nature of RF
+
 # Galler-parasitoid
 FormulaGalPara <- as.formula(paste("~", galTraits, "+", parTraits))
 galParaRFTrait <- fitRF(galPara,
@@ -105,7 +123,7 @@ galParaRFTrait <- fitRF(galPara,
                         ntree=2000,
                         nodesize = 1)
 
-cor(as.vector(salixGalRFTrait), as.vector(salixGalKNNInter))
+ll_fn(galPara$adjMat,galParaRFTrait)
 
 ```
 
@@ -115,7 +133,42 @@ This needs to be done after answers from Kate.
 # `fitGLM`
 
 ```{r}
+salixGalTraitSel <- c("TREE.VOLUME",
+                      "LEAF.THICKNESS",
+                      "GLUCOSIDES",
+                      "TREE.HEIGHT",
+                      "LEAF.HAIRINESS",
+                      "GALLTYPE")
+
 # Salix-galler
+FormulaSalGal <- ~ TREE.VOLUME * LEAF.THICKNESS +
+                   TREE.VOLUME * GLUCOSIDES +
+                   TREE.VOLUME * TREE.HEIGHT +
+                   TREE.VOLUME * LEAF.HAIRINESS +
+                   TREE.VOLUME * GALLTYPE +
+                   LEAF.THICKNESS * GLUCOSIDES +
+                   LEAF.THICKNESS * TREE.HEIGHT +
+                   LEAF.THICKNESS * LEAF.HAIRINESS +
+                   LEAF.THICKNESS * GALLTYPE +
+                   GLUCOSIDES * TREE.HEIGHT +
+                   GLUCOSIDES * LEAF.HAIRINESS +
+                   GLUCOSIDES * GALLTYPE +
+                   TREE.HEIGHT * LEAF.HAIRINESS +
+                   TREE.HEIGHT * GALLTYPE +
+                   LEAF.HAIRINESS * GALLTYPE +
+                   I(TREE.VOLUME^2) + 
+                   I(GLUCOSIDES^2) + 
+                   I(TREE.HEIGHT^2)
+  
+FormulaSalGal <- ~ TREE.VOLUME + LEAF.THICKNESS +
+                   GLUCOSIDES +
+                   TREE.HEIGHT +
+                   LEAF.HAIRINESS + GALLTYPE +
+                   I(TREE.VOLUME^2) + 
+                   I(GLUCOSIDES^2) + 
+                   I(TREE.HEIGHT^2)
+  
+
 FormulaSalGal <- ~ GLUCOSIDES * LEAF.TOUGHN + 
                    GLUCOSIDES * BODYLENGTH.GAL +
                    GLUCOSIDES * DEVELOPMENT.TIME +
@@ -130,6 +183,9 @@ FormulaSalGal <- ~ GLUCOSIDES * LEAF.TOUGHN +
 salixGalGLMTrait <- fitGLM(salixGal,
                            formula = FormulaSalGal,
                            family = binomial(link = "logit"))
+
+ll_fn(salixGal$adjMat,salixGalGLMTrait)
+
 ```
 
 # `fit4corner`
@@ -148,6 +204,8 @@ FormulaSalGal <- ~ GLUCOSIDES * BODYLENGTH.GAL +
 salixGal4cornerTrait <- fit4corner(salixGal,
                                    formula = FormulaSalGal,
                                    family = binomial(link = "logit"))
+
+ll_fn(salixGal$adjMat,salixGal4cornerTrait)
 ```
 
 # `fitIMC` 
