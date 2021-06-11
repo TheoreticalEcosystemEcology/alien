@@ -136,6 +136,7 @@ fitGLM <- function(data, formula,
   baseAttr <- attributes(res)
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
+                          alienData = data,
                           model = model,
                           formula = Formula)
 

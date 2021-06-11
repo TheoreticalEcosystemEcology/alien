@@ -119,7 +119,7 @@ fitIMC <- function(data, d = 2, verbose = TRUE, control = list()){
   attributes(res) <- list(dim = baseAttr$dim,
                           dimnames = baseAttr$dimnames,
                           model = out$methodsSpecific$params,
-                          adjMat = adjMat,
+                          alienData = data,
                           logLike = -genSARes$value)
 
   class(res) <- c("alienFit", "fitIMC")
