@@ -31,8 +31,8 @@ salixGalKNNInter <- fitKNN(salixGal,
                            nNeig = 3,
                            weight = 0)
 
-ll_fn(salixGal$adjMat,salixGalKNNInter)
-tjur_D(salixGal$adjMat, salixGalKNNInter) 
+logLik(salixGalKNNInter)
+tjur(salixGalKNNInter) 
 # OK
 
 # Galler-parasitoid
@@ -42,8 +42,8 @@ galParaKNNInter <- fitKNN(galPara,
                           nNeig = 3,
                           weight = 0)
 
-ll_fn(galPara$adjMat,galParaKNNInter)
-tjur_D(galPara$adjMat, galParaKNNInter) 
+logLik(galParaKNNInter)
+tjur(galParaKNNInter)
 # OK
 ```
 
@@ -58,8 +58,8 @@ salixGalKNNInterTrait <- fitKNN(salixGal,
                                 nNeig = 3,
                                 weight = 1)
 
-ll_fn(salixGal$adjMat,salixGalKNNInterTrait)
-tjur_D(salixGal$adjMat, salixGalKNNInterTrait) 
+logLik(salixGalKNNInterTrait)
+tjur(salixGalKNNInterTrait) 
 # OK
 
 # Galler-parasitoid
@@ -71,8 +71,8 @@ galParaKNNInterTrait <- fitKNN(galPara,
                                nNeig = 3,
                                weight = 1)
 
-ll_fn(galPara$adjMat,galParaKNNInterTrait)
-tjur_D(galPara$adjMat, galParaKNNInterTrait) 
+logLik(galParaKNNInterTrait)
+tjur(galParaKNNInterTrait) 
 # OK
 ```
 
@@ -86,8 +86,8 @@ salixGalKNNInterPhylo <- fitKNN(salixGal,
                                 weight = 1,
                                 phylo=TRUE)
 
-ll_fn(salixGal$adjMat,salixGalKNNInterPhylo)
-tjur_D(salixGal$adjMat, salixGalKNNInterPhylo)
+logLik(salixGalKNNInterPhylo)
+tjur(salixGalKNNInterPhylo)
 # Not OK
 
 # Galler-parasitoid
@@ -98,8 +98,8 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                weight = 1,
                                phylo = TRUE)
 
-ll_fn(galPara$adjMat,galParaKNNInterPhylo)
-tjur_D(galPara$adjMat, galParaKNNInterPhylo)
+logLik(galParaKNNInterPhylo)
+tjur(galParaKNNInterPhylo)
 # Not OK
 ```
 
@@ -119,7 +119,7 @@ salixGalRFTrait <- fitRF(salixGal,
                          ntree = 2000,
                          nodesize = 1)
 
-ll_fn(salixGal$adjMat,salixGalRFTrait)
+logLik(salixGalRFTrait)
 # OK Small variation is OK because of the stochastic nature of RF
 
 # Galler-parasitoid
@@ -129,7 +129,7 @@ galParaRFTrait <- fitRF(galPara,
                         ntree=2000,
                         nodesize = 1)
 
-ll_fn(galPara$adjMat,galParaRFTrait)
+logLik(galParaRFTrait)
 
 ```
 
@@ -190,7 +190,7 @@ salixGalGLMTrait <- fitGLM(salixGal,
                            formula = FormulaSalGal,
                            family = binomial(link = "logit"))
 
-ll_fn(salixGal$adjMat,salixGalGLMTrait)
+logLik(salixGalGLMTrait)
 
 ```
 
@@ -211,7 +211,7 @@ salixGal4cornerTrait <- fit4corner(salixGal,
                                    formula = FormulaSalGal,
                                    family = binomial(link = "logit"))
 
-ll_fn(salixGal$adjMat,salixGal4cornerTrait)
+logLik(salixGal4cornerTrait)
 ```
 
 # `fitIMC` 
@@ -220,7 +220,7 @@ This function take a long time to run.
 
 ```{r}
 # Salix-galler
-salixGalIMC <- fitIMC(salixGal,
-                      d = 1)
+#salixGalIMC <- fitIMC(salixGal,
+#                      d = 1)
 ```
 
