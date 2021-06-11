@@ -46,20 +46,27 @@ fitKNN <- function(data, distFrom = "jaccard",
                    distTraitFrom = NULL,
                    distTraitTo = NULL, 
                    weight = 0.5, nNeig, phylo = FALSE){
- 
+  
   # Check
   stopifnot(class(data) == "alienData")
+  
   if(weight > 1 | weight < 0){
     stop("'weight' needs to be between 0 and 1")
   }
-
+  
+  if(weight < 0){
+    if(is.null(distTraitFrom) | is.null(distTraitTo)){
+      stop("distTraitFrom and distTraitTo cannot be NULL if weight is < 0")
+    }
+  }
+  
   # Get adjacency matrix
   adjMat <- data$adjMat
-
+  
   # Basic information
   nFromSp <- nrow(adjMat)
   nToSp <- ncol(adjMat)
-
+  
   # Distance species
   distFromSp <- as.matrix(vegan::vegdist(adjMat,
                                          method = distFrom, na.rm = TRUE))
@@ -122,7 +129,7 @@ fitKNN <- function(data, distFrom = "jaccard",
       # Cophenetic phylogenetic distance
       distFromTr <- data$phyloDistFrom
     }
-
+    
     # To phylo
     if(is.null(data$phyloDistTo)){
       distToTr <- matrix(0, nrow = nToSp, ncol = nToSp)
@@ -140,51 +147,90 @@ fitKNN <- function(data, distFrom = "jaccard",
   # Make sure distToTr is a matrix
   distToTr <- as.matrix(distToTr)
   
+  distFromTrUnique <- unique(as.vector(distFromTr))
+  distToTrUnique <- unique(as.vector(distToTr))
+  if((length(distFromTrUnique) == 1 && distFromTrUnique == 0) | (length(distToTrUnique) == 1 && distToTrUnique == 0)) {
+    weight <- 0
+    print("weight was set to 0 because no trait information is available for at least one group of species")
+  }
+  
   # Trait weighted distance
   wDistFromSp <- (1 - weight) * distFromSp + weight * distFromTr
   wDistToSp <-  (1 - weight) * distToSp + weight * distToTr
-
+  
   # Result object
   res <- matrix(NA, nrow = nFromSp, ncol = nToSp)
-  dimnames(res) <- list(rownames(data$traitFrom),
-                        rownames(data$traitTo))
-
+  dimnames(res) <- list(rownames(data$adjMat),
+                        colnames(data$adjMat))
+  
+  # For a warning at the end
+  countWrongNeigFrom <- 0
+  countWrongNeigTo <- 0
+  
   for(i in 1:nFromSp) {
     for(j in 1:nToSp) {
-      # Order species distance for the focal species
-      KNNFromSpOrd <- order(wDistFromSp[,i])[-1]
-      KNNToSpOrd <- order(wDistToSp[,j])[-1]
-
-      # Sort all the interacting species
-      interFrom <- adjMat[i,KNNToSpOrd]
-      interTo <- adjMat[KNNFromSpOrd,j]
+      # Rank distance for the focal species
+      FromSpRank <- rank(wDistFromSp[-i,i], na.last = "keep", ties.method = "min")
+      ToSpRank <- rank(wDistToSp[-j,j], na.last = "keep", ties.method = "min")
       
-      # From the sorted interacting species (that are not NAs), select the nNeig ones
-      interFromNeig <- which(!is.na(interFrom))[1:nNeig]
-      interToNeig <- which(!is.na(interTo))[1:nNeig]
+      FromSpRank <- rank(wDistFromSp[,i], na.last = "keep", ties.method = "min")
+      ToSpRank <- rank(wDistToSp[,j], na.last = "keep", ties.method = "min")
       
-      # Check in there are nNeig species interacting
-      interFromNeigNA <- is.na(interFromNeig)
-      interToNeigNA <- is.na(interToNeig)
+      # Order (without NA)
+      FromSpOrderNoNA <- which(!is.na(FromSpRank))
+      ToSpOrderNoNA <- which(!is.na(ToSpRank))
       
-      # Send warning if there are less than nNeig species interacting
-      if(any(interFromNeigNA)){
-        warning(paste("There are not", nNeig, "neighbours for",
-                      colnames(adjMat)[i],
-                      " - Calculation were done with", 
-                      sum(!interFromNeigNA), "neighbours"))
+      # Rank (without NA)
+      FromSpRankNoNA <- FromSpRank[FromSpOrderNoNA]
+      ToSpRankNoNA <- ToSpRank[ToSpOrderNoNA]
+      
+      # Unique rank values (and remove focal species)
+      FromSpRankUnique <- sort(unique(FromSpRankNoNA))[-1]
+      ToSpRankUnique <- sort(unique(ToSpRankNoNA))[-1]
+      
+      # Find the interaction for the "From" focal species to all the "To" species
+      interTo <- numeric()
+      for(k in FromSpRankUnique){
+        interTo[k] <- mean(adjMat[which(FromSpRank == k),j],na.rm = TRUE)
       }
-      if(any(interToNeigNA)){
-        warning(paste("There are not", nNeig, "neighbours for",
-                      rownames(adjMat)[j],
-                      " - Calculation were done with", 
-                      sum(!interToNeigNA), "neighbours"))
+      
+      # Find the interaction for the "To" focal species to all the "From" species
+      interFrom <- numeric()
+      for(k in ToSpRankUnique){
+        interFrom[k] <- mean(adjMat[i,which(ToSpRank == k)],na.rm = TRUE)
+      }
+      
+      # Remove NAs in the interaction found
+      interToNoNA <-  interTo[which(!is.na(interTo))]
+      interFromNoNA <-  interFrom[which(!is.na(interFrom))]
+      
+      # Calculate KNN values for From to To interactions
+      if(length(interToNoNA) < nNeig){
+        countWrongNeigTo <- countWrongNeigTo + 1
+        KNNTo <- sum(interToNoNA) / length(interToNoNA) / 2
+      }else{
+        interToNoNA <- interToNoNA[1:nNeig]
+        KNNTo <- sum(interToNoNA) / nNeig / 2
+      }
+      
+      # Calculate KNN values for To to From interactions
+      if(length(interFromNoNA) < nNeig){
+        countWrongNeigTo <- countWrongNeigTo + 1
+        KNNFrom <- sum(interFromNoNA) / length(interFromNoNA) / 2
+      }else{
+        interFromNoNA <- interFromNoNA[1:nNeig]
+        KNNFrom <- sum(interFromNoNA) / nNeig / 2
       }
       
       # Calculate KNN values
-      res[i, j] <- sum(interFrom[interFromNeig], na.rm = TRUE) / nNeig / 2 +
-                   sum(interTo[interToNeig], na.rm = TRUE)/ nNeig / 2
+      res[i, j] <- sum(c(KNNTo, KNNFrom), na.rm = TRUE)
     }
+  }
+  
+  if((countWrongNeigTo + countWrongNeigFrom) > 0){
+    warning(paste("There are", countWrongNeigTo + countWrongNeigFrom,
+                  "interactions that were calculated with less than",
+                  nNeig, "neighbours"))
   }
   
   # Add model as attribute
@@ -198,7 +244,7 @@ fitKNN <- function(data, distFrom = "jaccard",
                           distTraitTo = as.dist(distToTr),
                           nNeig = nNeig,
                           phylo = phylo)
-
+  
   # Define object class
   class(res) <- c("alienFit", "fitKNN")
   

@@ -69,6 +69,7 @@ AllData <- alienData(adjMat = bipart,
                      phyloDistFrom = phyloFDist, 
                      phyloDistTo = phyloTDist)
 
+
 ###################
 # Test fitKNN trait
 ###################
@@ -121,6 +122,81 @@ expect_equivalent(AllData$traitDistTo,
 
 expect_equivalent(traitDistToNum,
                  attributes(fitKNNnoDistRes)$distTraitTo)
+})
+
+###################################
+# Test fitKNN with permuted species 
+###################################
+bipartData <- alienData(adjMat = bipart,
+                        traitFrom = NULL,
+                        traitTo = NULL,
+                        traitDistFrom = NULL,
+                        traitDistTo = NULL,
+                        phyloDistFrom = NULL, 
+                        phyloDistTo = NULL)
+
+smplFrom <- sample(1:5)
+bipartDataPermFrom <- alienData(adjMat = bipart[smplFrom,],
+                                traitFrom = NULL,
+                                traitTo = NULL,
+                                traitDistFrom = NULL,
+                                traitDistTo = NULL,
+                                phyloDistFrom = NULL, 
+                                phyloDistTo = NULL)
+
+smplTo <- sample(1:4)
+bipartDataPermTo <- alienData(adjMat = bipart[,smplTo],
+                              traitFrom = NULL,
+                              traitTo = NULL,
+                              traitDistFrom = NULL,
+                              traitDistTo = NULL,
+                              phyloDistFrom = NULL, 
+                              phyloDistTo = NULL)
+
+# Use traits distance matrices in AllData
+fitKNNDistRes <-fitKNN(bipartData,
+                       distFrom = "jaccard",
+                       distTo = "jaccard",
+                       distTraitFrom = NULL,
+                       distTraitTo = NULL, 
+                       weight = 0,
+                       nNeig = 3, 
+                       phylo = FALSE)
+
+fitKNNDistResPermFrom <-fitKNN(bipartDataPermFrom,
+                               distFrom = "jaccard",
+                               distTo = "jaccard",
+                               distTraitFrom = NULL,
+                               distTraitTo = NULL, 
+                               weight = 0,
+                               nNeig = 3, 
+                               phylo = FALSE)
+
+fitKNNDistResPermTo <-fitKNN(bipartDataPermTo,
+                             distFrom = "jaccard",
+                             distTo = "jaccard",
+                             distTraitFrom = NULL,
+                             distTraitTo = NULL, 
+                             weight = 0,
+                             nNeig = 3, 
+                             phylo = FALSE)
+
+#-----
+# Test
+#-----
+test_that("fitKNN - trait expected output", {
+  # Compare non-permuted with From permuted 
+  expect_equivalent(fitKNNDistRes[smplFrom,],
+                    fitKNNDistResPermFrom[1:length(smplFrom),])
+  
+  # Compare non-permuted with To permuted 
+  expect_equivalent(fitKNNDistRes[,smplTo],
+                    fitKNNDistResPermTo[,1:length(smplTo)])
+
+  # Compare non-permuted with To permuted 
+  expect_equivalent(fitKNNDistResPermFrom[,smplTo],
+                    fitKNNDistResPermTo[smplFrom,])
+  
 })
 
 ###################
