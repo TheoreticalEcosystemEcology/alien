@@ -107,10 +107,21 @@ tjur(galParaKNNInterPhylo)
 
 ## Traits
 ```{r}
+sal_traits_all <- c("LEAF.SIZE", "LEAF.THICKNESS", "LEAF.HAIRINESS", 
+                    "GLUCOSIDES", "LEAF.TOUGHN", "LEAF.SLA",
+                    "TREE.HEIGHT", "TREE.VOLUME", "PHENOLOGY.SAL")
+
+gal_traits_all <- c("GALLTYPE", "BODYLENGTH.GAL", "PHENOLOGY.GAL", 
+                    "OVERWINTERING.SITE", "OVIPOS.STRATEGY", "REPRODUCTION.GAL",
+                    "DEVELOPMENT.TIME","GALL.WALL","GALL.TOUGHN","GALL.POS","GALL.VOLUME")
+
+as.formula(paste("~", paste(sal_traits_all, collapse = "+"), "+", paste(gal_traits_all,collapse = "+")))
+
+
+
 # Base of formula
 salTraits <- paste(colnames(salixGal$traitFrom), collapse = "+")
-galTraits <- paste(colnames(salixGal$traitTo)[1:7], collapse = "+")
-parTraits <- paste(colnames(galPara$traitTo), collapse = "+")
+galTraits <- paste(colnames(salixGal$traitTo), collapse = "+")
 
 # Salix-galler
 FormulaSalGal <- as.formula(paste("~", salTraits, "+", galTraits))
@@ -120,9 +131,12 @@ salixGalRFTrait <- fitRF(salixGal,
                          nodesize = 1)
 
 logLik(salixGalRFTrait)
+tjur(salixGalRFTrait)
 # OK Small variation is OK because of the stochastic nature of RF
 
 # Galler-parasitoid
+galTraits <- paste(colnames(galPara$traitFrom), collapse = "+")
+parTraits <- paste(colnames(galPara$traitTo), collapse = "+")
 FormulaGalPara <- as.formula(paste("~", galTraits, "+", parTraits))
 galParaRFTrait <- fitRF(galPara,
                         formula = FormulaGalPara,
@@ -130,7 +144,7 @@ galParaRFTrait <- fitRF(galPara,
                         nodesize = 1)
 
 logLik(galParaRFTrait)
-
+tjur(galParaRFTrait)
 ```
 
 ## Phylo
