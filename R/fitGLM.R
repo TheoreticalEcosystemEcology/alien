@@ -59,12 +59,12 @@ fitGLM <- function(data, formula,
 
   # Organize trait$from to match the size and organization of adjMat
   traitFrom <- as.data.frame(traitFromBase[rep(seq_len(nFromSp),
-                                               each = nToSp),])
+                                               nToSp),])
   colnames(traitFrom) <- colnames(traitFromBase)
 
   # Organize trait$to to match the size and organization of adjMat
   traitTo <- as.data.frame(traitToBase[rep(seq_len(nToSp),
-                                           nFromSp),])
+                                           each = nFromSp),])
   colnames(traitTo) <- colnames(traitToBase)
 
   # Reorganize data for the formula

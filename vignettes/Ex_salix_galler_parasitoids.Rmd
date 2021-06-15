@@ -107,18 +107,6 @@ tjur(galParaKNNInterPhylo)
 
 ## Traits
 ```{r}
-sal_traits_all <- c("LEAF.SIZE", "LEAF.THICKNESS", "LEAF.HAIRINESS", 
-                    "GLUCOSIDES", "LEAF.TOUGHN", "LEAF.SLA",
-                    "TREE.HEIGHT", "TREE.VOLUME", "PHENOLOGY.SAL")
-
-gal_traits_all <- c("GALLTYPE", "BODYLENGTH.GAL", "PHENOLOGY.GAL", 
-                    "OVERWINTERING.SITE", "OVIPOS.STRATEGY", "REPRODUCTION.GAL",
-                    "DEVELOPMENT.TIME","GALL.WALL","GALL.TOUGHN","GALL.POS","GALL.VOLUME")
-
-as.formula(paste("~", paste(sal_traits_all, collapse = "+"), "+", paste(gal_traits_all,collapse = "+")))
-
-
-
 # Base of formula
 salTraits <- paste(colnames(salixGal$traitFrom), collapse = "+")
 galTraits <- paste(colnames(salixGal$traitTo), collapse = "+")
@@ -153,6 +141,10 @@ This needs to be done after answers from Kate.
 # `fitGLM`
 
 ```{r}
+################
+# Salix - Galler
+################
+
 # Construct squared traits for numerical traits
 salixGalSq <- polyTrait(salixGal)
 
@@ -225,15 +217,7 @@ salixTr <- c("TREE.VOLUME",
 gallTr <- "GALLTYPE"
 
 # Independent term
-indep <- c("TREE.VOLUME",
-           "TREE.VOLUME_Sq",
-           "LEAF.THICKNESS",
-           "GLUCOSIDES",
-           "GLUCOSIDES_Sq",
-           "TREE.HEIGHT",
-           "TREE.HEIGHT_Sq",
-           "LEAF.HAIRINESS",
-           "GALLTYPE")
+indep <- paste(c(salixTr, gallTr), collapse = "+")
 
 # Interaction term (without Square)
 salixTrNoSq <- c("TREE.VOLUME",
