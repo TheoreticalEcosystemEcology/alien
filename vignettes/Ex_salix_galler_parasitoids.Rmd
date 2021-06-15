@@ -15,7 +15,9 @@ This vignette was made to be an example of how the package can be applied to rea
 
 The data is part of the `alien` R package and has already been formatted.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r}
+library(alien)
+
 data(salixGal)
 data(galPara)
 ```
@@ -33,7 +35,6 @@ salixGalKNNInter <- fitKNN(salixGal,
 
 logLik(salixGalKNNInter)
 tjur(salixGalKNNInter) 
-# OK
 
 # Galler-parasitoid
 galParaKNNInter <- fitKNN(galPara,
@@ -44,7 +45,6 @@ galParaKNNInter <- fitKNN(galPara,
 
 logLik(galParaKNNInter)
 tjur(galParaKNNInter)
-# OK
 ```
 
 ## Interaction data with traits
@@ -60,7 +60,6 @@ salixGalKNNInterTrait <- fitKNN(salixGal,
 
 logLik(salixGalKNNInterTrait)
 tjur(salixGalKNNInterTrait) 
-# OK
 
 # Galler-parasitoid
 galParaKNNInterTrait <- fitKNN(galPara,
@@ -73,10 +72,11 @@ galParaKNNInterTrait <- fitKNN(galPara,
 
 logLik(galParaKNNInterTrait)
 tjur(galParaKNNInterTrait) 
-# OK
 ```
 
-## Interaction data with phylogeny
+# Needs to be redone
+## Interaction data with phylogeny 
+# Needs to be redone
 ```{r, warning=FALSE}
 # Salix-galler
 salixGalKNNInterPhylo <- fitKNN(salixGal,
@@ -88,7 +88,6 @@ salixGalKNNInterPhylo <- fitKNN(salixGal,
 
 logLik(salixGalKNNInterPhylo)
 tjur(salixGalKNNInterPhylo)
-# Not OK
 
 # Galler-parasitoid
 galParaKNNInterPhylo <- fitKNN(galPara,
@@ -100,7 +99,6 @@ galParaKNNInterPhylo <- fitKNN(galPara,
 
 logLik(galParaKNNInterPhylo)
 tjur(galParaKNNInterPhylo)
-# Not OK
 ```
 
 # `fitRF`
@@ -144,7 +142,6 @@ This needs to be done after answers from Kate.
 ################
 # Salix - Galler
 ################
-
 # Construct squared traits for numerical traits
 salixGalSq <- polyTrait(salixGal)
 
@@ -193,6 +190,71 @@ salixGalGLMTrait <- fitGLM(salixGalSq,
 #============================
 logLik(salixGalGLMTrait)
 tjur(salixGalGLMTrait)
+
+
+
+#####################
+# Galler - Parasitoid
+#####################
+# Construct squared traits for numerical traits
+galParaSq <- polyTrait(galPara)
+
+#==============
+# Build formula
+#==============
+# Select traits
+gallTr <- c("GALLTYPE", 
+            "BODYLENGTH.GAL", 
+            "BODYLENGTH.GAL_Sq", 
+            "PHENOLOGY.GAL", 
+            "OVIPOS.STRATEGY",
+            "GALL.WALL",
+            "GALL.WALL_Sq")
+
+paraTr <- c("P.I",  
+            "OVIPOS.LNTH", 
+            "OVIPOS.LNTH_Sq", 
+            "ATTACK.STAGE",
+            "PHENOLOGY.PAR", 
+            "BODYLENGTH.PAR", 
+            "BODYLENGTH.PAR_Sq", 
+            "ENDO.ECTO")
+
+# Independent term
+indep <- paste(c(gallTr, paraTr), collapse = "+")
+
+# Interaction term (without Square)
+gallTrNoSq <- c("GALLTYPE", 
+                "BODYLENGTH.GAL", 
+                "PHENOLOGY.GAL", 
+                "OVIPOS.STRATEGY",
+                "GALL.WALL")
+
+paraTrNoSq <- c("P.I",  
+                "OVIPOS.LNTH", 
+                "ATTACK.STAGE",
+                "PHENOLOGY.PAR", 
+                "BODYLENGTH.PAR", 
+                "ENDO.ECTO")
+
+combTr <- combn(c(gallTrNoSq, paraTrNoSq), 2)
+inter <- paste(combTr[1,], ":", combTr[2,], collapse = "+")
+
+# Build formula
+FormulaGalPara <- as.formula(paste("~", indep, "+", inter))
+
+#==========
+# Run model
+#==========
+galParaGLMTrait <- fitGLM(galParaSq,
+                           formula = FormulaGalPara,
+                           family = binomial(link = "logit"))
+
+#============================
+# Log-likelihood and Tjur's D
+#============================
+logLik(galParaGLMTrait)
+tjur(galParaGLMTrait)
 ```
 
 # `fit4corner`
@@ -246,6 +308,72 @@ salixGal4cornerTrait <- fitGLM(salixGalSq,
 #============================
 logLik(salixGal4cornerTrait)
 tjur(salixGal4cornerTrait)
+
+
+
+
+#####################
+# Galler - Parasitoid
+#####################
+# Construct squared traits for numerical traits
+galParaSq <- polyTrait(galPara)
+
+#==============
+# Build formula
+#==============
+# Select traits
+gallTr <- c("GALLTYPE", 
+            "BODYLENGTH.GAL", 
+            "BODYLENGTH.GAL_Sq", 
+            "PHENOLOGY.GAL", 
+            "OVIPOS.STRATEGY",
+            "GALL.WALL",
+            "GALL.WALL_Sq")
+
+paraTr <- c("P.I",  
+            "OVIPOS.LNTH", 
+            "OVIPOS.LNTH_Sq", 
+            "ATTACK.STAGE",
+            "PHENOLOGY.PAR", 
+            "BODYLENGTH.PAR", 
+            "BODYLENGTH.PAR_Sq", 
+            "ENDO.ECTO")
+
+# Independent term
+indep <- paste(c(gallTr, paraTr), collapse = "+")
+
+# Interaction term (without Square)
+gallTrNoSq <- c("GALLTYPE", 
+                "BODYLENGTH.GAL", 
+                "PHENOLOGY.GAL", 
+                "OVIPOS.STRATEGY",
+                "GALL.WALL")
+
+paraTrNoSq <- c("P.I",  
+                "OVIPOS.LNTH", 
+                "ATTACK.STAGE",
+                "PHENOLOGY.PAR", 
+                "BODYLENGTH.PAR", 
+                "ENDO.ECTO")
+
+combTr <- expand.grid(gallTrNoSq, paraTrNoSq)
+inter <- paste(combTr[,1], ":", combTr[,2], collapse = "+")
+
+# Build formula
+FormulaGalPara <- as.formula(paste("~", indep, "+", inter))
+
+#==========
+# Run model
+#==========
+galParaGLMTrait <- fitGLM(galParaSq,
+                           formula = FormulaGalPara,
+                           family = binomial(link = "logit"))
+
+#============================
+# Log-likelihood and Tjur's D
+#============================
+logLik(galParaGLMTrait)
+tjur(galParaGLMTrait)
 ```
 
 # `fitIMC` 
