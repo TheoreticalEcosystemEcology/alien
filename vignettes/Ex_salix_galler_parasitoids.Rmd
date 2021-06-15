@@ -153,79 +153,123 @@ This needs to be done after answers from Kate.
 # `fitGLM`
 
 ```{r}
-salixGalTraitSel <- c("TREE.VOLUME",
-                      "LEAF.THICKNESS",
-                      "GLUCOSIDES",
-                      "TREE.HEIGHT",
-                      "LEAF.HAIRINESS",
-                      "GALLTYPE")
+# Construct squared traits for numerical traits
+salixGalSq <- polyTrait(salixGal)
 
-# Salix-galler
-FormulaSalGal <- ~ TREE.VOLUME * LEAF.THICKNESS +
-                   TREE.VOLUME * GLUCOSIDES +
-                   TREE.VOLUME * TREE.HEIGHT +
-                   TREE.VOLUME * LEAF.HAIRINESS +
-                   TREE.VOLUME * GALLTYPE +
-                   LEAF.THICKNESS * GLUCOSIDES +
-                   LEAF.THICKNESS * TREE.HEIGHT +
-                   LEAF.THICKNESS * LEAF.HAIRINESS +
-                   LEAF.THICKNESS * GALLTYPE +
-                   GLUCOSIDES * TREE.HEIGHT +
-                   GLUCOSIDES * LEAF.HAIRINESS +
-                   GLUCOSIDES * GALLTYPE +
-                   TREE.HEIGHT * LEAF.HAIRINESS +
-                   TREE.HEIGHT * GALLTYPE +
-                   LEAF.HAIRINESS * GALLTYPE +
-                   I(TREE.VOLUME^2) + 
-                   I(GLUCOSIDES^2) + 
-                   I(TREE.HEIGHT^2)
-  
-FormulaSalGal <- ~ TREE.VOLUME + LEAF.THICKNESS +
-                   GLUCOSIDES +
-                   TREE.HEIGHT +
-                   LEAF.HAIRINESS + GALLTYPE +
-                   I(TREE.VOLUME^2) + 
-                   I(GLUCOSIDES^2) + 
-                   I(TREE.HEIGHT^2)
-  
+#==============
+# Build formula
+#==============
+# Select traits
+salixTr <- c("TREE.VOLUME",
+             "TREE.VOLUME_Sq",
+             "LEAF.THICKNESS",
+             "GLUCOSIDES",
+             "GLUCOSIDES_Sq",
+             "TREE.HEIGHT",
+             "TREE.HEIGHT_Sq",
+             "LEAF.HAIRINESS")
 
-FormulaSalGal <- ~ GLUCOSIDES * LEAF.TOUGHN + 
-                   GLUCOSIDES * BODYLENGTH.GAL +
-                   GLUCOSIDES * DEVELOPMENT.TIME +
-                   LEAF.TOUGHN * BODYLENGTH.GAL +
-                   LEAF.TOUGHN * DEVELOPMENT.TIME +
-                   BODYLENGTH.GAL * DEVELOPMENT.TIME +
-                   I(GLUCOSIDES^2) + 
-                   I(LEAF.TOUGHN^2) + 
-                   I(BODYLENGTH.GAL^2) + 
-                   I(DEVELOPMENT.TIME^2)
-  
-salixGalGLMTrait <- fitGLM(salixGal,
+gallTr <- "GALLTYPE"
+
+# Independent term
+indep <- c("TREE.VOLUME",
+           "TREE.VOLUME_Sq",
+           "LEAF.THICKNESS",
+           "GLUCOSIDES",
+           "GLUCOSIDES_Sq",
+           "TREE.HEIGHT",
+           "TREE.HEIGHT_Sq",
+           "LEAF.HAIRINESS",
+           "GALLTYPE")
+
+# Interaction term (without Square)
+salixTrNoSq <- c("TREE.VOLUME",
+                 "LEAF.THICKNESS",
+                 "GLUCOSIDES",
+                 "TREE.HEIGHT",
+                 "LEAF.HAIRINESS")
+
+gallTrNoSq <- c("GALLTYPE")
+
+combTr <- combn(c(salixTrNoSq, gallTrNoSq), 2)
+inter <- paste(combTr[1,], ":", combTr[2,], collapse = "+")
+
+# Build formula
+FormulaSalGal <- as.formula(paste("~", indep, "+", inter))
+
+#==========
+# Run model
+#==========
+salixGalGLMTrait <- fitGLM(salixGalSq,
                            formula = FormulaSalGal,
                            family = binomial(link = "logit"))
 
+#============================
+# Log-likelihood and Tjur's D
+#============================
 logLik(salixGalGLMTrait)
-
+tjur(salixGalGLMTrait)
 ```
 
 # `fit4corner`
 
 ```{r}
-# Salix-galler
-FormulaSalGal <- ~ GLUCOSIDES * BODYLENGTH.GAL +
-                   GLUCOSIDES * DEVELOPMENT.TIME +
-                   LEAF.TOUGHN * BODYLENGTH.GAL +
-                   LEAF.TOUGHN * DEVELOPMENT.TIME +
-                   I(GLUCOSIDES^2) + 
-                   I(LEAF.TOUGHN^2) + 
-                   I(BODYLENGTH.GAL^2) + 
-                   I(DEVELOPMENT.TIME^2)
-  
-salixGal4cornerTrait <- fit4corner(salixGal,
-                                   formula = FormulaSalGal,
-                                   family = binomial(link = "logit"))
+# Construct squared traits for numerical traits
+salixGalSq <- polyTrait(salixGal)
 
+#==============
+# Build formula
+#==============
+# Select traits
+salixTr <- c("TREE.VOLUME",
+             "TREE.VOLUME_Sq",
+             "LEAF.THICKNESS",
+             "GLUCOSIDES",
+             "GLUCOSIDES_Sq",
+             "TREE.HEIGHT",
+             "TREE.HEIGHT_Sq",
+             "LEAF.HAIRINESS")
+
+gallTr <- "GALLTYPE"
+
+# Independent term
+indep <- c("TREE.VOLUME",
+           "TREE.VOLUME_Sq",
+           "LEAF.THICKNESS",
+           "GLUCOSIDES",
+           "GLUCOSIDES_Sq",
+           "TREE.HEIGHT",
+           "TREE.HEIGHT_Sq",
+           "LEAF.HAIRINESS",
+           "GALLTYPE")
+
+# Interaction term (without Square)
+salixTrNoSq <- c("TREE.VOLUME",
+                 "LEAF.THICKNESS",
+                 "GLUCOSIDES",
+                 "TREE.HEIGHT",
+                 "LEAF.HAIRINESS")
+
+gallTrNoSq <- c("GALLTYPE")
+
+combTr <- expand.grid(salixTrNoSq, gallTrNoSq)
+inter <- paste(combTr[,1], ":", combTr[,2], collapse = "+")
+
+# Build formula
+FormulaSalGal <- as.formula(paste("~", indep, "+", inter))
+
+#==========
+# Run model
+#==========
+salixGal4cornerTrait <- fitGLM(salixGalSq,
+                           formula = FormulaSalGal,
+                           family = binomial(link = "logit"))
+
+#============================
+# Log-likelihood and Tjur's D
+#============================
 logLik(salixGal4cornerTrait)
+tjur(salixGal4cornerTrait)
 ```
 
 # `fitIMC` 
