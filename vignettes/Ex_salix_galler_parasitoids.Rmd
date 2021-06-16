@@ -105,30 +105,44 @@ tjur(galParaKNNInterPhylo)
 
 ## Traits
 ```{r}
+##############
+# Salix-galler
+##############
+
 # Base of formula
 salTraits <- paste(colnames(salixGal$traitFrom), collapse = "+")
 galTraits <- paste(colnames(salixGal$traitTo), collapse = "+")
 
-# Salix-galler
+# Formula
 FormulaSalGal <- as.formula(paste("~", salTraits, "+", galTraits))
+
+# Model
 salixGalRFTrait <- fitRF(salixGal,
                          formula = FormulaSalGal,
                          ntree = 2000,
                          nodesize = 1)
 
+# Loglikelihood and Tjur's D
 logLik(salixGalRFTrait)
 tjur(salixGalRFTrait)
-# OK Small variation is OK because of the stochastic nature of RF
 
+###################
 # Galler-parasitoid
+###################
+# Base of formula
 galTraits <- paste(colnames(galPara$traitFrom), collapse = "+")
 parTraits <- paste(colnames(galPara$traitTo), collapse = "+")
+
+# Formula
 FormulaGalPara <- as.formula(paste("~", galTraits, "+", parTraits))
+
+# Model
 galParaRFTrait <- fitRF(galPara,
                         formula = FormulaGalPara,
                         ntree=2000,
                         nodesize = 1)
 
+# Loglikelihood and Tjur's D
 logLik(galParaRFTrait)
 tjur(galParaRFTrait)
 ```
@@ -190,8 +204,6 @@ salixGalGLMTrait <- fitGLM(salixGalSq,
 #============================
 logLik(salixGalGLMTrait)
 tjur(salixGalGLMTrait)
-
-
 
 #####################
 # Galler - Parasitoid
