@@ -184,7 +184,7 @@ fitKNNDistResPermTo <-fitKNN(bipartDataPermTo,
 #-----
 # Test
 #-----
-test_that("fitKNN - trait expected output", {
+test_that("fitKNN - permuted species", {
   # Compare non-permuted with From permuted 
   expect_equivalent(fitKNNDistRes[smplFrom,],
                     fitKNNDistResPermFrom[1:length(smplFrom),])

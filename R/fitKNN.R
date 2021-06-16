@@ -169,42 +169,61 @@ fitKNN <- function(data, distFrom = "jaccard",
   
   for(i in 1:nFromSp) {
     for(j in 1:nToSp) {
-      # Rank distance for the focal species
-      FromSpRank <- rank(wDistFromSp[-i,i], na.last = "keep", ties.method = "min")
-      ToSpRank <- rank(wDistToSp[-j,j], na.last = "keep", ties.method = "min")
+      # Order  distance for the focal species
+      FromSpOrder <- order(wDistFromSp[,i], na.last = TRUE)
+      ToSpOrder <- order(wDistToSp[,j], na.last = TRUE)
       
-      FromSpRank <- rank(wDistFromSp[,i], na.last = "keep", ties.method = "min")
-      ToSpRank <- rank(wDistToSp[,j], na.last = "keep", ties.method = "min")
-      
-      # Order (without NA)
-      FromSpOrderNoNA <- which(!is.na(FromSpRank))
-      ToSpOrderNoNA <- which(!is.na(ToSpRank))
-      
-      # Rank (without NA)
-      FromSpRankNoNA <- FromSpRank[FromSpOrderNoNA]
-      ToSpRankNoNA <- ToSpRank[ToSpOrderNoNA]
-      
-      # Unique rank values (and remove focal species)
-      FromSpRankUnique <- sort(unique(FromSpRankNoNA))[-1]
-      ToSpRankUnique <- sort(unique(ToSpRankNoNA))[-1]
-      
-      # Find the interaction for the "From" focal species to all the "To" species
-      interTo <- numeric()
-      for(k in FromSpRankUnique){
-        interTo[k] <- mean(adjMat[which(FromSpRank == k),j],na.rm = TRUE)
+      # Find duplicate values and their order for the "From" species
+      FromSpOrderDup <- numeric()
+      for(k in 1:nFromSp){
+        if(!is.na(FromSpOrder[k])){
+          FromSel <- which(wDistFromSp[FromSpOrder[k],i] == wDistFromSp[,i])
+          FromSpOrderDup[FromSel] <- k
+        }
       }
+
+      # Find duplicate values and their order for the "To" species
+      ToSpOrderDup <- numeric()
+      for(k in 1:nToSp){
+        if(!is.na(ToSpOrder[k])){
+          ToSel <- which(wDistToSp[ToSpOrder[k],j] == wDistToSp[,j])
+          ToSpOrderDup[ToSel] <- k
+        }
+      }
+
+      # Remove NA in order
+      FromSpOrderNoNA <- FromSpOrderDup[which(!is.na(FromSpOrderDup))]
+      ToSpOrderNoNA <- ToSpOrderDup[which(!is.na(ToSpOrderDup))]
+
+      # Unique rank values (and remove focal species)
+      FromSpOrderUnique <- sort(unique(FromSpOrderNoNA))[-1]
+      ToSpOrderUnique <- sort(unique(ToSpOrderNoNA))[-1]
       
       # Find the interaction for the "To" focal species to all the "From" species
+      interTo <- numeric()
+      for(k in FromSpOrderUnique){
+        if(k == min(FromSpOrderDup, na.rm = TRUE)){
+          interTo[k] <- mean(adjMat[which(FromSpOrderDup == k)[-1],j], na.rm = TRUE)
+        }else{
+          interTo[k] <- mean(adjMat[which(FromSpOrderDup == k),j], na.rm = TRUE)
+        }
+      }
+      
+      # Find the interaction for the "From" focal species to all the "To" species
       interFrom <- numeric()
-      for(k in ToSpRankUnique){
-        interFrom[k] <- mean(adjMat[i,which(ToSpRank == k)],na.rm = TRUE)
+      for(k in ToSpOrderUnique){
+        if(k == min(FromSpOrderDup, na.rm = TRUE)){
+          interFrom[k] <- mean(adjMat[i,which(ToSpOrderDup == k)[-1]], na.rm = TRUE)
+        }else{
+          interFrom[k] <- mean(adjMat[i,which(ToSpOrderDup == k)], na.rm = TRUE)
+        }
       }
       
       # Remove NAs in the interaction found
       interToNoNA <-  interTo[which(!is.na(interTo))]
       interFromNoNA <-  interFrom[which(!is.na(interFrom))]
       
-      # Calculate KNN values for From to To interactions
+      # Calculate KNN values for To to From interactions
       if(length(interToNoNA) < nNeig){
         countWrongNeigTo <- countWrongNeigTo + 1
         KNNTo <- sum(interToNoNA) / length(interToNoNA) / 2
@@ -213,7 +232,7 @@ fitKNN <- function(data, distFrom = "jaccard",
         KNNTo <- sum(interToNoNA) / nNeig / 2
       }
       
-      # Calculate KNN values for To to From interactions
+      # Calculate KNN values for From to To interactions
       if(length(interFromNoNA) < nNeig){
         countWrongNeigTo <- countWrongNeigTo + 1
         KNNFrom <- sum(interFromNoNA) / length(interFromNoNA) / 2
