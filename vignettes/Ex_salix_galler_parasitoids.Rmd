@@ -322,8 +322,6 @@ logLik(salixGal4cornerTrait)
 tjur(salixGal4cornerTrait)
 
 
-
-
 #####################
 # Galler - Parasitoid
 #####################

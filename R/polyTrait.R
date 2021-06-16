@@ -21,10 +21,18 @@
 #' The function will automatically transform all binary (0-1) variable to a 
 #' factor.
 #' 
+#' In addition, all factors are designed to have a sum to zero contrast 
+#' (\code{\link[stats]{contr.sum}}).
+#' 
 #' @return 
 #' 
 #' An object of class \code{\link{alienData}} with all numerical traits squared. 
 #' The squared variables all end with "_Sq".
+#' 
+#' @note 
+#' 
+#' Many aspect of this function were inspired from an internal function of the 
+#' mvabund R package.
 #' 
 #' @export
 #' 
@@ -95,6 +103,7 @@ polyTrait <- function(data){
     #===============================================
     # Convert all binary factors to a 1, -1 variable
     #===============================================
+    varType <- sapply(res, class)
     facPointer <- which(varType == "factor")
     facLength <- lapply(lapply(res[,facPointer],levels),length)
     
@@ -103,6 +112,8 @@ polyTrait <- function(data){
         fac <- res[,facPointer[i]]
         res[,facPointer[i]] <- model.matrix(~fac,
                                                     contrasts = list(fac = "contr.sum"))[,-1]
+      }else{
+        contrasts(res[,facPointer[i]])[contrasts(res[,facPointer[i]]) == 0] <- -1
       }
     }
     

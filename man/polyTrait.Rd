@@ -31,4 +31,11 @@ and the non-squared variable still presents the same information.
 
 The function will automatically transform all binary (0-1) variable to a
 factor.
+
+In addition, all factors are designed to have a sum to zero contrast
+(\code{\link[stats]{contr.sum}}).
+}
+\note{
+Many aspect of this function were inspired from an internal function of the
+mvabund R package.
 }
