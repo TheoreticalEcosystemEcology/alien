@@ -92,6 +92,20 @@ polyTrait <- function(data){
     res <- res[,-1]
     colnames(res) <- resName
     
+    #===============================================
+    # Convert all binary factors to a 1, -1 variable
+    #===============================================
+    facPointer <- which(varType == "factor")
+    facLength <- lapply(lapply(res[,facPointer],levels),length)
+    
+    for(i in 1:length(facLength)){
+      if(facLength[i] == 2){
+        fac <- res[,facPointer[i]]
+        res[,facPointer[i]] <- model.matrix(~fac,
+                                                    contrasts = list(fac = "contr.sum"))[,-1]
+      }
+    }
+    
     # Replace old traits with new ones
     if(j == 1){
       data$traitFrom <- res
