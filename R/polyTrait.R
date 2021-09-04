@@ -91,7 +91,7 @@ polyTrait <- function(data){
         res <- cbind(res, traits[[j]][,i])
         resName <- c(resName, colnames(traits[[j]])[i])
       }else{
-        res <- cbind(res,poly(traits[[j]][,i], degree = 2) * sqrt(nRows)) # sqrt(nRows) is for Rescaling
+        res <- cbind(res,poly(traits[[j]][,i], degree = 2)) # sqrt(nRows) is for Rescaling
         resName <- c(resName, colnames(traits[[j]])[i], paste0(colnames(traits[[j]])[i],"_Sq"))
       }
     }
