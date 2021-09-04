@@ -17,9 +17,21 @@ The data is part of the `alien` R package and has already been formatted.
 
 ```{r}
 library(alien)
+library(ape)
 
 data(salixGal)
 data(galPara)
+
+#treeGal <- read.nexus("./Tree_with_added_taxa_with_short_codes_from_Mesquite.nex")
+
+#cophGal <- cophenetic(treeGal)
+#phyloGal <- as.matrix(salixGal$phyloDistTo)
+#sel <- which(rownames(cophGal) %in% rownames(phyloGal))
+#cophGalSel <- cophGal[sel,sel]
+#cophGalOrd <- cophGalSel[sort(rownames(cophGalSel)),sort(rownames(cophGalSel))]
+
+#salixGal$phyloDistTo <- as.dist(cophGalOrd)
+#galPara$phyloDistFrom <- as.dist(cophGalOrd)
 ```
 
 # `fitKNN`
@@ -74,9 +86,7 @@ logLik(galParaKNNInterTrait)
 tjur(galParaKNNInterTrait) 
 ```
 
-# Needs to be redone
 ## Interaction data with phylogeny 
-# Needs to be redone
 ```{r, warning=FALSE}
 # Salix-galler
 salixGalKNNInterPhylo <- fitKNN(salixGal,
@@ -148,7 +158,65 @@ tjur(galParaRFTrait)
 ```
 
 ## Phylo
-This needs to be done after answers from Kate.
+```{r}
+library(vegan)
+salPhylo <- wcmdscale(salixGal$phyloDistFrom, add = TRUE)
+colnames(salPhylo) <- paste0("salPhylo", 1:ncol(salPhylo))
+
+galPhylo <- wcmdscale(salixGal$phyloDistTo, add = TRUE)
+colnames(galPhylo) <- paste0("galPhylo", 1:ncol(galPhylo))
+
+paraPhylo <- wcmdscale(galPara$phyloDistTo, add = TRUE)
+colnames(paraPhylo) <- paste0("paraPhylo", 1:ncol(paraPhylo))
+
+##############
+# Salix-galler
+##############
+salixGalPhylo <- alienData(adjMat = salixGal$adjMat,
+                           traitFrom = as.data.frame(salPhylo),
+                           traitTo = as.data.frame(galPhylo))
+
+# Base of formula
+salPhyloTraits <- paste(colnames(salixGalPhylo$traitFrom), collapse = "+")
+galPhyloTraits <- paste(colnames(salixGalPhylo$traitTo), collapse = "+")
+
+# Formula
+FormulaSalGalPhylo <- as.formula(paste("~", salPhyloTraits, "+", galPhyloTraits))
+
+# Model
+salixGalRFPhylo <- fitRF(salixGalPhylo,
+                         formula = FormulaSalGalPhylo,
+                         ntree = 2000,
+                         nodesize = 1)
+
+# Loglikelihood and Tjur's D
+logLik(salixGalRFPhylo)
+tjur(salixGalRFPhylo)
+
+###################
+# Galler-parasitoid
+###################
+galParaPhylo <- alienData(adjMat = galPara$adjMat,
+                           traitFrom = as.data.frame(galPhylo),
+                           traitTo = as.data.frame(paraPhylo))
+
+# Base of formula
+galPhyloTraits <- paste(colnames(galParaPhylo$traitFrom), collapse = "+")
+paraPhyloTraits <- paste(colnames(galParaPhylo$traitTo), collapse = "+")
+
+# Formula
+FormulaGalParaPhylo <- as.formula(paste("~", galPhyloTraits, "+", paraPhyloTraits))
+
+# Model
+galParaRFPhylo <- fitRF(galParaPhylo,
+                        formula = FormulaGalParaPhylo,
+                        ntree=2000,
+                        nodesize = 1)
+
+# Loglikelihood and Tjur's D
+logLik(galParaRFPhylo)
+tjur(galParaRFPhylo)
+```
 
 # `fitGLM`
 
