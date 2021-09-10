@@ -45,7 +45,7 @@ salixGalKNNInter <- fitKNN(salixGal,
                            nNeig = 3,
                            weight = 0)
 
-logLik(salixGalKNNInter)
+logLik(salixGalKNNInter, error = 0.001)
 tjur(salixGalKNNInter) 
 
 # Galler-parasitoid
@@ -55,7 +55,7 @@ galParaKNNInter <- fitKNN(galPara,
                           nNeig = 3,
                           weight = 0)
 
-logLik(galParaKNNInter)
+logLik(galParaKNNInter, error = 0.001)
 tjur(galParaKNNInter)
 ```
 
@@ -70,8 +70,8 @@ salixGalKNNInterTrait <- fitKNN(salixGal,
                                 nNeig = 3,
                                 weight = 1)
 
-logLik(salixGalKNNInterTrait)
-tjur(salixGalKNNInterTrait) 
+logLik(salixGalKNNInterTrait, error = 0.001)
+tjur(salixGalKNNInterTrait)
 
 # Galler-parasitoid
 galParaKNNInterTrait <- fitKNN(galPara,
@@ -82,8 +82,8 @@ galParaKNNInterTrait <- fitKNN(galPara,
                                nNeig = 3,
                                weight = 1)
 
-logLik(galParaKNNInterTrait)
-tjur(galParaKNNInterTrait) 
+logLik(galParaKNNInterTrait, error = 0.001)
+tjur(galParaKNNInterTrait)
 ```
 
 ## Interaction data with phylogeny 
@@ -96,7 +96,7 @@ salixGalKNNInterPhylo <- fitKNN(salixGal,
                                 weight = 1,
                                 phylo=TRUE)
 
-logLik(salixGalKNNInterPhylo)
+logLik(salixGalKNNInterPhylo, error = 0.001)
 tjur(salixGalKNNInterPhylo)
 
 # Galler-parasitoid
@@ -107,7 +107,7 @@ galParaKNNInterPhylo <- fitKNN(galPara,
                                weight = 1,
                                phylo = TRUE)
 
-logLik(galParaKNNInterPhylo)
+logLik(galParaKNNInterPhylo, error = 0.001)
 tjur(galParaKNNInterPhylo)
 ```
 
@@ -133,7 +133,7 @@ salixGalRFTrait <- fitRF(salixGal,
                          nodesize = 1)
 
 # Loglikelihood and Tjur's D
-logLik(salixGalRFTrait)
+logLik(salixGalRFTrait, error = 0.001)
 tjur(salixGalRFTrait)
 
 ###################
@@ -153,7 +153,7 @@ galParaRFTrait <- fitRF(galPara,
                         nodesize = 1)
 
 # Loglikelihood and Tjur's D
-logLik(galParaRFTrait)
+logLik(galParaRFTrait, error = 0.001)
 tjur(galParaRFTrait)
 ```
 
@@ -190,7 +190,7 @@ salixGalRFPhylo <- fitRF(salixGalPhylo,
                          nodesize = 1)
 
 # Loglikelihood and Tjur's D
-logLik(salixGalRFPhylo)
+logLik(salixGalRFPhylo, error = 0.001)
 tjur(salixGalRFPhylo)
 
 ###################
@@ -214,7 +214,7 @@ galParaRFPhylo <- fitRF(galParaPhylo,
                         nodesize = 1)
 
 # Loglikelihood and Tjur's D
-logLik(galParaRFPhylo)
+logLik(galParaRFPhylo, error = 0.001)
 tjur(galParaRFPhylo)
 ```
 
@@ -270,7 +270,7 @@ salixGalGLMTrait <- fitGLM(salixGalSq,
 #============================
 # Log-likelihood and Tjur's D
 #============================
-logLik(salixGalGLMTrait)
+logLik(salixGalGLMTrait, error = 0.001)
 tjur(salixGalGLMTrait)
 
 #####################
@@ -333,7 +333,7 @@ galParaGLMTrait <- fitGLM(galParaSq,
 #============================
 # Log-likelihood and Tjur's D
 #============================
-logLik(galParaGLMTrait)
+logLik(galParaGLMTrait, error = 0.001)
 tjur(galParaGLMTrait)
 ```
 
@@ -386,7 +386,7 @@ salixGal4cornerTrait <- fitGLM(salixGalSq,
 #============================
 # Log-likelihood and Tjur's D
 #============================
-logLik(salixGal4cornerTrait)
+logLik(salixGal4cornerTrait, error = 0.001)
 tjur(salixGal4cornerTrait)
 
 
@@ -450,7 +450,7 @@ galParaGLMTrait <- fitGLM(galParaSq,
 #============================
 # Log-likelihood and Tjur's D
 #============================
-logLik(galParaGLMTrait)
+logLik(galParaGLMTrait, error = 0.001)
 tjur(galParaGLMTrait)
 ```
 
