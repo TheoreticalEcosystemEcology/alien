@@ -92,28 +92,44 @@ polyTrait <- function(data){
         resName <- c(resName, colnames(traits[[j]])[i])
       }else{
         res <- cbind(res,poly(traits[[j]][,i], degree = 2)) # sqrt(nRows) is for Rescaling
-        resName <- c(resName, colnames(traits[[j]])[i], paste0(colnames(traits[[j]])[i],"_Sq"))
+        resName <- c(resName, colnames(traits[[j]])[i], 
+                     paste0(colnames(traits[[j]])[i],"_Sq"))
       }
     }
     
     # Add names and remove bogus NA variable
     res <- res[,-1]
-    colnames(res) <- resName
+    if(nCols == 1){
+      res <- data.frame("test" = res)
+    }
     
+    colnames(res) <- resName
+
     #===============================================
     # Convert all binary factors to a 1, -1 variable
     #===============================================
     varType <- sapply(res, class)
     facPointer <- which(varType == "factor")
-    facLength <- lapply(lapply(res[,facPointer],levels),length)
     
-    for(i in 1:length(facLength)){
-      if(facLength[i] == 2){
-        fac <- res[,facPointer[i]]
-        res[,facPointer[i]] <- model.matrix(~fac,
-                                                    contrasts = list(fac = "contr.sum"))[,-1]
+    # If there is more than one factor
+    if(length(facLength) > 0){
+      
+      # If there is 1 factor
+      if(length(facPointer) == 1){
+        facLength <- nlevels(res[,facPointer])
+      # If there is more than one factor
       }else{
-        contrasts(res[,facPointer[i]])[contrasts(res[,facPointer[i]]) == 0] <- -1
+        facLength <- lapply(res[,facPointer],nlevels)
+      }
+      
+      for(i in 1:length(facLength)){
+        if(facLength[i] == 2){
+          fac <- res[,facPointer[i]]
+          res[,facPointer[i]] <- model.matrix(~fac,
+                                              contrasts = list(fac = "contr.sum"))[,-1]
+        }else{
+          contrasts(res[,facPointer[i]])[contrasts(res[,facPointer[i]]) == 0] <- -1
+        }
       }
     }
     
