@@ -458,7 +458,7 @@ tjur(galParaGLMTrait)
 
 This function take a long time to run.
 
-```{r}
+```{r, eval=FALSE}
 # Salix-galler
 salixGalIMC <- fitIMC(salixGal,
                       d = 1)
