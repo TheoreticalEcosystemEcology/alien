@@ -473,8 +473,8 @@ galParaIMC <- fitIMC(galPara,
                       d = 1)
 
 saveRDS(galParaIMC, file = "galParaIMC2.RDS")
-logLik(galParaIMC, error = 0.001) # -690.649
-tjur(galParaIMC) # 0.5714072
+logLik(galParaIMC, error = 0.001) # -690.649; -761.8431
+tjur(galParaIMC) # 0.5714072 ; 0.5313928
 
 ```
 
