@@ -463,8 +463,6 @@ This function take a long time to run.
 salixGalIMC <- fitIMC(salixGal,
                       d = 1)
 
-saveRDS(salixGalIMC, file = "salixGalIMC.RDS")
-
 logLik(salixGalIMC, error = 0.001) # -137.0956
 tjur(salixGalIMC) # 0.526749
 
@@ -472,9 +470,8 @@ tjur(salixGalIMC) # 0.526749
 galParaIMC <- fitIMC(galPara,
                       d = 1)
 
-saveRDS(galParaIMC, file = "galParaIMC2.RDS")
-logLik(galParaIMC, error = 0.001) # -690.649; -761.8431
-tjur(galParaIMC) # 0.5714072 ; 0.5313928
+logLik(galParaIMC, error = 0.001) # -690.649
+tjur(galParaIMC) # 0.5714072
 
 ```
 
