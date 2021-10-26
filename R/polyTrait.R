@@ -111,17 +111,16 @@ polyTrait <- function(data){
     varType <- sapply(res, class)
     facPointer <- which(varType == "factor")
     
+    # If there is 1 factor
+    if(length(facPointer) == 1){
+      facLength <- nlevels(res[,facPointer])
+      # If there is more than one factor
+    }else{
+      facLength <- lapply(res[,facPointer],nlevels)
+    }
+
     # If there is more than one factor
     if(length(facLength) > 0){
-      
-      # If there is 1 factor
-      if(length(facPointer) == 1){
-        facLength <- nlevels(res[,facPointer])
-      # If there is more than one factor
-      }else{
-        facLength <- lapply(res[,facPointer],nlevels)
-      }
-      
       for(i in 1:length(facLength)){
         if(facLength[i] == 2){
           fac <- res[,facPointer[i]]
