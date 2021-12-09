@@ -17,7 +17,6 @@ The data is part of the `alien` R package and has already been formatted.
 
 ```{r}
 library(alien)
-library(ape)
 
 data(salixGal)
 data(galPara)
@@ -456,6 +455,20 @@ tjur(galParaGLMTrait)
 
 # `fitIMC` 
 
+```{r, eval=TRUE, echo = FALSE}
+# Salix-galler
+salixGalIMC <- readRDS("salixGalIMC.RDS")
+
+logLik(salixGalIMC, error = 0.001) # -137.0956
+tjur(salixGalIMC) # 0.526749
+
+# Galler-parasitoids
+galParaIMC <- readRDS("galParaIMC.RDS")
+
+logLik(galParaIMC, error = 0.001) # -690.649
+tjur(galParaIMC) # 0.5714072
+
+```
 This function take a long time to run.
 
 ```{r, eval=FALSE}
